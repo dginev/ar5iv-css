@@ -1,0 +1,423 @@
+/* Try to match the modern form-factor for a document 
+  - Centered
+  - at most 60 rem per line, to avoid head-turning
+*/
+/* Main content */
+body {
+  margin:0;
+  height: 100%;  
+}
+.ltx_page_content {
+  margin: 4em 1em;
+  font-size: 1rem;
+  font-weight: 300;
+  clear:both; 
+}
+.ltx_page_header  { border-bottom:0.1em solid; margin-bottom:0.5em; }
+.ltx_page_footer  { 
+  clear:both;
+  text-align: right;
+  width: auto;
+  margin: auto;
+  border-top:0.1em solid;
+}
+
+.ltx_page_header:after,
+.ltx_page_footer:after,
+.ltx_page_content:after {
+    content:"."; display:block; height:0; clear:both; visibility:hidden; }
+.ltx_page_footer:before {
+    content:"."; display:block; height:0; clear:both; visibility:hidden; }
+
+.ltx_document {
+  margin: auto;
+  max-width: 50rem;
+  margin-top: 2rem;
+  text-rendering: optimizeLegibility;
+}
+
+.ltx_para {
+  font-family: "Computer Modern Serif", "Noto Serif", serif;
+  margin-bottom: 1.5rem;
+}
+.ltx_p {
+  text-align: justify;
+  text-justify: inter-word;
+  line-height: 1.5rem;
+  /* by default, p doesn't indent */
+  text-indent:0em;
+  white-space:normal;
+}
+.ltx_text {
+  font-family: "Noto Serif", serif;
+}
+math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup { /* TODO: need to pick+deploy some math fonts... */
+  background-color: white !important;
+}
+
+/* supposedly stylish links, aking to eLife */
+.ltx_ref {
+  border-bottom: 1px dotted #212121;
+  color: #212121;
+  text-decoration: none;
+  overflow-wrap: break-word;
+}
+.ltx_cite {
+  font-style: italic;
+}
+
+/* title page image */
+article > div > img:first-of-type {
+  max-width: 30rem;
+  width: auto;
+  height: auto;
+}
+
+.ltx_graphics {
+  display: block;
+  max-width:50em;
+  max-height:50em;
+  width: auto;
+  height: auto;
+}
+
+.ltx_title.ltx_title_document {
+  font-weight: bold;
+  font-size: 1.7rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
+.ltx_authors {
+  margin-top: 0rem;
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+span.ltx_personname {
+  font-size: 1rem;
+}
+span.ltx_personname > br.ltx_break + span {
+  display: inline-block;
+  padding-top: 0.75em;
+}
+
+.ltx_creator,
+.ltx_author_before,
+.ltx_author_after { display:inline}
+.ltx_author_notes { display:inline-block; }
+.ltx_author_notes:before { content:"*"; color:blue;}
+.ltx_author_notes span { display:none; padding: 0.2em;}
+.ltx_author_notes:hover span {
+    display:block; position:absolute; z-index:10;
+    text-align:left;
+    border: 0.05em solid black; border-radius: 0 0.3em 0.3em 0.3em; box-shadow: 0.1em 0.1em 0.2em gray; }
+    
+.ltx_dates {
+
+  margin-top: 0rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+/*======================================================================
+  Document Structure; Titles & Frontmatter */
+
+/* undo bold here to remove the browser's native h# styling,
+   at let all other styles override it (with more specific rules)*/
+.ltx_title {
+  font-size: 100%;
+  font-weight: normal;
+  font-family: "Noto Sans", sans-serif;
+}
+/* TODO: Can we get a better handle on the ToC title? */
+.ltx_title_abstract,.ltx_TOC > h6 {
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
+  color: #212121;
+  text-decoration: none;
+  font-size: 1.4rem;
+  font-weight: bold;
+  line-height: 1.15385;
+  /*padding-bottom: 1.3125rem;*/
+  box-sizing: border-box;
+  list-style: none;
+}
+/* Table of Contents, main page display */
+.ltx_TOC {
+  margin-top:2rem;
+  margin-bottom:2rem;
+}
+ul.ltx_toclist {
+  padding-left: 1.8rem;
+}
+/* top-level TOC has no indent */
+.ltx_TOC > ul.ltx_toclist {
+  padding-left: 0rem;
+}
+.ltx_TOC > .ltx_toclist > .ltx_tocentry {
+  list-style-type:none;
+  margin-bottom: 1.5rem;
+}
+.ltx_tocentry  { 
+  list-style-type:none;
+  margin-bottom: 0.5rem;
+}
+.ltx_tocentry_section > .ltx_ref {
+  display: block;
+  border-bottom: none;
+  font-weight: bold;
+  margin-bottom: 0.5em;
+}
+.ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag {
+  padding-right: 1rem;
+}
+
+.ltx_abstract p:first-of-type {
+  text-indent:2em; }
+.ltx_tag_appendix,
+.ltx_tag_section,
+.ltx_tag_subsection,
+.ltx_tag_subsubsection,
+.ltx_tag_table,
+.ltx_tag_figure { 
+  display: inline-block;
+  padding-right: 0.5em;
+  min-width: 1.33em; }
+
+.ltx_title_appendix,
+.ltx_title_section,
+.ltx_title_bibliography  { font-size:1.4rem; font-weight:bold; margin-bottom:1.5rem; }
+.ltx_title_subsection    { font-size:1.2rem; font-weight:bold; margin-bottom:1.5rem; }
+.ltx_title_subsubsection { font-size:1rem; font-weight:bold; margin-bottom:1.5rem; }
+.ltx_title_paragraph { font-size:1rem; font-weight:bold; display:inline; margin-right:1rem; }
+/* Hack to simulate run-in! put class="ltx_runin" on a title or tag
+   for it to run-into the following text. */
+.ltx_runin { display:inline; }
+.ltx_runin:after { content:" "; }
+.ltx_runin + .ltx_para,
+.ltx_runin + .ltx_para p,
+.ltx_runin + p { display:inline; }
+.ltx_outdent { margin-left: -2em; }
+
+.ltx_section { margin-bottom: 2.5rem;}
+.ltx_subsection { margin-bottom: 1.5rem;}
+.ltx_subsubsection { margin-bottom: .5rem;}
+.ltx_section .ltx_para:first-of-type .ltx_p:first-of-type {
+  text-indent: 2em;
+}
+/* Theorems */
+.ltx_theorem  {margin:1em 0em 1em 0em; }
+.ltx_title_theorem { font-size:100%; }
+
+/* Bibliographies */
+/* .ltx_bibliography {} */
+.ltx_bibliography dt { margin-right:0.5em; float:left; }
+.ltx_bibliography dd { margin-left:3em; }
+/* .ltx_biblist {} */
+.ltx_bibblock {
+  display:inline-block;
+  text-align: left;
+  padding-left: 0.5em;
+  max-width: 46em;
+  line-height: 1.5rem;
+  vertical-align: text-top;
+}
+/* .ltx_tag_bibitem {
+
+} */
+.ltx_bibitem { list-style-type:none; padding-bottom: 0.75em;}
+.ltx_bibitem .ltx_tag {
+  display:inline-block;
+  width: 3em;
+  margin-left: -3em;
+  line-height: 1.5rem;
+  text-align: right;
+  vertical-align: text-top;
+}
+/*.bibitem-tag + div { display:inline; }*/
+.ltx_bib_title { font-style:italic; }
+.ltx_bib_article .bib-title { font-style:normal !important; }
+.ltx_bib_journal  { font-style:italic; }
+.ltx_bib_volume { font-weight:bold; }
+
+/* ================================= */
+/*           from LaTeXML.css        */
+/* ================================= */
+
+/* Blocks, Lists, Floats */
+.ltx_p,
+.ltx_quote,
+.ltx_block,
+.ltx_para {
+    display: block; }
+    
+/* alignment within blocks */
+.ltx_align_left     { text-align:left; }
+.ltx_align_right    { text-align:right; }
+.ltx_align_center   { text-align:center; }
+.ltx_align_justify  { text-align:justify; }
+.ltx_align_top      { vertical-align:top; }
+.ltx_align_bottom   { vertical-align:bottom; }
+.ltx_align_middle   { vertical-align:middle; }
+.ltx_align_baseline { vertical-align:baseline; }
+
+.ltx_align_floatleft  { float:left; }
+.ltx_align_floatright { float:right; }
+
+.ltx_td.ltx_align_left,   .ltx_th.ltx_align_left,
+.ltx_td.ltx_align_right,  .ltx_th.ltx_align_right,
+.ltx_td.ltx_align_center, .ltx_th.ltx_align_center { white-space:nowrap; }
+.ltx_td.ltx_align_left.ltx_wrap,   .ltx_th.ltx_align_left.ltx_wrap,
+.ltx_td.ltx_align_right.ltx_wrap,  .ltx_th.ltx_align_right.ltx_wrap,
+.ltx_td.ltx_align_center.ltx_wrap, .ltx_th.ltx_align_center.ltx_wrap,
+.ltx_td.ltx_align_justify,  .ltx_th.ltx_align_justify { white-space:normal; }
+
+.ltx_table,
+.ltx_figure { 
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  margin:4em; }
+
+/*======================================================================
+  Para level */
+.ltx_float {
+    margin: 3.5rem; }
+
+/* subfigures */
+.ltx_subfigure, .ltx_subtable, .ltx_subfloat {
+  max-width: 24rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.ltx_subfigure > .ltx_figure,
+.ltx_subtable > .ltx_figure,
+.ltx_subfloat > .ltx_figure {
+  margin:0em;
+}
+.ltx_tabular .ltx_tabular { 
+  width:100%; 
+}
+.ltx_inline-block { display:inline-block; }
+/* experimental: flex model, to center short captions, justify long ones */
+.ltx_table .ltx_caption,
+.ltx_figure .ltx_caption { 
+  text-align:justify; 
+  margin-top:1.5em;
+  margin-bottom:1.5rem;
+}
+
+/*======================================================================
+ Low-level Basics */
+/* Note that LaTeX(ML)'s font model doesn't map quite exactly to CSS's */
+/* Font Families => font-family */
+.ltx_font_serif      { font-family: serif; }
+.ltx_font_sansserif  { font-family: sans-serif; }
+.ltx_font_typewriter { font-family: monospace; }
+/* dingbats should be converted to unicode? */
+/* Math font families handled within math: script, symbol, fraktur, blackboard ? */
+/* Font Series => font-weight */
+.ltx_font_bold       { font-weight: bold; }
+.ltx_font_medium     { font-weight: normal; }
+/* Font Shapes => font-style or font-variant */
+.ltx_font_italic     { font-style: italic; font-variant:normal; }
+.ltx_font_upright    { font-style: normal; font-variant:normal; }
+.ltx_font_slanted    { font-style: oblique; font-variant:normal; }
+.ltx_font_smallcaps  { font-variant: small-caps; font-style:normal; }
+.ltx_font_mathcaligraphic { font-family: "Lucida Calligraphy", "Zapf Chancery","URW Chancery L"; }
+
+/* equations in non-aligned mode (not normally used) */
+.ltx_eqn_div { display:block; width:95%; text-align:center; }
+
+/* equations in aligned mode (aligning tags, etc as well as equations) */
+.ltx_eqn_table { 
+    display:table;
+  
+    width:100%;
+    border-collapse:collapse; 
+    margin-top: 1em;
+    margin-bottom: 1em;
+}
+.ltx_eqn_row   { display:table-row; }
+.ltx_eqn_cell  { display:table-cell; width:auto; }
+.ltx_eqn_cell.ltx_eqn_eqno  {  width: 3em;}
+/* .ltx_tag.ltx_tag_equation {} */
+
+
+/* Various lists */
+.ltx_itemize,
+.ltx_enumerate,
+.ltx_description {
+    display:block; }
+.ltx_itemize .ltx_item,
+.ltx_enumerate .ltx_item {
+    display: list-item; }
+/* Position the tag to look like a normal item bullet. */
+li.ltx_item > .ltx_tag {
+    display:inline-block; margin-left:-1.5em; min-width:1.5em;
+    text-align:right; }
+.ltx_item .ltx_tag + .ltx_para,
+.ltx_item .ltx_tag + .ltx_para .ltx_p  { display:inline; }
+
+/* explicit control of indentation (on ltx_para) */
+.ltx_indent > .ltx_p:first-child { text-indent:2em!important; }
+.ltx_noindent > .ltx_p:first-child { text-indent:0em!important; }
+
+/* Ought to be easily removable/overridable? */
+.ltx_pagination.ltx_role_newpage { height:2em; }
+
+/*======================================================================
+ Borders and such */
+.ltx_tabular { display:inline-table; border-collapse:collapse; }
+.ltx_tabular.ltx_centering { display:table; }
+.ltx_thead,
+.ltx_tfoot,
+.ltx_tbody   { display:table-row-group; }
+.ltx_tr      { display:table-row; }
+.ltx_td,
+.ltx_th      { display:table-cell; }
+
+.ltx_framed  { border:1px solid black;}
+.ltx_tabular .ltx_td,
+.ltx_tabular .ltx_th { padding:0.1em 0.5em; }
+/* regular lines */
+.ltx_border_t  { border-top:1px solid black; }
+.ltx_border_r  { border-right:1px solid black; }
+.ltx_border_b  { border-bottom:1px solid black; }
+.ltx_border_l  { border-left:1px solid black; }
+/* double lines */
+.ltx_border_tt { border-top:3px double black; }
+.ltx_border_rr { border-right:3px double black; }
+.ltx_border_bb { border-bottom:3px double black; }
+.ltx_border_ll { border-left:3px double black; }
+/* Light lines */
+.ltx_border_T  { border-top:1px solid gray; }
+.ltx_border_R  { border-right:1px solid gray; }
+.ltx_border_B  { border-bottom:1px solid gray; }
+.ltx_border_L  { border-left:1px solid gray; }
+/* Framing */
+.ltx_framed_rectangle { border-style:solid; border-width:1px; }
+.ltx_framed_top       { border-top-style:solid; border-top-width:1px; }
+.ltx_framed_left      { border-left-style:solid; border-left-width:1px; }
+.ltx_framed_right     { border-right-style:solid; border-right-width:1px; }
+.ltx_framed_bottom,
+.ltx_framed_underline { border-bottom-style:solid; border-bottom-width:1px; }
+.ltx_framed_topbottom { border-top-style:solid; border-top-width:1px;
+                        border-bottom-style:solid; border-bottom-width:1px; }
+.ltx_framed_leftright { border-left-style:solid; border-left-width:1px;
+                        border-right-style:solid; border-right-width:1px; }
+                        
+/*======================================================================
+ Misc */
+/* .ltx_verbatim*/
+.ltx_verbatim { text-align:left; }
+/*======================================================================
+ Meta stuff */
+.ltx_note_content { display:none; }
+.ltx_tag_note { display: none; }
+.ltx_ERROR        { text-align: left; display:inline; color:#D8000C; }
+.ltx_rdf          { display:none; }
+.ltx_missing      { color:#D8000C;}
+.ltx_nounicode    { color:#D8000C; }
