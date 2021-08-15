@@ -20,6 +20,19 @@ body {
   width: auto;
   margin: auto;
   border-top:0.1em solid;
+  max-width: 52rem;
+}
+.ltx_page_logo {
+  font-family: "Computer Modern Serif", "Noto Serif", serif;
+  font-size: 1rem;
+  text-align: right;
+  padding: 0.5rem;
+}
+.ltx_page_logo > a {/* eLife-like links */
+  border-bottom: 1px dotted #212121;
+  color: #212121;
+  text-decoration: none;
+  overflow-wrap: break-word;
 }
 
 .ltx_page_header:after,
@@ -31,7 +44,7 @@ body {
 
 .ltx_document {
   margin: auto;
-  max-width: 50rem;
+  max-width: 52rem;
   margin-top: 2rem;
   text-rendering: optimizeLegibility;
 }
@@ -55,7 +68,7 @@ math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, 
   background-color: white !important;
 }
 
-/* supposedly stylish links, aking to eLife */
+/* eLife-like links */
 .ltx_ref {
   border-bottom: 1px dotted #212121;
   color: #212121;
@@ -63,7 +76,7 @@ math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, 
   overflow-wrap: break-word;
 }
 .ltx_cite {
-  font-style: italic;
+  font-style: normal;
 }
 
 /* title page image */
@@ -75,14 +88,19 @@ article > div > img:first-of-type {
 
 .ltx_graphics {
   display: block;
-  max-width:50em;
-  max-height:50em;
+  max-width:52rem;
+  max-height:30rem;
   width: auto;
   height: auto;
 }
+.ltx_subgraphics > .ltx_graphics {
+  max-width:25rem;
+  max-height:25rem;
+}
+
 
 .ltx_title.ltx_title_document {
-  font-weight: bold;
+  font-weight: normal;
   font-size: 1.7rem;
   margin-top: 1rem;
   margin-bottom: 1.5rem;
@@ -104,16 +122,91 @@ span.ltx_personname > br.ltx_break + span {
 .ltx_creator,
 .ltx_author_before,
 .ltx_author_after { display:inline}
-.ltx_author_notes { display:inline-block; }
-.ltx_author_notes:before { content:"*"; color:blue;}
-.ltx_author_notes span { display:none; padding: 0.2em;}
-.ltx_author_notes:hover span {
-    display:block; position:absolute; z-index:10;
-    text-align:left;
-    border: 0.05em solid black; border-radius: 0 0.3em 0.3em 0.3em; box-shadow: 0.1em 0.1em 0.2em gray; }
-    
-.ltx_dates {
 
+/* Author notes */
+/* Footnotes */
+.ltx_role_footnote, .ltx_role_thanks {
+  text-align: justify;  
+  word-spacing:-0.05rem;
+  font-style: normal;
+  font-size: 0.85rem;
+}
+.ltx_role_footnote > .ltx_note_mark {
+  color: #3f88c5;
+}
+.ltx_note_content {
+  display:block;
+  border-style: double none none none;
+  border-width: 0.1rem 0;    
+  padding-top: 0.5rem;
+  padding-bottom: 0.5rem;
+  margin:0.6rem;
+  overflow-wrap: break-word;
+}
+@media only screen and (max-width: 110rem) {
+  .ltx_author_notes { display:inline-block; }
+  .ltx_author_notes:before { content:"*"; color:blue;}
+  .ltx_authors:hover .ltx_author_notes:before,
+  .ltx_authors:active .ltx_author_notes:before { content:none;}
+  .ltx_author_notes span { display:none; padding: 0.2em;}
+  .ltx_authors:hover .ltx_author_notes > span, 
+  .ltx_authors:active .ltx_author_notes > span {
+    display: block;
+    margin: 2rem;
+    padding: 2rem;
+    opacity: 1;
+    background-color: white;
+    z-index:10;
+    border-width: 0.1rem 0;
+    border-top: double;
+    border-bottom: double;
+  }
+  .ltx_note_outer { 
+    display: none;
+    opacity: 0;
+  }
+  .ltx_note_content {
+    overflow-wrap: break-word;
+  }
+  .ltx_role_footnote:hover > .ltx_note_outer,
+  .ltx_role_footnote:active > .ltx_note_outer,
+  .ltx_role_thanks:hover > .ltx_note_outer,
+  .ltx_role_thanks:hover > .ltx_note_outer {
+    display: block;
+    position: absolute;
+    padding: 2rem;
+    opacity: 1;
+    background-color: white;
+    z-index:10;
+    border-width: 0.1rem 0;
+    border-bottom: double;
+  }
+}
+@media only screen and (min-width: 110rem) {
+  .ltx_author_notes {
+    display: block;
+    margin: 2rem;
+    font-size: 1rem;
+    padding: 1rem;
+  }
+  
+  .ltx_note_outer { 
+    display: block;
+    position:relative;
+    clear:both;
+    float: right;
+    width: 27rem;
+    margin-right: -31rem;
+    padding-bottom: 2rem;
+    padding-right: 2rem;
+  }
+  .ltx_note_content > .ltx_note_mark {
+    display:block;
+    margin-top: -2.5em;
+  }
+}
+
+.ltx_dates {
   margin-top: 0rem;
   margin-bottom: 1rem;
   text-align: center;
@@ -128,6 +221,11 @@ span.ltx_personname > br.ltx_break + span {
   font-size: 100%;
   font-weight: normal;
   font-family: "Noto Sans", sans-serif;
+}
+/* Abstract */
+.ltx_abstract {
+  margin-top: 4rem;
+  margin-bottom: 2rem;
 }
 /* TODO: Can we get a better handle on the ToC title? */
 .ltx_title_abstract,.ltx_TOC > h6 {
@@ -174,7 +272,8 @@ ul.ltx_toclist {
 }
 
 .ltx_abstract p:first-of-type {
-  text-indent:2em; }
+  /* TODO: this is debatable */
+  text-indent:0em; }
 .ltx_tag_appendix,
 .ltx_tag_section,
 .ltx_tag_subsection,
@@ -182,7 +281,7 @@ ul.ltx_toclist {
 .ltx_tag_table,
 .ltx_tag_figure { 
   display: inline-block;
-  padding-right: 0.5em;
+  padding-right: 1rem;
   min-width: 1.33em; }
 
 .ltx_title_appendix,
@@ -204,7 +303,8 @@ ul.ltx_toclist {
 .ltx_subsection { margin-bottom: 1.5rem;}
 .ltx_subsubsection { margin-bottom: .5rem;}
 .ltx_section .ltx_para:first-of-type .ltx_p:first-of-type {
-  text-indent: 2em;
+  /* TODO: this is debatable */
+  text-indent: 0em;
 }
 /* Theorems */
 .ltx_theorem  {margin:1em 0em 1em 0em; }
@@ -219,7 +319,7 @@ ul.ltx_toclist {
   display:inline-block;
   text-align: left;
   padding-left: 0.5em;
-  max-width: 46em;
+  max-width: 40em;
   line-height: 1.5rem;
   vertical-align: text-top;
 }
@@ -229,10 +329,10 @@ ul.ltx_toclist {
 .ltx_bibitem { list-style-type:none; padding-bottom: 0.75em;}
 .ltx_bibitem .ltx_tag {
   display:inline-block;
-  width: 3em;
-  margin-left: -3em;
+  min-width: 6rem;
+  margin-left: -2.5rem;
   line-height: 1.5rem;
-  text-align: right;
+  text-align: left;
   vertical-align: text-top;
 }
 /*.bibitem-tag + div { display:inline; }*/
@@ -251,6 +351,9 @@ ul.ltx_toclist {
 .ltx_block,
 .ltx_para {
     display: block; }
+.ltx_quote.ltx_outerquote, .ltx_quote.ltx_innerquote {
+  display: inline;
+}
     
 /* alignment within blocks */
 .ltx_align_left     { text-align:left; }
@@ -279,13 +382,12 @@ ul.ltx_toclist {
   flex-direction:column;
   align-items:center;
   text-align:center;
-  margin:4em; }
-
+  margin-top:4em;
+  margin-bottom:4em;
+  margin-left: 0.5em;
+  margin-right: 0.5em; }
 /*======================================================================
   Para level */
-.ltx_float {
-    margin: 3.5rem; }
-
 /* subfigures */
 .ltx_subfigure, .ltx_subtable, .ltx_subfloat {
   max-width: 24rem;
@@ -307,6 +409,19 @@ ul.ltx_toclist {
   text-align:justify; 
   margin-top:1.5em;
   margin-bottom:1.5rem;
+}
+/* bits such as Algorithm listings */
+.ltx_float {
+    margin: 3.5rem; }
+.ltx_float .ltx_caption { 
+  text-align:justify; 
+  border-top:solid black;
+  border-bottom:solid black;
+  border-width: 0.1rem;
+  margin-top: 0.2rem;
+  margin-bottom: 0.2rem;
+  padding-top: 0.2rem;
+  padding-bottom: 0.2rem;
 }
 
 /*======================================================================
@@ -334,7 +449,6 @@ ul.ltx_toclist {
 /* equations in aligned mode (aligning tags, etc as well as equations) */
 .ltx_eqn_table { 
     display:table;
-  
     width:100%;
     border-collapse:collapse; 
     margin-top: 1em;
@@ -356,10 +470,18 @@ ul.ltx_toclist {
     display: list-item; }
 /* Position the tag to look like a normal item bullet. */
 li.ltx_item > .ltx_tag {
-    display:inline-block; margin-left:-1.5em; min-width:1.5em;
-    text-align:right; }
+  display:inline-block;
+  margin-left: -2em;
+  padding-right: 1em;
+  text-align:right; }
 .ltx_item .ltx_tag + .ltx_para,
 .ltx_item .ltx_tag + .ltx_para .ltx_p  { display:inline; }
+.ltx_item .ltx_para {
+  margin-bottom: 0em;
+}
+.ltx_item + .ltx_item {
+  margin-top: 1em;
+}
 
 /* explicit control of indentation (on ltx_para) */
 .ltx_indent > .ltx_p:first-child { text-indent:2em!important; }
@@ -415,7 +537,6 @@ li.ltx_item > .ltx_tag {
 .ltx_verbatim { text-align:left; }
 /*======================================================================
  Meta stuff */
-.ltx_note_content { display:none; }
 .ltx_tag_note { display: none; }
 .ltx_ERROR        { text-align: left; display:inline; color:#D8000C; }
 .ltx_rdf          { display:none; }
