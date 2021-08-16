@@ -326,21 +326,12 @@ ul.ltx_toclist {
 .ltx_bibliography dt { margin-right:0.5em; float:left; }
 .ltx_bibliography dd { margin-left:3em; }
 /* .ltx_biblist {} */
-.ltx_bibblock {
-  display:inline-block;
-  text-align: left;
-  padding-left: 0.5em;
-  max-width: 40em;
-  line-height: 1.5rem;
-  vertical-align: text-top;
-}
-/* .ltx_tag_bibitem {
-
-} */
+/* .ltx_tag_bibitem {} */
 .ltx_bibitem { 
   display:table;
   table-layout: fixed;
   list-style-type:none;
+  width: 100%;
   padding-bottom: 0.75em;
 }
 .ltx_bibitem .ltx_tag {
@@ -349,8 +340,25 @@ ul.ltx_toclist {
   left: -2.5rem;
   top: 0.24rem;
   line-height: 1.5rem;
-  width: 15%;
   text-align: left;
+  vertical-align: text-top;
+}
+@media only screen and (max-width: 50rem) {
+  .ltx_bibitem .ltx_tag {
+    width: 25%;
+  }
+}
+@media only screen and (min-width: 50rem) {
+  .ltx_bibitem .ltx_tag {
+    width: 12%;
+  }
+}
+.ltx_bibitem .ltx_bibblock {
+  display:inline-block;
+  text-align: left;
+  padding-left: 0.5em;
+  max-width: 40em;
+  line-height: 1.5rem;
   vertical-align: text-top;
 }
 /*.bibitem-tag + div { display:inline; }*/
