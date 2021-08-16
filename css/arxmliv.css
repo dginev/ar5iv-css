@@ -107,6 +107,13 @@ article > div > img:first-of-type {
   margin-bottom: 1.5rem;
   text-align: center;
 }
+.ltx_subtitle {
+  font-style: italic;
+  font-size: 1.3rem;
+  margin-top: 1rem;
+  margin-bottom: 1.5rem;
+  text-align: center;
+}
 .ltx_authors {
   margin-top: 0rem;
   margin-bottom: 0.75rem;
@@ -128,6 +135,8 @@ span.ltx_personname > br.ltx_break + span {
   margin-bottom: 1rem;
   text-align: center;
 }
+/* TODO: Untested */
+.ltx_date { text-align:center; font-size: 120%; margin:0.5em 0 0.5em 0; }
 
 /* Author notes */
 /* Footnotes */
@@ -253,6 +262,11 @@ span.ltx_personname > br.ltx_break + span {
   box-sizing: border-box;
   list-style: none;
 }
+/* TODO: not yet tested */
+.ltx_title_classification { display:inline; font-size:100%; font-weight:normal; font-style:italic; }
+/* TODO: not yet tested */
+.ltx_role_dedicatory { font-size:100%; font-style:italic; text-align:center; margin:1em;}
+
 /* Table of Contents, main page display */
 .ltx_TOC {
   margin-top:2rem;
@@ -302,12 +316,15 @@ ul.ltx_toclist {
 .ltx_title_chapter  { font-size:1.6rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_section,
 .ltx_title_acknowledgements,
+.ltx_title_keywords,
+.ltx_title_classification,
 .ltx_title_appendix,
 .ltx_title_index,
 .ltx_title_bibliography  { font-size:1.4rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_subsection    { font-size:1.2rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_subsubsection { font-size:1rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_paragraph { font-size:1rem; font-weight:bold; display:inline; margin-right:1rem; }
+.ltx_title_subparagraph { font-size:1rem; font-weight:bold; display:inline; margin-left:2em; margin-right:1em; }
 /* Hack to simulate run-in! put class="ltx_runin" on a title or tag
    for it to run-into the following text. */
 .ltx_runin { display:inline; }
@@ -536,14 +553,13 @@ ul.ltx_toclist {
 .ltx_enumerate,
 .ltx_description {
     display:block; }
+.ltx_item > .ltx_para > .ltx_description,
 .ltx_item > .ltx_para > .ltx_itemize,
 .ltx_item > .ltx_para > .ltx_enumerate {
   margin-top: 0.5rem;
   margin-left: -0.5rem;
 }
-.ltx_enumerate,
-.ltx_description {
-    display:block; }
+.ltx_description .ltx_item,
 .ltx_itemize .ltx_item,
 .ltx_enumerate .ltx_item {
   display: list-item; }
