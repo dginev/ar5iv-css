@@ -289,6 +289,7 @@ ul.ltx_toclist {
 .ltx_title_part,
 .ltx_title_chapter  { font-size:1.6rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_appendix,
+.ltx_title_index,
 .ltx_title_section,
 .ltx_title_bibliography  { font-size:1.4rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_subsection    { font-size:1.2rem; font-weight:bold; margin-bottom:1.5rem; }
@@ -338,6 +339,7 @@ ul.ltx_toclist {
 } */
 .ltx_bibitem { 
   display:table;
+  table-layout: fixed;
   list-style-type:none;
   padding-bottom: 0.75em;
 }
@@ -345,9 +347,9 @@ ul.ltx_toclist {
   display:table-cell;
   position: relative;
   left: -2.5rem;
-  top: 0.21rem;
+  top: 0.24rem;
   line-height: 1.5rem;
-  min-width: 6rem;
+  width: 15%;
   text-align: left;
   vertical-align: text-top;
 }
@@ -356,6 +358,17 @@ ul.ltx_toclist {
 .ltx_bib_article .bib-title { font-style:normal !important; }
 .ltx_bib_journal  { font-style:italic; }
 .ltx_bib_volume { font-weight:bold; }
+
+/* indexes */
+.ltx_indexlist {
+  columns: 2;
+  -webkit-columns: 2;
+  -moz-columns: 2;
+  list-style-type:none;
+}
+.ltx_indexrefs .ltx_ref {
+  color: lightcoral;
+}
 
 /* ================================= */
 /*           from LaTeXML.css        */
@@ -402,6 +415,27 @@ ul.ltx_toclist {
   margin-bottom:4em;
   margin-left: 0.5em;
   margin-right: 0.5em; }
+  
+/* Feature: zoom figure image on hover */
+.ltx_figure img {
+  -webkit-transition: all .2s ease;
+  -moz-transition: all .2s ease;
+  -ms-transition: all .2s ease;
+  -o-transition: all .2s ease;
+  transition: all .2s ease;
+}
+
+.ltx_figure img:active {
+  -webkit-transform:scale(1.8); /* Safari and Chrome */
+  -moz-transform:scale(1.8); /* Firefox */
+  -ms-transform:scale(1.8); /* IE 9 */
+  -o-transform:scale(1.8); /* Opera */
+  transform:scale(1.8);
+  overflow: visible;
+  background-color: white;
+  z-index: 10;
+}
+  
 /*======================================================================
   Para level */
 /* subfigures */
