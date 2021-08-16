@@ -64,9 +64,10 @@ body {
 .ltx_text {
   font-family: "Noto Serif", serif;
 }
-math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup { /* TODO: need to pick+deploy some math fonts... */
-  background-color: white !important;
-}
+/* TODO: need to pick+deploy some math fonts... */
+/* math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup { 
+  background-color: white;
+} */
 
 /* eLife-like links */
 .ltx_ref {
@@ -122,10 +123,16 @@ span.ltx_personname > br.ltx_break + span {
 .ltx_creator,
 .ltx_author_before,
 .ltx_author_after { display:inline}
+.ltx_dates {
+  margin-top: 0rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
 
 /* Author notes */
 /* Footnotes */
 .ltx_role_footnote, .ltx_role_thanks {
+  position: relative;
   text-align: justify;  
   word-spacing:-0.05rem;
   font-style: normal;
@@ -134,62 +141,66 @@ span.ltx_personname > br.ltx_break + span {
 .ltx_role_footnote > .ltx_note_mark {
   color: #3f88c5;
 }
+
 .ltx_note_content {
   display:block;
-  border-style: double none none none;
-  border-width: 0.1rem 0;    
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   margin:0.6rem;
+  line-height: 1.5rem;
   overflow-wrap: break-word;
 }
-@media only screen and (max-width: 110rem) {
-  .ltx_author_notes { display:inline-block; }
-  .ltx_author_notes:before { content:"*"; color:blue;}
-  .ltx_authors:hover .ltx_author_notes:before,
-  .ltx_authors:active .ltx_author_notes:before { content:none;}
-  .ltx_author_notes span { display:none; padding: 0.2em;}
-  .ltx_authors:hover .ltx_author_notes > span, 
-  .ltx_authors:active .ltx_author_notes > span {
-    display: block;
-    margin: 2rem;
-    padding: 2rem;
-    opacity: 1;
-    background-color: white;
-    z-index:10;
-    border-width: 0.1rem 0;
-    border-top: double;
-    border-bottom: double;
+.ltx_author_notes {
+  display: block;
+  margin: 2rem;
+  font-size: 1rem;
+  padding: 1rem;
+}
+
+/* responsive footnote viewport widths */
+@media only screen and (max-width: 46rem) {
+  .ltx_note_outer {
+    width: 20rem;
   }
+}
+@media only screen and (min-width: 46.01rem) and (max-width: 49.99rem) {
+  .ltx_note_outer {
+    width: 46rem;
+  }
+}
+@media only screen and (min-width: 49.99rem) and (max-width: 109.99rem) {
+  .ltx_note_outer {
+    width: 50rem;
+  }
+}
+/* responsive footnote UI */
+@media only screen and (max-width: 109.99rem) {
   .ltx_note_outer { 
     display: none;
     opacity: 0;
   }
   .ltx_note_content {
     overflow-wrap: break-word;
+    width: 90%;
   }
   .ltx_role_footnote:hover > .ltx_note_outer,
   .ltx_role_footnote:active > .ltx_note_outer,
   .ltx_role_thanks:hover > .ltx_note_outer,
-  .ltx_role_thanks:hover > .ltx_note_outer {
+  .ltx_role_thanks:active > .ltx_note_outer {
     display: block;
     position: absolute;
+    top: 0;
+    margin: auto;
     padding: 2rem;
     opacity: 1;
     background-color: white;
     z-index:10;
     border-width: 0.1rem 0;
     border-bottom: double;
+    border-top: double;
   }
 }
 @media only screen and (min-width: 110rem) {
-  .ltx_author_notes {
-    display: block;
-    margin: 2rem;
-    font-size: 1rem;
-    padding: 1rem;
-  }
-  
   .ltx_note_outer { 
     display: block;
     position:relative;
@@ -200,18 +211,19 @@ span.ltx_personname > br.ltx_break + span {
     padding-bottom: 2rem;
     padding-right: 2rem;
   }
+  .ltx_note_content {
+    border-style: double none none none;
+    border-width: 0.1rem 0;    
+  }
   .ltx_note_content > .ltx_note_mark {
     display:block;
-    margin-top: -2.5em;
+    margin-top: -1.8rem;
+  }
+  .ltx_role_footnote > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
+  .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content {
+    background-color: #ffffd4;
   }
 }
-
-.ltx_dates {
-  margin-top: 0rem;
-  margin-bottom: 1rem;
-  text-align: center;
-}
-
 /*======================================================================
   Document Structure; Titles & Frontmatter */
 
@@ -288,9 +300,10 @@ ul.ltx_toclist {
 
 .ltx_title_part,
 .ltx_title_chapter  { font-size:1.6rem; font-weight:bold; margin-bottom:1.5rem; }
+.ltx_title_section,
+.ltx_title_acknowledgements,
 .ltx_title_appendix,
 .ltx_title_index,
-.ltx_title_section,
 .ltx_title_bibliography  { font-size:1.4rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_subsection    { font-size:1.2rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_subsubsection { font-size:1rem; font-weight:bold; margin-bottom:1.5rem; }
