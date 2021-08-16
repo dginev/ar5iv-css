@@ -261,7 +261,7 @@ ul.ltx_toclist {
   list-style-type:none;
   margin-bottom: 0.5rem;
 }
-.ltx_tocentry_section > .ltx_ref {
+.ltx_TOC > .ltx_toclist > .ltx_tocentry > a.ltx_ref {
   display: block;
   border-bottom: none;
   font-weight: bold;
@@ -274,6 +274,8 @@ ul.ltx_toclist {
 .ltx_abstract p:first-of-type {
   /* TODO: this is debatable */
   text-indent:0em; }
+.ltx_tag_part,
+.ltx_tag_chapter,
 .ltx_tag_appendix,
 .ltx_tag_section,
 .ltx_tag_subsection,
@@ -284,6 +286,8 @@ ul.ltx_toclist {
   padding-right: 1rem;
   min-width: 1.33em; }
 
+.ltx_title_part,
+.ltx_title_chapter  { font-size:1.6rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_appendix,
 .ltx_title_section,
 .ltx_title_bibliography  { font-size:1.4rem; font-weight:bold; margin-bottom:1.5rem; }
@@ -299,6 +303,7 @@ ul.ltx_toclist {
 .ltx_runin + p { display:inline; }
 .ltx_outdent { margin-left: -2em; }
 
+.ltx_part, .ltx_chapter { margin-bottom: 2.5rem;}
 .ltx_section { margin-bottom: 2.5rem;}
 .ltx_subsection { margin-bottom: 1.5rem;}
 .ltx_subsubsection { margin-bottom: .5rem;}
@@ -306,9 +311,14 @@ ul.ltx_toclist {
   /* TODO: this is debatable */
   text-indent: 0em;
 }
-/* Theorems */
+/* Theorems and other statements */
 .ltx_theorem  {margin:1em 0em 1em 0em; }
-.ltx_title_theorem { font-size:100%; }
+.ltx_title_theorem { font-size:100%; display: inline; }
+.ltx_title_proof { 
+  font-size:1rem;
+  display: inline;
+  font-weight: bold;
+}
 
 /* Bibliographies */
 /* .ltx_bibliography {} */
@@ -465,17 +475,32 @@ ul.ltx_toclist {
 .ltx_enumerate,
 .ltx_description {
     display:block; }
+.ltx_item > .ltx_para > .ltx_itemize,
+.ltx_item > .ltx_para > .ltx_enumerate {
+  margin-top: 0.5rem;
+  margin-left: -0.5rem;
+}
+.ltx_enumerate,
+.ltx_description {
+    display:block; }
 .ltx_itemize .ltx_item,
 .ltx_enumerate .ltx_item {
-    display: list-item; }
+  display: list-item; }
 /* Position the tag to look like a normal item bullet. */
+/* TODO: This needs extra work, particularly for nested lists,
+         and is made difficult between the padding needs (typical to "block")
+         and the list-like display (close to "inline"). 
+  Can't figure out a better approach at the moment,
+        so I'm instead documenting the need here for now. */
 li.ltx_item > .ltx_tag {
-  display:inline-block;
-  margin-left: -2em;
-  padding-right: 1em;
+  display:inline;
+  margin-left: -2rem;
+  padding-right: 1rem;
   text-align:right; }
 .ltx_item .ltx_tag + .ltx_para,
-.ltx_item .ltx_tag + .ltx_para .ltx_p  { display:inline; }
+.ltx_item .ltx_tag + .ltx_para .ltx_p  { 
+  display:inline; 
+}
 .ltx_item .ltx_para {
   margin-bottom: 0em;
 }
