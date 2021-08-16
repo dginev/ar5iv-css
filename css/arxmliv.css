@@ -336,12 +336,18 @@ ul.ltx_toclist {
 /* .ltx_tag_bibitem {
 
 } */
-.ltx_bibitem { list-style-type:none; padding-bottom: 0.75em;}
+.ltx_bibitem { 
+  display:table;
+  list-style-type:none;
+  padding-bottom: 0.75em;
+}
 .ltx_bibitem .ltx_tag {
-  display:inline-block;
-  min-width: 6rem;
-  margin-left: -2.5rem;
+  display:table-cell;
+  position: relative;
+  left: -2.5rem;
+  top: 0.21rem;
   line-height: 1.5rem;
+  min-width: 6rem;
   text-align: left;
   vertical-align: text-top;
 }
