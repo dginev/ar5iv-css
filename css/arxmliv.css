@@ -605,7 +605,7 @@ blockquote.ltx_quote:after {
         so I'm instead documenting the need here for now. */
 li.ltx_item > .ltx_tag {
   display:inline;
-  margin-left: -2rem;
+  margin-left: -2.5rem;
   padding-right: 1rem;
   text-align:right; }
 .ltx_item .ltx_tag + .ltx_para,
