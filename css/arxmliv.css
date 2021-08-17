@@ -409,8 +409,23 @@ ul.ltx_toclist {
   color: lightcoral;
 }
 
+/* conversion log report */
+section.ltx_conversion_report > .ltx_para {
+  background: whitesmoke;
+  width: 48rem;
+  padding: 0.1rem 1rem 0.1rem 1rem;
+  border-radius: 0.8rem;
+  line-height:  0.9rem;
+  font-family: monospace;
+  font-size: 0.8rem;
+}
+section.ltx_conversion_report > .ltx_para > .ltx_p {
+  text-align: left;
+  line-height: 0.9rem;
+}
+
 /* ================================= */
-/*           from LaTeXML.css        */
+/* from LaTeXML.css, possibly edited */
 /* ================================= */
 
 /* Blocks, Lists, Floats */
