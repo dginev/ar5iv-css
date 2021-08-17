@@ -23,7 +23,7 @@ body {
   max-width: 52rem;
 }
 .ltx_page_logo {
-  font-family: "Computer Modern Serif", "Noto Serif", serif;
+  font-family: "Noto Serif", serif;
   font-size: 1rem;
   text-align: right;
   padding: 0.5rem;
@@ -50,7 +50,7 @@ body {
 }
 
 .ltx_para {
-  font-family: "Computer Modern Serif", "Noto Serif", serif;
+  font-family: "Noto Serif", serif;
   margin-bottom: 1.5rem;
 }
 .ltx_p {
@@ -108,6 +108,7 @@ article > div > img:first-of-type {
   text-align: center;
 }
 .ltx_subtitle {
+  font-family: "Noto Sans", sans-serif;
   font-style: italic;
   font-size: 1.3rem;
   margin-top: 1rem;
