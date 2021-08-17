@@ -422,7 +422,40 @@ ul.ltx_toclist {
 .ltx_quote.ltx_outerquote, .ltx_quote.ltx_innerquote {
   display: inline;
 }
-    
+/* Feature: stylized standalone quotes */
+blockquote.ltx_quote {
+  border-left: 3px solid black;
+  font-size: 1em;
+  font-style: italic;
+  line-height: 1.5em;
+  margin: 1.1em 0em;
+  padding: 0.5em 2em;
+  position: relative;
+  z-index: 0;
+}
+blockquote.ltx_quote:before {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: -0.25rem;
+    height: 2rem;
+    background-color: white;
+    width: 0.25rem;
+    margin-top: -1rem;
+}
+blockquote.ltx_quote:after {
+    content: "“";
+    position: absolute;
+    top: 50%;
+    left: -0.6rem;
+    color: black;
+    font-style: normal;
+    font-size: 1.5rem;
+    line-height: 2rem;
+    text-align: center;
+    width: 1rem;
+    margin-top: -0.7rem;
+}
 /* alignment within blocks */
 .ltx_align_left     { text-align:left; }
 .ltx_align_right    { text-align:right; }
