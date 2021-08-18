@@ -162,9 +162,10 @@ div.ltx_keywords:empty:before {
 /* TODO: Untested */
 .ltx_date { text-align:center; font-size: 120%; margin:0.5em 0 0.5em 0; }
 
-/* Author notes, Affiliation notes */
+/* Author notes, Affiliation notes, Preprint notes */
 /* Footnotes */
-.ltx_role_footnote, .ltx_role_thanks, .ltx_role_affiliation {
+/* TODO: is this rule simply applicable to all ltx_note cases? */
+.ltx_role_footnote, .ltx_role_thanks, .ltx_role_affiliation, .ltx_role_preprint {
   position: relative;
   text-align: justify;
   word-spacing:-0.05rem;
@@ -226,7 +227,9 @@ div.ltx_keywords:empty:before {
   .ltx_role_affiliation:hover > .ltx_note_outer,
   .ltx_role_affiliation:active > .ltx_note_outer,
   .ltx_role_thanks:hover > .ltx_note_outer,
-  .ltx_role_thanks:active > .ltx_note_outer {
+  .ltx_role_thanks:active > .ltx_note_outer,
+  .ltx_role_preprint:hover > .ltx_note_outer,
+  .ltx_role_preprint:active > .ltx_note_outer {
     display: block;
     position: absolute;
     top: 0;
@@ -263,6 +266,8 @@ div.ltx_keywords:empty:before {
   .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
   .ltx_role_thanks > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
   .ltx_role_thanks > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
+  .ltx_role_preprint > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
+  .ltx_role_preprint > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
   /* special case: affiliation in title */
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content {
@@ -561,8 +566,11 @@ blockquote.ltx_quote:after {
 }
 
 /* not all images are in figures, some are even inline in ltx_p */
-/* for now only activate the scaling feature for in-figure ones */
-.ltx_figure img:active {
+.ltx_p > img.ltx_graphics {
+  display: inline;
+}
+.ltx_figure img:active,
+.ltx_p > img.ltx_graphics:active {
   -webkit-transform:scale(1.8); /* Safari and Chrome */
   -moz-transform:scale(1.8); /* Firefox */
   -ms-transform:scale(1.8); /* IE 9 */
