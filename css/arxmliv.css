@@ -139,9 +139,9 @@ span.ltx_personname > br.ltx_break + span {
 /* TODO: Untested */
 .ltx_date { text-align:center; font-size: 120%; margin:0.5em 0 0.5em 0; }
 
-/* Author notes */
+/* Author notes, Affiliation notes */
 /* Footnotes */
-.ltx_role_footnote, .ltx_role_thanks {
+.ltx_role_footnote, .ltx_role_thanks, .ltx_role_affiliation {
   position: relative;
   text-align: justify;  
   word-spacing:-0.05rem;
@@ -195,6 +195,8 @@ span.ltx_personname > br.ltx_break + span {
   }
   .ltx_role_footnote:hover > .ltx_note_outer,
   .ltx_role_footnote:active > .ltx_note_outer,
+  .ltx_role_affiliation:hover > .ltx_note_outer,
+  .ltx_role_affiliation:active > .ltx_note_outer,
   .ltx_role_thanks:hover > .ltx_note_outer,
   .ltx_role_thanks:active > .ltx_note_outer {
     display: block;
@@ -230,8 +232,29 @@ span.ltx_personname > br.ltx_break + span {
     margin-top: -1.8rem;
   }
   .ltx_role_footnote > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
-  .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content {
+  .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
+  .ltx_role_thanks > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
+  .ltx_role_thanks > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
+  /* special case: affiliation in title */
+  .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
+  .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content {
     background-color: #ffffd4;
+  }
+  /* affiliatons have some weirdness... e.g. if they appear in titles, they're special footnotes */
+  .ltx_title.ltx_title_document .ltx_note_outer {
+    display: block;
+  }
+  .ltx_title.ltx_title_document .ltx_note_type {
+    display: none;
+  }
+  /* TODO: Until we can dedup affiliations, we have no choice but to hide them first, show them on hover.
+           Even on large screens. */
+  .ltx_role_affiliation > .ltx_note_outer {
+    display: none;
+  }
+  .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer,
+  .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer {
+    display: block;
   }
 }
 /*======================================================================
