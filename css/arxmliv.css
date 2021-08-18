@@ -136,6 +136,25 @@ span.ltx_personname > br.ltx_break + span {
   margin-bottom: 1rem;
   text-align: center;
 }
+/* sometimes ltx_keywords only contains a single text node */
+/* and we can't write a selector for ".ltx_keywords that only has text" via CSS... 
+   so just fix the completely empty buggy case */
+div.ltx_keywords:empty:before {
+  content:"Keywords: ";
+  font-weight: bold;
+}
+.ltx_keywords {
+  margin-top: 1rem;
+  font-size: 1rem;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: normal; 
+}
+.ltx_keywords .ltx_title.ltx_title_keywords {
+  display: inline;
+  font-size: 1rem;
+  font-weight: bold;
+}
+
 /* TODO: Untested */
 .ltx_date { text-align:center; font-size: 120%; margin:0.5em 0 0.5em 0; }
 
@@ -292,7 +311,12 @@ span.ltx_personname > br.ltx_break + span {
   list-style: none;
 }
 /* TODO: not yet tested */
-.ltx_title_classification { display:inline; font-size:100%; font-weight:normal; font-style:italic; }
+.ltx_title_classification { 
+  display:inline;
+  font-size:1rem;
+  font-weight:normal;
+  font-style:italic;
+}
 /* TODO: not yet tested */
 .ltx_role_dedicatory { font-size:100%; font-style:italic; text-align:center; margin:1em;}
 
@@ -345,7 +369,6 @@ ul.ltx_toclist {
 .ltx_title_chapter  { font-size:1.6rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_section,
 .ltx_title_acknowledgements,
-.ltx_title_keywords,
 .ltx_title_classification,
 .ltx_title_appendix,
 .ltx_title_index,
