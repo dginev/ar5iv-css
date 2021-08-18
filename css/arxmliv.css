@@ -1,20 +1,20 @@
-/* Try to match the modern form-factor for a document 
+/* Try to match the modern form-factor for a document
   - Centered
   - at most 60 rem per line, to avoid head-turning
 */
 /* Main content */
 body {
   margin:0;
-  height: 100%;  
+  height: 100%;
 }
 .ltx_page_content {
   margin: 4em 1em;
   font-size: 1rem;
   font-weight: 300;
-  clear:both; 
+  clear:both;
 }
 .ltx_page_header  { border-bottom:0.1em solid; margin-bottom:0.5em; }
-.ltx_page_footer  { 
+.ltx_page_footer  {
   clear:both;
   text-align: right;
   width: auto;
@@ -52,10 +52,10 @@ body {
 .ltx_para {
   font-family: "Noto Serif", serif;
   margin-bottom: 1.5rem;
-}
-.ltx_p {
   text-align: justify;
   text-justify: inter-word;
+}
+.ltx_p {
   line-height: 1.5rem;
   /* by default, p doesn't indent */
   text-indent:0em;
@@ -65,7 +65,7 @@ body {
   font-family: "Noto Serif", serif;
 }
 /* TODO: need to pick+deploy some math fonts... */
-/* math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup { 
+/* math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup {
   background-color: white;
 } */
 
@@ -143,9 +143,14 @@ span.ltx_personname > br.ltx_break + span {
 /* Footnotes */
 .ltx_role_footnote, .ltx_role_thanks, .ltx_role_affiliation {
   position: relative;
-  text-align: justify;  
+  text-align: justify;
   word-spacing:-0.05rem;
   font-style: normal;
+  font-size: 0.85em;
+}
+/* the mark is in "em", but the outer note is in "rem",
+  as we have a unified footnote presentation */
+.ltx_note_outer {
   font-size: 0.85rem;
 }
 .ltx_role_footnote > .ltx_note_mark {
@@ -185,7 +190,7 @@ span.ltx_personname > br.ltx_break + span {
 }
 /* responsive footnote UI */
 @media only screen and (max-width: 109.99rem) {
-  .ltx_note_outer { 
+  .ltx_note_outer {
     display: none;
     opacity: 0;
   }
@@ -213,7 +218,7 @@ span.ltx_personname > br.ltx_break + span {
   }
 }
 @media only screen and (min-width: 110rem) {
-  .ltx_note_outer { 
+  .ltx_note_outer {
     display: block;
     position:relative;
     clear:both;
@@ -225,7 +230,7 @@ span.ltx_personname > br.ltx_break + span {
   }
   .ltx_note_content {
     border-style: double none none none;
-    border-width: 0.1rem 0;    
+    border-width: 0.1rem 0;
   }
   .ltx_note_content > .ltx_note_mark {
     display:block;
@@ -307,7 +312,7 @@ ul.ltx_toclist {
   list-style-type:none;
   margin-bottom: 1.5rem;
 }
-.ltx_tocentry  { 
+.ltx_tocentry  {
   list-style-type:none;
   margin-bottom: 0.5rem;
 }
@@ -331,7 +336,7 @@ ul.ltx_toclist {
 .ltx_tag_subsection,
 .ltx_tag_subsubsection,
 .ltx_tag_table,
-.ltx_tag_figure { 
+.ltx_tag_figure {
   display: inline-block;
   padding-right: 1rem;
   min-width: 1.33em; }
@@ -369,7 +374,7 @@ ul.ltx_toclist {
 /* Theorems and other statements */
 .ltx_theorem  {margin:1em 0em 1em 0em; }
 .ltx_title_theorem { font-size:100%; display: inline; }
-.ltx_title_proof { 
+.ltx_title_proof {
   font-size:1rem;
   display: inline;
   font-weight: bold;
@@ -381,7 +386,7 @@ ul.ltx_toclist {
 .ltx_bibliography dd { margin-left:3em; }
 /* .ltx_biblist {} */
 /* .ltx_tag_bibitem {} */
-.ltx_bibitem { 
+.ltx_bibitem {
   display:table;
   table-layout: fixed;
   list-style-type:none;
@@ -516,7 +521,7 @@ blockquote.ltx_quote:after {
 .ltx_td.ltx_align_justify,  .ltx_th.ltx_align_justify { white-space:normal; }
 
 .ltx_table,
-.ltx_figure { 
+.ltx_figure {
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -525,7 +530,7 @@ blockquote.ltx_quote:after {
   margin-bottom:4em;
   margin-left: 0.5em;
   margin-right: 0.5em; }
-  
+
 /* Feature: zoom figure image on hover */
 .ltx_figure img {
   -webkit-transition: all .2s ease;
@@ -545,7 +550,7 @@ blockquote.ltx_quote:after {
   background-color: white;
   z-index: 10;
 }
-  
+
 /*======================================================================
   Para level */
 /* subfigures */
@@ -559,22 +564,22 @@ blockquote.ltx_quote:after {
 .ltx_subfloat > .ltx_figure {
   margin:0em;
 }
-.ltx_tabular .ltx_tabular { 
-  width:100%; 
+.ltx_tabular .ltx_tabular {
+  width:100%;
 }
 .ltx_inline-block { display:inline-block; }
 /* experimental: flex model, to center short captions, justify long ones */
 .ltx_table .ltx_caption,
-.ltx_figure .ltx_caption { 
-  text-align:justify; 
+.ltx_figure .ltx_caption {
+  text-align:justify;
   margin-top:1.5em;
   margin-bottom:1.5rem;
 }
 /* bits such as Algorithm listings */
 .ltx_float {
     margin: 3.5rem; }
-.ltx_float .ltx_caption { 
-  text-align:justify; 
+.ltx_float .ltx_caption {
+  text-align:justify;
   border-top:solid black;
   border-bottom:solid black;
   border-width: 0.1rem;
@@ -607,10 +612,10 @@ blockquote.ltx_quote:after {
 .ltx_eqn_div { display:block; width:95%; text-align:center; }
 
 /* equations in aligned mode (aligning tags, etc as well as equations) */
-.ltx_eqn_table { 
+.ltx_eqn_table {
     display:table;
     width:100%;
-    border-collapse:collapse; 
+    border-collapse:collapse;
     margin-top: 1em;
     margin-bottom: 1em;
 }
@@ -638,7 +643,7 @@ blockquote.ltx_quote:after {
 /* Position the tag to look like a normal item bullet. */
 /* TODO: This needs extra work, particularly for nested lists,
          and is made difficult between the padding needs (typical to "block")
-         and the list-like display (close to "inline"). 
+         and the list-like display (close to "inline").
   Can't figure out a better approach at the moment,
         so I'm instead documenting the need here for now. */
 li.ltx_item > .ltx_tag {
@@ -647,8 +652,8 @@ li.ltx_item > .ltx_tag {
   padding-right: 1rem;
   text-align:right; }
 .ltx_item .ltx_tag + .ltx_para,
-.ltx_item .ltx_tag + .ltx_para .ltx_p  { 
-  display:inline; 
+.ltx_item .ltx_tag + .ltx_para .ltx_p  {
+  display:inline;
 }
 .ltx_item .ltx_para {
   margin-bottom: 0em;
@@ -656,6 +661,25 @@ li.ltx_item > .ltx_tag {
 .ltx_item + .ltx_item {
   margin-top: 1em;
 }
+/*TODO: Confusing override. maybe dt should have the ltx_tag_item class instead of ltx_item? */
+dd.ltx_item + dt.ltx_item {
+  margin-top: 0em;
+}
+dl.ltx_description {
+  list-style-type: none;
+}
+dl.ltx_description dt {
+  margin-right:0.5em;
+  float:left;
+  font-weight:bold;
+  font-size:95%;
+}
+dl.ltx_description dd.ltx_item {
+  margin-left:3em;
+  text-indent: 0em;
+}
+dl.ltx_description dl.ltx_description dd { margin-left:3em; }
+
 
 /* explicit control of indentation (on ltx_para) */
 .ltx_indent > .ltx_p:first-child { text-indent:2em!important; }
@@ -704,7 +728,7 @@ li.ltx_item > .ltx_tag {
                         border-bottom-style:solid; border-bottom-width:1px; }
 .ltx_framed_leftright { border-left-style:solid; border-left-width:1px;
                         border-right-style:solid; border-right-width:1px; }
-                        
+
 /*======================================================================
  Misc */
 /* .ltx_verbatim*/
