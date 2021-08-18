@@ -465,6 +465,7 @@ section.ltx_conversion_report > .ltx_para {
   line-height:  0.9rem;
   font-family: monospace;
   font-size: 0.8rem;
+  word-break: break-word;
 }
 section.ltx_conversion_report > .ltx_para > .ltx_p {
   text-align: left;
@@ -559,6 +560,8 @@ blockquote.ltx_quote:after {
   transition: all .2s ease;
 }
 
+/* not all images are in figures, some are even inline in ltx_p */
+/* for now only activate the scaling feature for in-figure ones */
 .ltx_figure img:active {
   -webkit-transform:scale(1.8); /* Safari and Chrome */
   -moz-transform:scale(1.8); /* Firefox */
