@@ -149,10 +149,14 @@ div.ltx_keywords:empty:before {
   font-family: "Noto Sans", sans-serif;
   font-weight: normal; 
 }
-.ltx_keywords .ltx_title.ltx_title_keywords {
+/* classification and keyword titles can have the same appearance
+   as unified frontmatter metadata is less bumpy to read through. */
+.ltx_title.ltx_title_keywords,
+.ltx_title.ltx_title_classification {
   display: inline;
   font-size: 1rem;
   font-weight: bold;
+  font-style:normal;
 }
 
 /* TODO: Untested */
@@ -311,13 +315,6 @@ div.ltx_keywords:empty:before {
   list-style: none;
 }
 /* TODO: not yet tested */
-.ltx_title_classification { 
-  display:inline;
-  font-size:1rem;
-  font-weight:normal;
-  font-style:italic;
-}
-/* TODO: not yet tested */
 .ltx_role_dedicatory { font-size:100%; font-style:italic; text-align:center; margin:1em;}
 
 /* Table of Contents, main page display */
@@ -369,7 +366,6 @@ ul.ltx_toclist {
 .ltx_title_chapter  { font-size:1.6rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_section,
 .ltx_title_acknowledgements,
-.ltx_title_classification,
 .ltx_title_appendix,
 .ltx_title_index,
 .ltx_title_bibliography  { font-size:1.4rem; font-weight:bold; margin-bottom:1.5rem; }
