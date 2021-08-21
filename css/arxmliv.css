@@ -165,7 +165,7 @@ div.ltx_keywords:empty:before {
 /* Author notes, Affiliation notes, Preprint notes */
 /* Footnotes */
 /* TODO: is this rule simply applicable to all ltx_note cases? */
-.ltx_role_footnote, .ltx_role_thanks, .ltx_role_affiliation, .ltx_role_preprint {
+.ltx_note {
   position: relative;
   text-align: justify;
   word-spacing:-0.05rem;
@@ -177,8 +177,13 @@ div.ltx_keywords:empty:before {
 .ltx_note_outer {
   font-size: 0.85rem;
 }
-.ltx_role_footnote > .ltx_note_mark {
-  color: #3f88c5;
+.ltx_note > .ltx_note_mark {
+  position: relative;
+  top: -0.2em;
+  max-height: 2rem;
+  font-size: 0.85em;
+  color: #026ecb;
+  /* color: #3f88c5; */
 }
 
 .ltx_note_content {
@@ -207,13 +212,26 @@ div.ltx_keywords:empty:before {
     width: 46rem;
   }
 }
-@media only screen and (min-width: 49.99rem) and (max-width: 109.99rem) {
+@media only screen and (min-width: 49.99rem) and (max-width: 95.99rem) {
   .ltx_note_outer {
     width: 50rem;
   }
 }
+@media only screen and (min-width: 96rem)  and (max-width: 108.99rem) {
+  .ltx_note_outer {
+    width: 20rem;
+    margin-right: -24rem;
+  }
+}
+@media only screen and (min-width: 109rem) {
+  .ltx_note_outer {
+    width: 27rem;
+    margin-right: -31rem;
+  }
+}
+
 /* responsive footnote UI */
-@media only screen and (max-width: 109.99rem) {
+@media only screen and (max-width: 95.99rem) {
   .ltx_note_outer {
     display: none;
     opacity: 0;
@@ -222,14 +240,8 @@ div.ltx_keywords:empty:before {
     overflow-wrap: break-word;
     width: 90%;
   }
-  .ltx_role_footnote:hover > .ltx_note_outer,
-  .ltx_role_footnote:active > .ltx_note_outer,
-  .ltx_role_affiliation:hover > .ltx_note_outer,
-  .ltx_role_affiliation:active > .ltx_note_outer,
-  .ltx_role_thanks:hover > .ltx_note_outer,
-  .ltx_role_thanks:active > .ltx_note_outer,
-  .ltx_role_preprint:hover > .ltx_note_outer,
-  .ltx_role_preprint:active > .ltx_note_outer {
+  .ltx_note:hover > .ltx_note_outer,
+  .ltx_note:active > .ltx_note_outer {
     display: block;
     position: absolute;
     top: 0;
@@ -243,14 +255,13 @@ div.ltx_keywords:empty:before {
     border-top: double;
   }
 }
-@media only screen and (min-width: 110rem) {
+
+@media only screen and (min-width: 96rem) {
   .ltx_note_outer {
     display: block;
     position:relative;
     clear:both;
     float: right;
-    width: 27rem;
-    margin-right: -31rem;
     padding-bottom: 2rem;
     padding-right: 2rem;
   }
@@ -262,12 +273,8 @@ div.ltx_keywords:empty:before {
     display:block;
     margin-top: -1.8rem;
   }
-  .ltx_role_footnote > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
-  .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
-  .ltx_role_thanks > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
-  .ltx_role_thanks > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
-  .ltx_role_preprint > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
-  .ltx_role_preprint > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
+  .ltx_note > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
+  .ltx_note > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
   /* special case: affiliation in title */
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content {
@@ -597,6 +604,7 @@ blockquote.ltx_quote:after {
 .ltx_tabular .ltx_tabular {
   width:100%;
 }
+.ltx_inline-para  { display:inline; }
 .ltx_inline-block { display:inline-block; }
 /* experimental: flex model, to center short captions, justify long ones */
 .ltx_table .ltx_caption,
