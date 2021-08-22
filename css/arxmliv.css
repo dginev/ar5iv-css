@@ -1,11 +1,19 @@
-/* Try to match the modern form-factor for a document
-  - Centered
-  - at most 60 rem per line, to avoid head-turning
-*/
 /* Main content */
+:root {
+  --main-width: 52rem;
+  /* default theme is light */
+  --theme-background-color: white;
+  --theme-text-color: #292929;
+  --link-text-color: #212121;
+  --note-mark-color: #026ecb; /* color: #3f88c5; */
+  --note-highlight-color: #ffffd4;
+  --error-color: #D8000C;
+}
 body {
   margin:0;
   height: 100%;
+  color: var(--theme-text-color);
+  background-color: var(--theme-background-color);
 }
 .ltx_page_content {
   margin: 4em 1em;
@@ -20,7 +28,7 @@ body {
   width: auto;
   margin: auto;
   border-top:0.1em solid;
-  max-width: 52rem;
+  max-width: var(--main-width);
 }
 .ltx_page_logo {
   font-family: "Noto Serif", serif;
@@ -29,8 +37,8 @@ body {
   padding: 0.5rem;
 }
 .ltx_page_logo > a {/* eLife-like links */
-  border-bottom: 0.063rem dotted #212121;
-  color: #212121;
+  border-bottom: 0.063rem dotted var(--link-text-color);
+  color: var(--link-text-color);
   text-decoration: none;
   overflow-wrap: break-word;
 }
@@ -44,7 +52,7 @@ body {
 
 .ltx_document {
   margin: auto;
-  max-width: 52rem;
+  max-width: var(--main-width);
   margin-top: 2rem;
   text-rendering: optimizeLegibility;
 }
@@ -64,6 +72,13 @@ body {
 .ltx_text {
   font-family: "Noto Serif", serif;
 }
+/* explicit control of indentation (on ltx_para) */
+.ltx_indent > .ltx_p:first-child { text-indent:2em!important; }
+.ltx_noindent > .ltx_p:first-child { text-indent:0em!important; }
+
+/* Ought to be easily removable/overridable? */
+.ltx_pagination.ltx_role_newpage { height:2em; }
+
 /* TODO: need to pick+deploy some math fonts... */
 /* math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup {
   background-color: white;
@@ -74,8 +89,8 @@ math {
 
 /* eLife-like links */
 .ltx_ref {
-  border-bottom: 0.063rem dotted #212121;
-  color: #212121;
+  border-bottom: 0.063rem dotted var(--link-text-color);
+  color: var(--link-text-color);
   text-decoration: none;
   overflow-wrap: break-word;
 }
@@ -89,19 +104,6 @@ article > div > img:first-of-type {
   width: auto;
   height: auto;
 }
-
-.ltx_graphics {
-  display: block;
-  max-width:52rem;
-  max-height:30rem;
-  width: auto;
-  height: auto;
-}
-.ltx_subgraphics > .ltx_graphics {
-  max-width:25rem;
-  max-height:25rem;
-}
-
 
 .ltx_title.ltx_title_document {
   font-weight: normal;
@@ -185,8 +187,7 @@ div.ltx_keywords:empty:before {
   top: -0.2em;
   max-height: 2rem;
   font-size: 0.85em;
-  color: #026ecb;
-  /* color: #3f88c5; */
+  color: var(--note-mark-color);
 }
 
 .ltx_note_content {
@@ -281,7 +282,7 @@ div.ltx_keywords:empty:before {
   /* special case: affiliation in title */
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content {
-    background-color: #ffffd4;
+    background-color: var(--note-highlight-color);
   }
   /* affiliatons have some weirdness... e.g. if they appear in titles, they're special footnotes */
   .ltx_title.ltx_title_document .ltx_note_outer {
@@ -320,7 +321,7 @@ div.ltx_keywords:empty:before {
   margin-top: 0;
   margin-bottom: 0;
   padding-top: 0;
-  color: #212121;
+  color: var(--link-text-color);
   text-decoration: none;
   font-size: 1.4rem;
   font-weight: bold;
@@ -329,6 +330,10 @@ div.ltx_keywords:empty:before {
   box-sizing: border-box;
   list-style: none;
 }
+.ltx_abstract p:first-of-type {
+  /* TODO: this is debatable */
+  text-indent:0em; }
+
 /* TODO: not yet tested */
 .ltx_role_dedicatory { font-size:100%; font-style:italic; text-align:center; margin:1em;}
 
@@ -362,9 +367,7 @@ ul.ltx_toclist {
   padding-right: 1rem;
 }
 
-.ltx_abstract p:first-of-type {
-  /* TODO: this is debatable */
-  text-indent:0em; }
+/* Various kinds of visual Tags */
 .ltx_tag_part,
 .ltx_tag_chapter,
 .ltx_tag_appendix,
@@ -377,6 +380,7 @@ ul.ltx_toclist {
   padding-right: 1rem;
   min-width: 1.33em; }
 
+/* Various kinds of titles */
 .ltx_title_part,
 .ltx_title_chapter  { font-size:1.6rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_section,
@@ -388,6 +392,7 @@ ul.ltx_toclist {
 .ltx_title_subsubsection { font-size:1rem; font-weight:bold; margin-bottom:1.5rem; }
 .ltx_title_paragraph { font-size:1rem; font-weight:bold; display:inline; margin-right:1rem; }
 .ltx_title_subparagraph { font-size:1rem; font-weight:bold; display:inline; margin-left:2em; margin-right:1em; }
+
 /* Hack to simulate run-in! put class="ltx_runin" on a title or tag
    for it to run-into the following text. */
 .ltx_runin { display:inline; }
@@ -487,19 +492,6 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   line-height: 0.9rem;
 }
 
-/* ================================= */
-/* from LaTeXML.css, possibly edited */
-/* ================================= */
-
-/* Blocks, Lists, Floats */
-.ltx_p,
-.ltx_quote,
-.ltx_block,
-.ltx_para {
-    display: block; }
-.ltx_quote.ltx_outerquote, .ltx_quote.ltx_innerquote {
-  display: inline;
-}
 /* Feature: stylized standalone quotes */
 blockquote.ltx_quote {
   border-left: 0.188rem solid black;
@@ -534,6 +526,20 @@ blockquote.ltx_quote:after {
     width: 1rem;
     margin-top: -0.7rem;
 }
+
+/* ================================= */
+/* from LaTeXML.css, possibly edited */
+/* ================================= */
+
+/* Blocks, Lists, Floats */
+.ltx_p,
+.ltx_quote,
+.ltx_block,
+.ltx_para {
+    display: block; }
+.ltx_quote.ltx_outerquote, .ltx_quote.ltx_innerquote {
+  display: inline;
+}
 /* alignment within blocks */
 .ltx_align_left     { text-align:left; }
 .ltx_align_right    { text-align:right; }
@@ -555,6 +561,30 @@ blockquote.ltx_quote:after {
 .ltx_td.ltx_align_center.ltx_wrap, .ltx_th.ltx_align_center.ltx_wrap,
 .ltx_td.ltx_align_justify,  .ltx_th.ltx_align_justify { white-space:normal; }
 
+/* graphics, subfigures */
+
+.ltx_graphics {
+  display: block;
+  max-width:var(--main-width);
+  max-height:30rem;
+  width: auto;
+  height: auto;
+}
+.ltx_subgraphics > .ltx_graphics {
+  max-width:25rem;
+  max-height:25rem;
+}
+
+.ltx_subfigure, .ltx_subtable, .ltx_subfloat {
+  max-width: 24rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+.ltx_subfigure > .ltx_figure,
+.ltx_subtable > .ltx_figure,
+.ltx_subfloat > .ltx_figure {
+  margin:0em;
+}
 /* Feature: zoom figure image on hover */
 .ltx_figure img {
   -webkit-transition: all .2s ease;
@@ -562,11 +592,6 @@ blockquote.ltx_quote:after {
   -ms-transition: all .2s ease;
   -o-transition: all .2s ease;
   transition: all .2s ease;
-}
-
-/* not all images are in figures, some are even inline in ltx_p */
-.ltx_p > img.ltx_graphics {
-  display: inline;
 }
 .ltx_figure img:active,
 .ltx_p > img.ltx_graphics:active {
@@ -579,20 +604,24 @@ blockquote.ltx_quote:after {
   background-color: white;
   z-index: 10;
 }
+/* Tweaks from arXiv */
+/* not all images are in figures, some are even inline in ltx_p */
+.ltx_p > img.ltx_graphics {
+  display: inline;
+}
+/* some svg figures use raw TeX to find themselves in an ltx_para */
+.ltx_para > svg:only-child {
+  margin: auto;
+  display: block;
+  max-width: var(--main-width);
+}
+/* for now, the expected color scheme here is default: */
+svg {
+  color: black;
+  background-color: white;
+}
 
-/*======================================================================
-  Para level */
-/* subfigures */
-.ltx_subfigure, .ltx_subtable, .ltx_subfloat {
-  max-width: 24rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
-.ltx_subfigure > .ltx_figure,
-.ltx_subtable > .ltx_figure,
-.ltx_subfloat > .ltx_figure {
-  margin:0em;
-}
+/* TODO: test! subtables */
 .ltx_tabular .ltx_tabular {
   width:100%;
 }
@@ -615,7 +644,7 @@ blockquote.ltx_quote:after {
   margin-top:1.5em;
   margin-bottom:1.5rem;
 }
-/* bits such as Algorithm listings */
+/* floats, such as Algorithm listings */
 .ltx_float {
     margin: 3.5rem; }
 .ltx_float .ltx_caption {
@@ -630,9 +659,11 @@ blockquote.ltx_quote:after {
 }
 
 /*======================================================================
- Low-level Basics */
-/* Note that LaTeX(ML)'s font model doesn't map quite exactly to CSS's */
-/* Font Families => font-family */
+ Inline Basics
+
+ Note that LaTeX(ML)'s font model doesn't map quite exactly to CSS's
+ Font Families => font-family 
+*/
 .ltx_font_serif      { font-family: serif; }
 .ltx_font_sansserif  { font-family: sans-serif; }
 .ltx_font_typewriter { font-family: monospace; }
@@ -663,7 +694,6 @@ blockquote.ltx_quote:after {
 .ltx_eqn_cell  { display:table-cell; width:auto; }
 .ltx_eqn_cell.ltx_eqn_eqno  {  width: 3em;}
 /* .ltx_tag.ltx_tag_equation {} */
-
 
 /* Various lists */
 .ltx_itemize,
@@ -720,14 +750,6 @@ dl.ltx_description dd.ltx_item {
 }
 dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 
-
-/* explicit control of indentation (on ltx_para) */
-.ltx_indent > .ltx_p:first-child { text-indent:2em!important; }
-.ltx_noindent > .ltx_p:first-child { text-indent:0em!important; }
-
-/* Ought to be easily removable/overridable? */
-.ltx_pagination.ltx_role_newpage { height:2em; }
-
 /*======================================================================
  Borders and such */
 .ltx_tabular { display:inline-table; border-collapse:collapse; }
@@ -743,7 +765,7 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 .ltx_tabular .ltx_td,
 .ltx_tabular .ltx_th {
   padding:0.1em 0.5em;
-  max-width: 52rem;
+  max-width: var(--main-width);
   word-wrap: break-word;
   white-space: normal;
 }
@@ -781,7 +803,7 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 /*======================================================================
  Meta stuff */
 .ltx_tag_note { display: none; }
-.ltx_ERROR        { text-align: left; display:inline; color:#D8000C; }
+.ltx_ERROR        { text-align: left; display:inline; color:var(--error-color); }
 .ltx_rdf          { display:none; }
-.ltx_missing      { color:#D8000C;}
-.ltx_nounicode    { color:#D8000C; }
+.ltx_missing      { color:var(--error-color);}
+.ltx_nounicode    { color:var(--error-color); }
