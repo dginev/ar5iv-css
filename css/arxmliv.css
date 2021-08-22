@@ -29,7 +29,7 @@ body {
   padding: 0.5rem;
 }
 .ltx_page_logo > a {/* eLife-like links */
-  border-bottom: 1px dotted #212121;
+  border-bottom: 0.063rem dotted #212121;
   color: #212121;
   text-decoration: none;
   overflow-wrap: break-word;
@@ -74,7 +74,7 @@ math {
 
 /* eLife-like links */
 .ltx_ref {
-  border-bottom: 1px dotted #212121;
+  border-bottom: 0.063rem dotted #212121;
   color: #212121;
   text-decoration: none;
   overflow-wrap: break-word;
@@ -502,7 +502,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 }
 /* Feature: stylized standalone quotes */
 blockquote.ltx_quote {
-  border-left: 3px solid black;
+  border-left: 0.188rem solid black;
   font-size: 1em;
   font-style: italic;
   line-height: 1.5em;
@@ -555,17 +555,6 @@ blockquote.ltx_quote:after {
 .ltx_td.ltx_align_center.ltx_wrap, .ltx_th.ltx_align_center.ltx_wrap,
 .ltx_td.ltx_align_justify,  .ltx_th.ltx_align_justify { white-space:normal; }
 
-.ltx_table,
-.ltx_figure {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  margin-top:4em;
-  margin-bottom:4em;
-  margin-left: 0.5em;
-  margin-right: 0.5em; }
-
 /* Feature: zoom figure image on hover */
 .ltx_figure img {
   -webkit-transition: all .2s ease;
@@ -610,6 +599,16 @@ blockquote.ltx_quote:after {
 .ltx_inline-para  { display:inline; }
 .ltx_inline-block { display:inline-block; }
 /* experimental: flex model, to center short captions, justify long ones */
+.ltx_table,
+.ltx_figure {
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  text-align:center;
+  margin-top:4em;
+  margin-bottom:4em;
+  margin-left: 0.5em;
+  margin-right: 0.5em; }
 .ltx_table .ltx_caption,
 .ltx_figure .ltx_caption {
   text-align:justify;
@@ -740,35 +739,40 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 .ltx_td,
 .ltx_th      { display:table-cell; }
 
-.ltx_framed  { border:1px solid black;}
+.ltx_framed  { border:0.063rem solid black;}
 .ltx_tabular .ltx_td,
-.ltx_tabular .ltx_th { padding:0.1em 0.5em; }
+.ltx_tabular .ltx_th {
+  padding:0.1em 0.5em;
+  max-width: 52rem;
+  word-wrap: break-word;
+  white-space: normal;
+}
 /* regular lines */
-.ltx_border_t  { border-top:1px solid black; }
-.ltx_border_r  { border-right:1px solid black; }
-.ltx_border_b  { border-bottom:1px solid black; }
-.ltx_border_l  { border-left:1px solid black; }
+.ltx_border_t  { border-top:0.063rem solid black; }
+.ltx_border_r  { border-right:0.063rem solid black; }
+.ltx_border_b  { border-bottom:0.063rem solid black; }
+.ltx_border_l  { border-left:0.063rem solid black; }
 /* double lines */
-.ltx_border_tt { border-top:3px double black; }
-.ltx_border_rr { border-right:3px double black; }
-.ltx_border_bb { border-bottom:3px double black; }
-.ltx_border_ll { border-left:3px double black; }
+.ltx_border_tt { border-top:0.188rem double black; }
+.ltx_border_rr { border-right:0.188rem double black; }
+.ltx_border_bb { border-bottom:0.188rem double black; }
+.ltx_border_ll { border-left:0.188rem double black; }
 /* Light lines */
-.ltx_border_T  { border-top:1px solid gray; }
-.ltx_border_R  { border-right:1px solid gray; }
-.ltx_border_B  { border-bottom:1px solid gray; }
-.ltx_border_L  { border-left:1px solid gray; }
+.ltx_border_T  { border-top:0.063rem solid gray; }
+.ltx_border_R  { border-right:0.063rem solid gray; }
+.ltx_border_B  { border-bottom:0.063rem solid gray; }
+.ltx_border_L  { border-left:0.063rem solid gray; }
 /* Framing */
-.ltx_framed_rectangle { border-style:solid; border-width:1px; }
-.ltx_framed_top       { border-top-style:solid; border-top-width:1px; }
-.ltx_framed_left      { border-left-style:solid; border-left-width:1px; }
-.ltx_framed_right     { border-right-style:solid; border-right-width:1px; }
+.ltx_framed_rectangle { border-style:solid; border-width:0.063rem; }
+.ltx_framed_top       { border-top-style:solid; border-top-width:0.063rem; }
+.ltx_framed_left      { border-left-style:solid; border-left-width:0.063rem; }
+.ltx_framed_right     { border-right-style:solid; border-right-width:0.063rem; }
 .ltx_framed_bottom,
-.ltx_framed_underline { border-bottom-style:solid; border-bottom-width:1px; }
-.ltx_framed_topbottom { border-top-style:solid; border-top-width:1px;
-                        border-bottom-style:solid; border-bottom-width:1px; }
-.ltx_framed_leftright { border-left-style:solid; border-left-width:1px;
-                        border-right-style:solid; border-right-width:1px; }
+.ltx_framed_underline { border-bottom-style:solid; border-bottom-width:0.063rem; }
+.ltx_framed_topbottom { border-top-style:solid; border-top-width:0.063rem;
+                        border-bottom-style:solid; border-bottom-width:0.063rem; }
+.ltx_framed_leftright { border-left-style:solid; border-left-width:0.063rem;
+                        border-right-style:solid; border-right-width:0.063rem; }
 
 /*======================================================================
  Misc */
