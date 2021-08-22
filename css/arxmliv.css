@@ -4,6 +4,10 @@
   /* default theme is light */
   --theme-background-color: white;
   --theme-text-color: #292929;
+  --theme-border-color: #292929;
+  --theme-border-light-color: grey;
+  --theme-image-color: black;
+  --theme-image-background-color: white;
   --link-text-color: #212121;
   --note-mark-color: #026ecb; /* color: #3f88c5; */
   --note-highlight-color: #ffffd4;
@@ -252,7 +256,7 @@ div.ltx_keywords:empty:before {
     margin: auto;
     padding: 2rem;
     opacity: 1;
-    background-color: white;
+    background-color: var(--theme-background-color);
     z-index:10;
     border-width: 0.1rem 0;
     border-bottom: double;
@@ -494,7 +498,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 
 /* Feature: stylized standalone quotes */
 blockquote.ltx_quote {
-  border-left: 0.188rem solid black;
+  border-left: 0.188rem solid var(--theme-border-color);
   font-size: 1em;
   font-style: italic;
   line-height: 1.5em;
@@ -509,7 +513,7 @@ blockquote.ltx_quote:before {
     top: 50%;
     left: -0.25rem;
     height: 2rem;
-    background-color: white;
+    background-color: var(--theme-background-color);
     width: 0.25rem;
     margin-top: -1rem;
 }
@@ -518,7 +522,7 @@ blockquote.ltx_quote:after {
     position: absolute;
     top: 50%;
     left: -0.6rem;
-    color: black;
+    color: var(--theme-border-color);
     font-style: normal;
     font-size: 1.5rem;
     line-height: 2rem;
@@ -587,6 +591,8 @@ blockquote.ltx_quote:after {
 }
 /* Feature: zoom figure image on hover */
 .ltx_figure img {
+  color: var(--theme-image-color);
+  background-color: var(--theme-image-background-color);
   -webkit-transition: all .2s ease;
   -moz-transition: all .2s ease;
   -ms-transition: all .2s ease;
@@ -601,7 +607,7 @@ blockquote.ltx_quote:after {
   -o-transform:scale(1.8); /* Opera */
   transform:scale(1.8);
   overflow: visible;
-  background-color: white;
+  background-color: var(--theme-background-color);
   z-index: 10;
 }
 /* Tweaks from arXiv */
@@ -617,8 +623,8 @@ blockquote.ltx_quote:after {
 }
 /* for now, the expected color scheme here is default: */
 svg {
-  color: black;
-  background-color: white;
+  color: var(--theme-image-color);
+  background-color: var(--theme-image-background-color);
 }
 
 /* TODO: test! subtables */
@@ -649,13 +655,21 @@ svg {
     margin: 3.5rem; }
 .ltx_float .ltx_caption {
   text-align:justify;
-  border-top:solid black;
-  border-bottom:solid black;
+  border-top:solid var(--theme-border-color);
+  border-bottom:solid var(--theme-border-color);
   border-width: 0.1rem;
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
   padding-top: 0.2rem;
   padding-bottom: 0.2rem;
+}
+.ltx_rule {
+  color: var(--theme-border-color);
+  /* latexml often produces an element style="background:black;" for 
+    .ltx_rule nodes, which makes them impossible to style beyond the author intent.
+    as this is experimental, we take the liberty of overriding those with !important.
+  */
+  background-color: var(--theme-border-color) !important;
 }
 
 /*======================================================================
@@ -761,7 +775,7 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 .ltx_td,
 .ltx_th      { display:table-cell; }
 
-.ltx_framed  { border:0.063rem solid black;}
+.ltx_framed  { border:0.063rem solid var(--theme-border-color);}
 .ltx_tabular .ltx_td,
 .ltx_tabular .ltx_th {
   padding:0.1em 0.5em;
@@ -770,20 +784,20 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
   white-space: normal;
 }
 /* regular lines */
-.ltx_border_t  { border-top:0.063rem solid black; }
-.ltx_border_r  { border-right:0.063rem solid black; }
-.ltx_border_b  { border-bottom:0.063rem solid black; }
-.ltx_border_l  { border-left:0.063rem solid black; }
+.ltx_border_t  { border-top:0.063rem solid var(--theme-border-color); }
+.ltx_border_r  { border-right:0.063rem solid var(--theme-border-color); }
+.ltx_border_b  { border-bottom:0.063rem solid var(--theme-border-color); }
+.ltx_border_l  { border-left:0.063rem solid var(--theme-border-color); }
 /* double lines */
-.ltx_border_tt { border-top:0.188rem double black; }
-.ltx_border_rr { border-right:0.188rem double black; }
-.ltx_border_bb { border-bottom:0.188rem double black; }
-.ltx_border_ll { border-left:0.188rem double black; }
+.ltx_border_tt { border-top:0.188rem double var(--theme-border-color); }
+.ltx_border_rr { border-right:0.188rem double var(--theme-border-color); }
+.ltx_border_bb { border-bottom:0.188rem double var(--theme-border-color); }
+.ltx_border_ll { border-left:0.188rem double var(--theme-border-color); }
 /* Light lines */
-.ltx_border_T  { border-top:0.063rem solid gray; }
-.ltx_border_R  { border-right:0.063rem solid gray; }
-.ltx_border_B  { border-bottom:0.063rem solid gray; }
-.ltx_border_L  { border-left:0.063rem solid gray; }
+.ltx_border_T  { border-top:0.063rem solid var(--theme-border-light-color); }
+.ltx_border_R  { border-right:0.063rem solid var(--theme-border-light-color); }
+.ltx_border_B  { border-bottom:0.063rem solid var(--theme-border-light-color); }
+.ltx_border_L  { border-left:0.063rem solid var(--theme-border-light-color); }
 /* Framing */
 .ltx_framed_rectangle { border-style:solid; border-width:0.063rem; }
 .ltx_framed_top       { border-top-style:solid; border-top-width:0.063rem; }
