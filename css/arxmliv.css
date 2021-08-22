@@ -68,6 +68,9 @@ body {
 /* math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup {
   background-color: white;
 } */
+math {
+  font-family: "STIX Two Math", "Cambria Math", "Noto Serif", serif;
+}
 
 /* eLife-like links */
 .ltx_ref {
