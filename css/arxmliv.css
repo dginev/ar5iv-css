@@ -1,23 +1,31 @@
-/* Main content */
+/* Variables */
 :root {
   --main-width: 52rem;
-  /* default theme is light */
-  --theme-background-color: white;
-  --theme-text-color: #292929;
-  --theme-border-color: #292929;
-  --theme-border-light-color: grey;
-  --theme-image-color: black;
-  --theme-image-background-color: white;
+  /* fonts */
+  --headings-font-family: "Noto Sans", sans-serif;
+  --text-font-family: "Noto Serif", serif;
+  --math-font-family: "STIX Two Math", "Cambria Math", "Noto Serif", serif;
+  --math-caligraphic-font-family: "Lucida Calligraphy", "Zapf Chancery","URW Chancery L";
+  --code-font-family: monospace;
+  /* default color theme is light */
+  --background-color: white;
+  --text-color: #292929;
+  --border-color: #292929;
+  --border-light-color: grey;
+  --image-color: black;
+  --image-background-color: white;
   --link-text-color: #212121;
   --note-mark-color: #026ecb; /* color: #3f88c5; */
   --note-highlight-color: #ffffd4;
   --error-color: #D8000C;
+  --index-ref-color: lightcoral;
 }
+/* Main content */
 body {
   margin:0;
   height: 100%;
-  color: var(--theme-text-color);
-  background-color: var(--theme-background-color);
+  color: var(--text-color);
+  background-color: var(--background-color);
 }
 .ltx_page_content {
   margin: 4em 1em;
@@ -35,7 +43,7 @@ body {
   max-width: var(--main-width);
 }
 .ltx_page_logo {
-  font-family: "Noto Serif", serif;
+  font-family: var(--text-font-family);
   font-size: 1rem;
   text-align: right;
   padding: 0.5rem;
@@ -62,7 +70,7 @@ body {
 }
 
 .ltx_para {
-  font-family: "Noto Serif", serif;
+  font-family: var(--text-font-family);
   margin-bottom: 1.5rem;
   text-align: justify;
   text-justify: inter-word;
@@ -74,7 +82,11 @@ body {
   white-space:normal;
 }
 .ltx_text {
-  font-family: "Noto Serif", serif;
+  font-family: var(--text-font-family);
+  word-wrap: break-word;
+}
+.ltx_tag .ltx_text {
+  font-family: inherit;
 }
 /* explicit control of indentation (on ltx_para) */
 .ltx_indent > .ltx_p:first-child { text-indent:2em!important; }
@@ -88,7 +100,8 @@ body {
   background-color: white;
 } */
 math {
-  font-family: "STIX Two Math", "Cambria Math", "Noto Serif", serif;
+  font-family: var(--math-font-family);
+  word-wrap: break-word;
 }
 
 /* eLife-like links */
@@ -117,12 +130,15 @@ article > div > img:first-of-type {
   text-align: center;
 }
 .ltx_subtitle {
-  font-family: "Noto Sans", sans-serif;
+  font-family: var(--headings-font-family);
   font-style: italic;
   font-size: 1.3rem;
   margin-top: 1rem;
   margin-bottom: 1.5rem;
   text-align: center;
+}
+.ltx_subtitle .ltx_text {
+  font-family: inherit;
 }
 .ltx_authors {
   margin-top: 0rem;
@@ -155,7 +171,7 @@ div.ltx_keywords:empty:before {
 .ltx_keywords {
   margin-top: 1rem;
   font-size: 1rem;
-  font-family: "Noto Sans", sans-serif;
+  font-family: var(--text-font-family);
   font-weight: normal; 
 }
 /* classification and keyword titles can have the same appearance
@@ -256,7 +272,7 @@ div.ltx_keywords:empty:before {
     margin: auto;
     padding: 2rem;
     opacity: 1;
-    background-color: var(--theme-background-color);
+    background-color: var(--background-color);
     z-index:10;
     border-width: 0.1rem 0;
     border-bottom: double;
@@ -313,7 +329,7 @@ div.ltx_keywords:empty:before {
 .ltx_title {
   font-size: 100%;
   font-weight: normal;
-  font-family: "Noto Sans", sans-serif;
+  font-family: var(--headings-font-family);
 }
 /* Abstract */
 .ltx_abstract {
@@ -386,16 +402,43 @@ ul.ltx_toclist {
 
 /* Various kinds of titles */
 .ltx_title_part,
-.ltx_title_chapter  { font-size:1.6rem; font-weight:bold; margin-bottom:1.5rem; }
+.ltx_title_chapter  { 
+  font-size:1.6rem;
+  font-weight:bold;
+  margin-bottom:1.5rem; 
+}
 .ltx_title_section,
 .ltx_title_acknowledgements,
 .ltx_title_appendix,
 .ltx_title_index,
-.ltx_title_bibliography  { font-size:1.4rem; font-weight:bold; margin-bottom:1.5rem; }
-.ltx_title_subsection    { font-size:1.2rem; font-weight:bold; margin-bottom:1.5rem; }
-.ltx_title_subsubsection { font-size:1rem; font-weight:bold; margin-bottom:1.5rem; }
-.ltx_title_paragraph { font-size:1rem; font-weight:bold; display:inline; margin-right:1rem; }
-.ltx_title_subparagraph { font-size:1rem; font-weight:bold; display:inline; margin-left:2em; margin-right:1em; }
+.ltx_title_bibliography  { 
+  font-size:1.4rem;
+  font-weight:bold;
+  margin-bottom:1.5rem; 
+}
+.ltx_title_subsection    { 
+  font-size:1.2rem;
+  font-weight:bold;
+  margin-bottom:1.5rem; 
+}
+.ltx_title_subsubsection {
+  font-size:1rem;
+  font-weight:bold;
+  margin-bottom:1.5rem; 
+}
+.ltx_title_paragraph {
+  font-size:1rem;
+  font-weight:bold;
+  display:inline;
+  margin-right:1rem; 
+}
+.ltx_title_subparagraph { 
+  font-size:1rem;
+  font-weight:bold;
+  display:inline;
+  margin-left:2em;
+  margin-right:1em; 
+}
 
 /* Hack to simulate run-in! put class="ltx_runin" on a title or tag
    for it to run-into the following text. */
@@ -406,7 +449,7 @@ ul.ltx_toclist {
 .ltx_runin + p { display:inline; }
 .ltx_outdent { margin-left: -2em; }
 
-.ltx_part, .ltx_chapter { margin-bottom: 2.5rem;}
+.ltx_part, .ltx_chapter { margin-bottom: 5rem;}
 .ltx_section { margin-bottom: 2.5rem;}
 .ltx_subsection { margin-bottom: 1.5rem;}
 .ltx_subsubsection { margin-bottom: .5rem;}
@@ -414,13 +457,19 @@ ul.ltx_toclist {
   /* TODO: this is debatable */
   text-indent: 0em;
 }
+
 /* Theorems and other statements */
 .ltx_theorem  {margin:1em 0em 1em 0em; }
-.ltx_title_theorem { font-size:100%; display: inline; }
-.ltx_title_proof {
+
+/* TODO: this approach to .ltx_item is still not satisfying, especially for nested lists */
+.ltx_item > .ltx_theorem { margin-left: 1em; }
+
+.ltx_title_theorem, .ltx_title_proof {
+  font-family: var(--headings-font-family);
   font-size:1rem;
-  display: inline;
   font-weight: bold;
+  display: inline;
+  padding-right: 0.25em;
 }
 
 /* Bibliographies */
@@ -435,6 +484,7 @@ ul.ltx_toclist {
   list-style-type:none;
   width: 100%;
   padding-bottom: 0.75em;
+  font-family: var(--text-font-family);
 }
 .ltx_bibitem .ltx_tag {
   display:table-cell;
@@ -475,9 +525,15 @@ ul.ltx_toclist {
   -webkit-columns: 2;
   -moz-columns: 2;
   list-style-type:none;
+  padding-left: 0rem;
+}
+.ltx_indexentry {
+  font-family: var(--text-font-family);
+  font-size: 0.85rem;
+  padding-bottom: 0.15rem;
 }
 .ltx_indexrefs .ltx_ref {
-  color: lightcoral;
+  color: var(--index-ref-color);
 }
 
 /* conversion log report */
@@ -487,7 +543,7 @@ section.ltx_conversion_report > .ltx_para {
   padding: 0.1rem 1rem 0.1rem 1rem;
   border-radius: 0.8rem;
   line-height:  0.9rem;
-  font-family: monospace;
+  font-family: var(--code-font-family);
   font-size: 0.8rem;
   word-break: break-word;
 }
@@ -498,7 +554,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 
 /* Feature: stylized standalone quotes */
 blockquote.ltx_quote {
-  border-left: 0.188rem solid var(--theme-border-color);
+  border-left: 0.188rem solid var(--border-color);
   font-size: 1em;
   font-style: italic;
   line-height: 1.5em;
@@ -513,7 +569,7 @@ blockquote.ltx_quote:before {
     top: 50%;
     left: -0.25rem;
     height: 2rem;
-    background-color: var(--theme-background-color);
+    background-color: var(--background-color);
     width: 0.25rem;
     margin-top: -1rem;
 }
@@ -522,7 +578,7 @@ blockquote.ltx_quote:after {
     position: absolute;
     top: 50%;
     left: -0.6rem;
-    color: var(--theme-border-color);
+    color: var(--border-color);
     font-style: normal;
     font-size: 1.5rem;
     line-height: 2rem;
@@ -591,8 +647,8 @@ blockquote.ltx_quote:after {
 }
 /* Feature: zoom figure image on hover */
 .ltx_figure img {
-  color: var(--theme-image-color);
-  background-color: var(--theme-image-background-color);
+  color: var(--image-color);
+  background-color: var(--image-background-color);
   -webkit-transition: all .2s ease;
   -moz-transition: all .2s ease;
   -ms-transition: all .2s ease;
@@ -607,7 +663,7 @@ blockquote.ltx_quote:after {
   -o-transform:scale(1.8); /* Opera */
   transform:scale(1.8);
   overflow: visible;
-  background-color: var(--theme-background-color);
+  background-color: var(--background-color);
   z-index: 10;
 }
 /* Tweaks from arXiv */
@@ -623,8 +679,8 @@ blockquote.ltx_quote:after {
 }
 /* for now, the expected color scheme here is default: */
 svg {
-  color: var(--theme-image-color);
-  background-color: var(--theme-image-background-color);
+  color: var(--image-color);
+  background-color: var(--image-background-color);
 }
 
 /* TODO: test! subtables */
@@ -655,8 +711,8 @@ svg {
     margin: 3.5rem; }
 .ltx_float .ltx_caption {
   text-align:justify;
-  border-top:solid var(--theme-border-color);
-  border-bottom:solid var(--theme-border-color);
+  border-top:solid var(--border-color);
+  border-bottom:solid var(--border-color);
   border-width: 0.1rem;
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
@@ -664,12 +720,12 @@ svg {
   padding-bottom: 0.2rem;
 }
 .ltx_rule {
-  color: var(--theme-border-color);
+  color: var(--border-color);
   /* latexml often produces an element style="background:black;" for 
     .ltx_rule nodes, which makes them impossible to style beyond the author intent.
     as this is experimental, we take the liberty of overriding those with !important.
   */
-  background-color: var(--theme-border-color) !important;
+  background-color: var(--border-color) !important;
 }
 
 /*======================================================================
@@ -680,18 +736,27 @@ svg {
 */
 .ltx_font_serif      { font-family: serif; }
 .ltx_font_sansserif  { font-family: sans-serif; }
-.ltx_font_typewriter { font-family: monospace; }
+.ltx_font_typewriter { font-family: var(--code-font-family); }
 /* dingbats should be converted to unicode? */
 /* Math font families handled within math: script, symbol, fraktur, blackboard ? */
 /* Font Series => font-weight */
 .ltx_font_bold       { font-weight: bold; }
 .ltx_font_medium     { font-weight: normal; }
 /* Font Shapes => font-style or font-variant */
-.ltx_font_italic     { font-style: italic; font-variant:normal; }
-.ltx_font_upright    { font-style: normal; font-variant:normal; }
-.ltx_font_slanted    { font-style: oblique; font-variant:normal; }
-.ltx_font_smallcaps  { font-variant: small-caps; font-style:normal; }
-.ltx_font_mathcaligraphic { font-family: "Lucida Calligraphy", "Zapf Chancery","URW Chancery L"; }
+.ltx_font_italic     { 
+  font-style: italic;
+  font-variant:discretionary-ligatures; }
+.ltx_font_upright    {
+  font-style: normal;
+  font-variant:normal; }
+.ltx_font_slanted    { 
+  font-style: oblique;
+  font-variant:discretionary-ligatures; }
+.ltx_font_smallcaps  { 
+  font-variant: small-caps;
+  font-style:normal; }
+.ltx_font_mathcaligraphic { 
+  font-family: var(--math-caligraphic-font-family); }
 
 /* equations in non-aligned mode (not normally used) */
 .ltx_eqn_div { display:block; width:95%; text-align:center; }
@@ -707,7 +772,10 @@ svg {
 .ltx_eqn_row   { display:table-row; }
 .ltx_eqn_cell  { display:table-cell; width:auto; }
 .ltx_eqn_cell.ltx_eqn_eqno  {  width: 3em;}
-/* .ltx_tag.ltx_tag_equation {} */
+.ltx_tag.ltx_tag_equation,
+.ltx_tag.ltx_tag_equationgroup {
+  font-size: 0.9em;
+}
 
 /* Various lists */
 .ltx_itemize,
@@ -718,7 +786,7 @@ svg {
 .ltx_item > .ltx_para > .ltx_itemize,
 .ltx_item > .ltx_para > .ltx_enumerate {
   margin-top: 0.5rem;
-  margin-left: -0.5rem;
+  margin-left: 0.5rem;
 }
 .ltx_description .ltx_item,
 .ltx_itemize .ltx_item,
@@ -775,7 +843,7 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 .ltx_td,
 .ltx_th      { display:table-cell; }
 
-.ltx_framed  { border:0.063rem solid var(--theme-border-color);}
+.ltx_framed  { border:0.063rem solid var(--border-color);}
 .ltx_tabular .ltx_td,
 .ltx_tabular .ltx_th {
   padding:0.1em 0.5em;
@@ -784,20 +852,20 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
   white-space: normal;
 }
 /* regular lines */
-.ltx_border_t  { border-top:0.063rem solid var(--theme-border-color); }
-.ltx_border_r  { border-right:0.063rem solid var(--theme-border-color); }
-.ltx_border_b  { border-bottom:0.063rem solid var(--theme-border-color); }
-.ltx_border_l  { border-left:0.063rem solid var(--theme-border-color); }
+.ltx_border_t  { border-top:0.063rem solid var(--border-color); }
+.ltx_border_r  { border-right:0.063rem solid var(--border-color); }
+.ltx_border_b  { border-bottom:0.063rem solid var(--border-color); }
+.ltx_border_l  { border-left:0.063rem solid var(--border-color); }
 /* double lines */
-.ltx_border_tt { border-top:0.188rem double var(--theme-border-color); }
-.ltx_border_rr { border-right:0.188rem double var(--theme-border-color); }
-.ltx_border_bb { border-bottom:0.188rem double var(--theme-border-color); }
-.ltx_border_ll { border-left:0.188rem double var(--theme-border-color); }
+.ltx_border_tt { border-top:0.188rem double var(--border-color); }
+.ltx_border_rr { border-right:0.188rem double var(--border-color); }
+.ltx_border_bb { border-bottom:0.188rem double var(--border-color); }
+.ltx_border_ll { border-left:0.188rem double var(--border-color); }
 /* Light lines */
-.ltx_border_T  { border-top:0.063rem solid var(--theme-border-light-color); }
-.ltx_border_R  { border-right:0.063rem solid var(--theme-border-light-color); }
-.ltx_border_B  { border-bottom:0.063rem solid var(--theme-border-light-color); }
-.ltx_border_L  { border-left:0.063rem solid var(--theme-border-light-color); }
+.ltx_border_T  { border-top:0.063rem solid var(--border-light-color); }
+.ltx_border_R  { border-right:0.063rem solid var(--border-light-color); }
+.ltx_border_B  { border-bottom:0.063rem solid var(--border-light-color); }
+.ltx_border_L  { border-left:0.063rem solid var(--border-light-color); }
 /* Framing */
 .ltx_framed_rectangle { border-style:solid; border-width:0.063rem; }
 .ltx_framed_top       { border-top-style:solid; border-top-width:0.063rem; }

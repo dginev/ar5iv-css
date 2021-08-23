@@ -1,14 +1,15 @@
 :root {
   /* TODO: style the rest */
-  --theme-background-color: #151515;
-  --theme-text-color: #d4d4d4;
+  --background-color: #151515;
+  --text-color: #d4d4d4;
   --link-text-color: #a6a6a6;
-  --theme-border-color: white;
-  --theme-border-light-color: #d4d4d4;
+  --border-color: white;
+  --border-light-color: #d4d4d4;
   /* stay as light theme as transparent PNGs have white bg expectations */
-  --theme-image-color: black;
-  --theme-image-background-color: white;
+  --image-color: black;
+  --image-background-color: white;
   --note-mark-color: #daa002; /* color: #3f88c5; */
   --note-highlight-color: midnightblue;
   --error-color: #d84148;
+  --index-ref-color: #cd5b45;
 }
