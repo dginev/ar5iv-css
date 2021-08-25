@@ -905,5 +905,4 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 .ltx_tag_note { display: none; }
 .ltx_ERROR        { text-align: left; display:inline; color:var(--error-color); }
 .ltx_rdf          { display:none; }
-.ltx_missing      { color:var(--error-color);}
-.ltx_nounicode    { color:var(--error-color); }
+.ltx_missing, .ltx_missing_label, .ltx_nounicode { color:var(--error-color);}
