@@ -74,6 +74,8 @@ body {
   margin-bottom: 1.5rem;
   text-align: justify;
   text-justify: inter-word;
+  /* if a flex figure comes before the para, avoid collisions */
+  clear: both; 
 }
 .ltx_p {
   line-height: 1.5rem;
@@ -776,6 +778,22 @@ svg {
 .ltx_tag.ltx_tag_equationgroup {
   font-size: 0.9em;
 }
+
+/* Padding between column pairs in ams align */
+table.ltx_eqn_align tr.ltx_equation td.ltx_align_left + td.ltx_align_right,
+table.ltx_eqn_align tr.ltx_equation td.ltx_align_left + td.ltx_align_center,
+table.ltx_eqn_align tr.ltx_equation td.ltx_align_center + td.ltx_align_right,
+table.ltx_eqn_align tr.ltx_equation td.ltx_align_center + td.ltx_align_center  { padding-left:3em; }
+table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right { min-width:2em; }
+
+.ltx_eqn_eqno.ltx_align_right .ltx_tag { float:right; }
+
+.ltx_eqn_center_padleft,
+.ltx_eqn_center_padright { width:50%; min-width:2em;}
+.ltx_eqn_left_padleft,
+.ltx_eqn_right_padright { min-width:2em; }
+.ltx_eqn_left_padright,
+.ltx_eqn_right_padleft  { width:100%; }
 
 /* Various lists */
 .ltx_itemize,
