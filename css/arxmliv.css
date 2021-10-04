@@ -17,7 +17,10 @@
   --link-text-color: #212121;
   --note-mark-color: #026ecb; /* color: #3f88c5; */
   --note-highlight-color: #ffffd4;
-  --error-color: #D8000C;
+  --info-text-color: #01719d;
+  --warning-text-color: #ffc107;
+  --error-text-color: #D8000C;
+  --fatal-text-color: #D8000C;
   --index-ref-color: lightcoral;
 }
 /* Main content */
@@ -908,6 +911,9 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 /*======================================================================
  Meta stuff */
 .ltx_tag_note { display: none; }
-.ltx_ERROR        { text-align: left; display:inline; color:var(--error-color); }
+.ltx_INFO        { text-align: left; display:inline; color:var(--info-text-color); }
+.ltx_WARNING     { text-align: left; display:inline; color:var(--warning-text-color); }
+.ltx_ERROR       { text-align: left; display:inline; color:var(--error-text-color); }
+.ltx_FATAL       { text-align: left; display:inline; color:var(--fatal-text-color); }
 .ltx_rdf          { display:none; }
-.ltx_missing, .ltx_missing_label, .ltx_nounicode { color:var(--error-color);}
+.ltx_missing, .ltx_missing_label, .ltx_nounicode { color:var(--error-text-color);}
