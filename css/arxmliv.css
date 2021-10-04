@@ -708,6 +708,11 @@ svg {
   margin-top:1.5em;
   margin-bottom:1.5rem;
 }
+/* other notes, for example, the ones in deluxetable */
+.ltx_table,
+.ltx_figure .ltx_parbox {
+  text-align: justify;
+}
 /* floats, such as Algorithm listings */
 .ltx_float {
     margin: 3.5rem; }
@@ -906,23 +911,3 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 .ltx_ERROR        { text-align: left; display:inline; color:var(--error-color); }
 .ltx_rdf          { display:none; }
 .ltx_missing, .ltx_missing_label, .ltx_nounicode { color:var(--error-color);}
-
-/* ar5iv backmatter branding */
-div.ar5iv-logos {
-  vertical-align: middle;
-  margin-left: auto;
-  margin-right:auto;
-  margin-top: 5rem;
-  margin-bottom: 5rem;
-  text-align: center;
-}
-a.arxiv-button {
-  max-width: 10rem;
-  display: inline-block;
-  padding-top: 1rem;
-  vertical-align: top;
-  border: none;
-  color: var(--link-text-color);
-  text-decoration: none;
-  overflow-wrap: break-word;
-}
