@@ -260,6 +260,8 @@ div.ltx_keywords:empty:before {
 }
 
 /* responsive footnote UI */
+
+/* small screens */
 @media only screen and (max-width: 95.99rem) {
   .ltx_note_outer {
     display: none;
@@ -285,6 +287,8 @@ div.ltx_keywords:empty:before {
   }
 }
 
+/* Exceptions aside, large screens get footnotes 
+   displayed in the right margin of the article. */
 @media only screen and (min-width: 96rem) {
   .ltx_note_outer {
     display: block;
@@ -318,9 +322,48 @@ div.ltx_keywords:empty:before {
   }
   /* TODO: Until we can dedup affiliations, we have no choice but to hide them first, show them on hover.
            Even on large screens. */
+  /* AND! footnotes in Tables are ALWAYS collapsed 
+          until we figure out side margins with 
+          relative positioning in tables (flexbox?)
+  */
+  /* a related issue to the in-table footnotes appears also in figcaptions 
+    since we are currently using flex for them, the relative margin-right offset 
+    in the rule below produces rather unpredictable results, placing the footnotes
+    somewhat scattered, based on the current width of the figcaption.
+    So we also collapse in figcaption for now...
+  */
+  th .ltx_note_outer, 
+  td .ltx_note_outer,
+  figcaption .ltx_note_outer,
   .ltx_role_affiliation > .ltx_note_outer {
     display: none;
+    opacity: 0;
   }
+  th .ltx_note_content, td .ltx_note_content, figcaption .ltx_note_content {
+    font-weight: normal;
+    overflow-wrap: break-word;
+    width: 90%;
+  }
+  th .ltx_note:hover > .ltx_note_outer,
+  th .ltx_note:active > .ltx_note_outer,
+  td .ltx_note:hover > .ltx_note_outer,
+  td .ltx_note:active > .ltx_note_outer,
+  figcaption .ltx_note:hover > .ltx_note_outer,
+  figcaption .ltx_note:active > .ltx_note_outer {
+    display: block;
+    position: absolute;
+    top: 0;
+    margin: auto;
+    padding: 2rem;
+    opacity: 1;
+    background-color: var(--background-color);
+    z-index:10;
+    border-width: 0.1rem 0;
+    border-bottom: double;
+    border-top: double;
+  }
+  /* affiliations may still pop-up in the side margin, 
+     looks a bit better in the title page */
   .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer,
   .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer {
     display: block;
