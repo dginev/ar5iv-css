@@ -695,6 +695,11 @@ blockquote.ltx_quote:after {
   max-width:25rem;
   max-height:25rem;
 }
+/* footnote graphics need to be contained to small sizes */
+.ltx_note_content .ltx_graphics {
+  max-width: 10rem;
+  max-height: 3rem;
+}
 
 .ltx_subfigure, .ltx_subtable, .ltx_subfloat {
   max-width: 24rem;
