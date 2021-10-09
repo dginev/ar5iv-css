@@ -905,6 +905,10 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
  Borders and such */
 .ltx_tabular { display:inline-table; border-collapse:collapse; }
 .ltx_tabular.ltx_centering { display:table; }
+.ltx_graphics.ltx_centering { 
+  margin: auto;
+  text-align: center;
+}
 .ltx_thead,
 .ltx_tfoot,
 .ltx_tbody   { display:table-row-group; }
