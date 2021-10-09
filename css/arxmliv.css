@@ -1,6 +1,7 @@
 /* Variables */
 :root {
   --main-width: 52rem;
+  --main-width-margin: 54rem;
   /* fonts */
   --headings-font-family: "Noto Sans", sans-serif;
   --text-font-family: "Noto Serif", serif;
@@ -368,6 +369,18 @@ div.ltx_keywords:empty:before {
   .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer {
     display: block;
   }
+  /* on large screens, low-level latex footnote overrides without a mark */
+  .ltx_role_footnotetext.ltx_note .ltx_note_mark {
+    display:none;
+  }
+  .ltx_role_footnotetext.ltx_note .ltx_note_outer {
+    position: absolute;
+    left: var(--main-width-margin);
+  }
+}
+/* footnotetext are low-level notes without a type description */
+.ltx_role_footnotetext.ltx_note .ltx_note_type {
+  display:none;
 }
 /*======================================================================
   Document Structure; Titles & Frontmatter */
