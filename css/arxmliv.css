@@ -153,6 +153,7 @@ article > div > img:first-of-type {
 }
 span.ltx_personname {
   font-size: 1rem;
+  white-space: nowrap;
 }
 span.ltx_personname > br.ltx_break + span {
   display: inline-block;
@@ -166,6 +167,9 @@ span.ltx_personname > br.ltx_break + span {
   margin-top: 0rem;
   margin-bottom: 1rem;
   text-align: center;
+}
+.ltx_role_author + .ltx_role_author {
+  margin-left: 2rem;  
 }
 /* sometimes ltx_keywords only contains a single text node */
 /* and we can't write a selector for ".ltx_keywords that only has text" via CSS... 
