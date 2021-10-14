@@ -688,21 +688,85 @@ blockquote.ltx_quote:after {
 
 /* graphics, subfigures */
 
+/* sizing here is a bit biased towards landscape images */
+/* ideally this is mediated through the zoom-on-click CSS feature */
 .ltx_graphics {
   display: block;
   max-width:var(--main-width);
-  max-height:30rem;
+  max-height:25rem;
   width: auto;
   height: auto;
 }
-.ltx_subgraphics > .ltx_graphics {
-  max-width:25rem;
-  max-height:25rem;
+
+/* Some good tips on flexible number of siblings that need a contextual width::after
+   https://medium.com/swlh/styling-elements-based-on-number-of-siblings-1ca506351e68 */
+/* one item */
+.ltx_subgraphics:first-child:nth-last-child(1),
+.ltx_subfigure:first-child:nth-last-child(1)
+.ltx_subgraphics:first-child:nth-last-child(1) .ltx_graphics,
+.ltx_subfigure:first-child:nth-last-child(1) .ltx_graphics {
+  max-width:var(--main-width);
 }
+/* two items */
+.ltx_subgraphics:first-child:nth-last-child(2),
+.ltx_subgraphics:first-child:nth-last-child(2) .ltx_graphics,
+.ltx_subgraphics:first-child:nth-last-child(2) ~ .ltx_subgraphics,
+.ltx_subgraphics:first-child:nth-last-child(2) ~ .ltx_subgraphics .ltx_graphics,
+.ltx_subfigure:first-child:nth-last-child(2),
+.ltx_subfigure:first-child:nth-last-child(2) .ltx_graphics,
+.ltx_subfigure:first-child:nth-last-child(2) ~ .ltx_subfigure
+.ltx_subfigure:first-child:nth-last-child(2) ~ .ltx_subfigure .ltx_graphics {
+  max-width: 23rem;
+}/* three items */
+.ltx_subgraphics:first-child:nth-last-child(3),
+.ltx_subgraphics:first-child:nth-last-child(3) ~ .ltx_subgraphics,
+.ltx_subfigure:first-child:nth-last-child(3),
+.ltx_subfigure:first-child:nth-last-child(3) ~ .ltx_subfigure,
+.ltx_subgraphics:first-child:nth-last-child(3) .ltx_graphics,
+.ltx_subgraphics:first-child:nth-last-child(3) ~ .ltx_subgraphics .ltx_graphics,
+.ltx_subfigure:first-child:nth-last-child(3) .ltx_graphics,
+.ltx_subfigure:first-child:nth-last-child(3) ~ .ltx_subfigure .ltx_graphics {
+  max-width: 18rem;
+  max-height: 18rem;
+}/* four items */
+.ltx_subgraphics:first-child:nth-last-child(4),
+.ltx_subgraphics:first-child:nth-last-child(4) ~ .ltx_subgraphics,
+.ltx_subfigure:first-child:nth-last-child(4),
+.ltx_subfigure:first-child:nth-last-child(4) ~ .ltx_subfigure,
+.ltx_subgraphics:first-child:nth-last-child(4) .ltx_graphics,
+.ltx_subgraphics:first-child:nth-last-child(4) ~ .ltx_subgraphics .ltx_graphics,
+.ltx_subfigure:first-child:nth-last-child(4) .ltx_graphics,
+.ltx_subfigure:first-child:nth-last-child(4) ~ .ltx_subfigure .ltx_graphics {
+  max-width: 21rem;
+  max-height: 21rem;
+}
+/*Default: More than 4 items */
+.ltx_subgraphics,
+.ltx_subfigure,
+.ltx_subgraphics .ltx_graphics,
+.ltx_subfigure .ltx_graphics {
+  max-width: 14rem;
+  max-height: 14rem;
+}
+
 /* footnote graphics need to be contained to small sizes */
 .ltx_note_content .ltx_graphics {
   max-width: 10rem;
   max-height: 3rem;
+}
+
+.ltx_multi_grid {
+  display: flex;
+  flex-flow: row wrap;
+  width: auto;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.ltx_multi_grid .ltx_subgraphics,
+.ltx_multi_grid .ltx_subfigure {
+  flex: 1 1 0px;
+  margin: 1rem;
 }
 
 .ltx_subfigure, .ltx_subtable, .ltx_subfloat {
