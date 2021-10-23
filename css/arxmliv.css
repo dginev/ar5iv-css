@@ -688,48 +688,23 @@ blockquote.ltx_quote:after {
 
 /* graphics, subfigures */
 
-/* sizing here is a bit biased towards landscape images */
+/* Single central figure image */
+/* Sizing here is a bit biased towards landscape images */
 /* ideally this is mediated through the zoom-on-click CSS feature */
 .ltx_graphics {
   display: block;
   max-width:var(--main-width);
   max-height:25rem;
+}
+img.ltx_img_landscape {
   width: auto;
+  height: 100%; }
+img.ltx_img_portrait {
   height: auto;
-}
-
-.ltx_flex_size_1 > .ltx_subgraphics,
-.ltx_flex_size_1 > .ltx_subfigure,
-.ltx_flex_size_1 > .ltx_subgraphics .ltx_graphics,
-.ltx_flex_size_1 > .ltx_subfigure .ltx_graphics {
-  max-width:var(--main-width);
-}
-.ltx_flex_size_2 > .ltx_subgraphics,
-.ltx_flex_size_2 > .ltx_subfigure,
-.ltx_flex_size_2 > .ltx_subgraphics .ltx_graphics,
-.ltx_flex_size_2 > .ltx_subfigure .ltx_graphics {
-  max-width: calc(0.48*var(--main-width));
-}
-.ltx_flex_size_3 > .ltx_subgraphics,
-.ltx_flex_size_3 > .ltx_subfigure,
-.ltx_flex_size_3 > .ltx_subgraphics .ltx_graphics,
-.ltx_flex_size_3 > .ltx_subfigure .ltx_graphics {
-  max-width: calc(0.32*var(--main-width));
-}
-.ltx_flex_size_4 > .ltx_subgraphics,
-.ltx_flex_size_4 > .ltx_subfigure,
-.ltx_flex_size_4 > .ltx_subgraphics .ltx_graphics,
-.ltx_flex_size_4 > .ltx_subfigure .ltx_graphics {
-  max-width: calc(0.24*var(--main-width));
-}
-/*Default: More than 4 items, tricky.
-  quite often intended to auto-reflow... */
-.ltx_subgraphics,
-.ltx_subfigure,
-.ltx_subgraphics .ltx_graphics,
-.ltx_subfigure .ltx_graphics {
-  max-width: calc(0.24*var(--main-width));
-}
+  width: 100%; }
+img.ltx_img_square {
+  width: auto;
+  height: auto; }
 
 /* footnote graphics need to be contained to small sizes */
 .ltx_note_content .ltx_graphics {
@@ -737,20 +712,72 @@ blockquote.ltx_quote:after {
   max-height: 3rem;
 }
 
-.ltx_flex_grid {
+/* Multiple subfigures via flexbox */
+.ltx_flex_figure {
   display: flex;
   flex-flow: row wrap;
   width: auto;
   justify-content: center;
+  object-fit: contain;
   margin-bottom: 1rem;
 }
 
-.ltx_flex_grid .ltx_subgraphics,
-.ltx_flex_grid .ltx_subfigure {
+.ltx_flex_size_1 > .ltx_subgraphics,
+.ltx_flex_size_1 > .ltx_subfigure,
+.ltx_flex_size_1 > .ltx_subfloat,
+.ltx_flex_size_1 > .ltx_subtable,
+.ltx_flex_size_1 > .ltx_subgraphics .ltx_graphics,
+.ltx_flex_size_1 > .ltx_subfigure .ltx_graphics,
+.ltx_flex_size_1 > .ltx_subfloat .ltx_graphics {
+  max-width:var(--main-width);
+}
+.ltx_flex_size_2 > .ltx_subgraphics,
+.ltx_flex_size_2 > .ltx_subfigure,
+.ltx_flex_size_2 > .ltx_subfloat,
+.ltx_flex_size_2 > .ltx_subtable,
+.ltx_flex_size_2 > .ltx_subgraphics .ltx_graphics,
+.ltx_flex_size_2 > .ltx_subfigure .ltx_graphics,
+.ltx_flex_size_2 > .ltx_subfloat .ltx_graphics {
+  max-width: calc(0.45*var(--main-width));
+}
+.ltx_flex_size_3 > .ltx_subgraphics,
+.ltx_flex_size_3 > .ltx_subfigure,
+.ltx_flex_size_3 > .ltx_subfloat,
+.ltx_flex_size_3 > .ltx_subtable,
+.ltx_flex_size_3 > .ltx_subgraphics .ltx_graphics,
+.ltx_flex_size_3 > .ltx_subfigure .ltx_graphics,
+.ltx_flex_size_3 > .ltx_subfloat .ltx_graphics {
+  max-width: calc(0.3*var(--main-width));
+}
+.ltx_flex_size_4 > .ltx_subgraphics,
+.ltx_flex_size_4 > .ltx_subfigure,
+.ltx_flex_size_4 > .ltx_subfloat,
+.ltx_flex_size_4 > .ltx_subtable,
+.ltx_flex_size_4 > .ltx_subgraphics .ltx_graphics,
+.ltx_flex_size_4 > .ltx_subfigure .ltx_graphics,
+.ltx_flex_size_4 > .ltx_subfloat .ltx_graphics {
+  max-width: calc(0.24*var(--main-width));
+}
+/*Default: More than 4 items, tricky.
+  quite often intended to auto-reflow... */
+.ltx_subgraphics,
+.ltx_subfigure,
+.ltx_subfloat,
+.ltx_subtable,
+.ltx_subgraphics .ltx_graphics,
+.ltx_subfigure .ltx_graphics,
+.ltx_subfloat .ltx_graphics {
+  max-width: calc(0.24*var(--main-width));
+}
+
+.ltx_flex_figure .ltx_subgraphics,
+.ltx_flex_figure .ltx_subfigure,
+.ltx_flex_figure .ltx_subfloat,
+.ltx_flex_figure .ltx_subtable {
   flex: 1 1 0px;
   margin: 0.1rem;
 }
-.ltx_flex_grid .ltx_flex_break {
+.ltx_flex_figure .ltx_flex_break {
   flex-basis: 100%;
   height: 0;
 }
