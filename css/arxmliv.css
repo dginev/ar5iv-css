@@ -698,55 +698,37 @@ blockquote.ltx_quote:after {
   height: auto;
 }
 
-/* Some good tips on flexible number of siblings that need a contextual width::after
-   https://medium.com/swlh/styling-elements-based-on-number-of-siblings-1ca506351e68 */
-/* one item */
-.ltx_subgraphics:first-child:nth-last-child(1),
-.ltx_subfigure:first-child:nth-last-child(1)
-.ltx_subgraphics:first-child:nth-last-child(1) .ltx_graphics,
-.ltx_subfigure:first-child:nth-last-child(1) .ltx_graphics {
+.ltx_flex_size_1 > .ltx_subgraphics,
+.ltx_flex_size_1 > .ltx_subfigure,
+.ltx_flex_size_1 > .ltx_subgraphics .ltx_graphics,
+.ltx_flex_size_1 > .ltx_subfigure .ltx_graphics {
   max-width:var(--main-width);
 }
-/* two items */
-.ltx_subgraphics:first-child:nth-last-child(2),
-.ltx_subgraphics:first-child:nth-last-child(2) .ltx_graphics,
-.ltx_subgraphics:first-child:nth-last-child(2) ~ .ltx_subgraphics,
-.ltx_subgraphics:first-child:nth-last-child(2) ~ .ltx_subgraphics .ltx_graphics,
-.ltx_subfigure:first-child:nth-last-child(2),
-.ltx_subfigure:first-child:nth-last-child(2) .ltx_graphics,
-.ltx_subfigure:first-child:nth-last-child(2) ~ .ltx_subfigure
-.ltx_subfigure:first-child:nth-last-child(2) ~ .ltx_subfigure .ltx_graphics {
-  max-width: 23rem;
-}/* three items */
-.ltx_subgraphics:first-child:nth-last-child(3),
-.ltx_subgraphics:first-child:nth-last-child(3) ~ .ltx_subgraphics,
-.ltx_subfigure:first-child:nth-last-child(3),
-.ltx_subfigure:first-child:nth-last-child(3) ~ .ltx_subfigure,
-.ltx_subgraphics:first-child:nth-last-child(3) .ltx_graphics,
-.ltx_subgraphics:first-child:nth-last-child(3) ~ .ltx_subgraphics .ltx_graphics,
-.ltx_subfigure:first-child:nth-last-child(3) .ltx_graphics,
-.ltx_subfigure:first-child:nth-last-child(3) ~ .ltx_subfigure .ltx_graphics {
-  max-width: 18rem;
-  max-height: 18rem;
-}/* four items */
-.ltx_subgraphics:first-child:nth-last-child(4),
-.ltx_subgraphics:first-child:nth-last-child(4) ~ .ltx_subgraphics,
-.ltx_subfigure:first-child:nth-last-child(4),
-.ltx_subfigure:first-child:nth-last-child(4) ~ .ltx_subfigure,
-.ltx_subgraphics:first-child:nth-last-child(4) .ltx_graphics,
-.ltx_subgraphics:first-child:nth-last-child(4) ~ .ltx_subgraphics .ltx_graphics,
-.ltx_subfigure:first-child:nth-last-child(4) .ltx_graphics,
-.ltx_subfigure:first-child:nth-last-child(4) ~ .ltx_subfigure .ltx_graphics {
-  max-width: 21rem;
-  max-height: 21rem;
+.ltx_flex_size_2 > .ltx_subgraphics,
+.ltx_flex_size_2 > .ltx_subfigure,
+.ltx_flex_size_2 > .ltx_subgraphics .ltx_graphics,
+.ltx_flex_size_2 > .ltx_subfigure .ltx_graphics {
+  max-width: calc(0.48*var(--main-width));
 }
-/*Default: More than 4 items */
+.ltx_flex_size_3 > .ltx_subgraphics,
+.ltx_flex_size_3 > .ltx_subfigure,
+.ltx_flex_size_3 > .ltx_subgraphics .ltx_graphics,
+.ltx_flex_size_3 > .ltx_subfigure .ltx_graphics {
+  max-width: calc(0.32*var(--main-width));
+}
+.ltx_flex_size_4 > .ltx_subgraphics,
+.ltx_flex_size_4 > .ltx_subfigure,
+.ltx_flex_size_4 > .ltx_subgraphics .ltx_graphics,
+.ltx_flex_size_4 > .ltx_subfigure .ltx_graphics {
+  max-width: calc(0.24*var(--main-width));
+}
+/*Default: More than 4 items, tricky.
+  quite often intended to auto-reflow... */
 .ltx_subgraphics,
 .ltx_subfigure,
 .ltx_subgraphics .ltx_graphics,
 .ltx_subfigure .ltx_graphics {
-  max-width: 14rem;
-  max-height: 14rem;
+  max-width: calc(0.24*var(--main-width));
 }
 
 /* footnote graphics need to be contained to small sizes */
@@ -755,7 +737,7 @@ blockquote.ltx_quote:after {
   max-height: 3rem;
 }
 
-.ltx_multi_grid {
+.ltx_flex_grid {
   display: flex;
   flex-flow: row wrap;
   width: auto;
@@ -763,10 +745,14 @@ blockquote.ltx_quote:after {
   margin-bottom: 1rem;
 }
 
-.ltx_multi_grid .ltx_subgraphics,
-.ltx_multi_grid .ltx_subfigure {
+.ltx_flex_grid .ltx_subgraphics,
+.ltx_flex_grid .ltx_subfigure {
   flex: 1 1 0px;
-  margin: 1rem;
+  margin: 0.1rem;
+}
+.ltx_flex_grid .ltx_flex_break {
+  flex-basis: 100%;
+  height: 0;
 }
 
 .ltx_subfigure, .ltx_subtable, .ltx_subfloat {
