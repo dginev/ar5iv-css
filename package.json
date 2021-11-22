@@ -1,9 +1,9 @@
 {
-  "name": "arxmliv-css",
+  "name": "ar5iv-css",
   "version": "0.5.0",
   "description": "Experimental CSS to style arXiv articles converted with LaTeXML",
-  "main": "arxmliv.css",
-  "repository": "git@github.com:dginev/arxmliv-css.git",
+  "main": "ar5iv.css",
+  "repository": "git@github.com:dginev/ar5iv-css.git",
   "author": "Deyan Gienv <deyan.ginev@gmail.com>",
   "license": "MIT"
 }
