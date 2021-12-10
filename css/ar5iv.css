@@ -130,7 +130,9 @@ article > div > img:first-of-type {
 
 .ltx_title.ltx_title_document {
   font-weight: normal;
-  font-size: 1.7rem;
+  /* !important is needed since arXiv customizations on title size are not */
+  /* completely accurate in latexml yet, so we keep a predictably nice-looking size for now. */
+  font-size: 1.7rem !important;
   margin-top: 1rem;
   margin-bottom: 1.5rem;
   text-align: center;
@@ -197,9 +199,11 @@ div.ltx_keywords:empty:before {
 /* TODO: Untested */
 .ltx_date { text-align:center; font-size: 120%; margin:0.5em 0 0.5em 0; }
 
-/* Author notes, Affiliation notes, Preprint notes */
-/* Footnotes */
-/* TODO: is this rule simply applicable to all ltx_note cases? */
+/* Frontmatter notes: Author notes, Affiliation notes, Preprint notes */
+.ltx_note_frontmatter {
+  
+}
+/* Mainmatter Footnotes */
 .ltx_note {
   position: relative;
   text-align: justify;
@@ -230,7 +234,8 @@ div.ltx_keywords:empty:before {
 }
 .ltx_author_notes {
   display: block;
-  margin: 2rem;
+  margin-top: 0.5rem;
+  margin-bottom: 2rem;
   font-size: 1rem;
   padding: 1rem;
 }
@@ -458,13 +463,15 @@ ul.ltx_toclist {
 .ltx_tag_appendix,
 .ltx_tag_section,
 .ltx_tag_subsection,
-.ltx_tag_subsubsection,
-.ltx_tag_table,
-.ltx_tag_figure {
+.ltx_tag_subsubsection {
   display: inline-block;
   padding-right: 1rem;
   min-width: 1.33em; }
-
+.ltx_tag_table,
+.ltx_tag_figure {
+  display: inline-block;
+  padding-right: 0.2rem;
+  min-width: 1.33em; }
 /* Various kinds of titles */
 .ltx_title_part,
 .ltx_title_chapter  { 
@@ -718,79 +725,101 @@ img.ltx_img_square {
   flex-flow: row wrap;
   width: auto;
   justify-content: center;
+  align-items: baseline;
   object-fit: contain;
   margin-bottom: 1rem;
 }
+.ltx_flex_figure .ltx_graphics,
+.ltx_flex_figure .ltx_graphics.ltx_centering {
+  margin: 0.1rem;
+}
 
-.ltx_flex_size_1 > .ltx_subgraphics,
-.ltx_flex_size_1 > .ltx_subfigure,
-.ltx_flex_size_1 > .ltx_subfloat,
-.ltx_flex_size_1 > .ltx_subtable,
-.ltx_flex_size_1 > .ltx_subgraphics .ltx_graphics,
-.ltx_flex_size_1 > .ltx_subfigure .ltx_graphics,
-.ltx_flex_size_1 > .ltx_subfloat .ltx_graphics {
+.ltx_flex_size_1,
+.ltx_flex_size_1 .ltx_tabular,
+.ltx_flex_size_1 .ltx_graphics,
+.ltx_flex_size_1.ltx_tabular,
+.ltx_flex_size_1.ltx_graphics,
+.ltx_table.ltx_flex_size_1 .ltx_caption {
   max-width:var(--main-width);
 }
-.ltx_flex_size_2 > .ltx_subgraphics,
-.ltx_flex_size_2 > .ltx_subfigure,
-.ltx_flex_size_2 > .ltx_subfloat,
-.ltx_flex_size_2 > .ltx_subtable,
-.ltx_flex_size_2 > .ltx_subgraphics .ltx_graphics,
-.ltx_flex_size_2 > .ltx_subfigure .ltx_graphics,
-.ltx_flex_size_2 > .ltx_subfloat .ltx_graphics {
-  max-width: calc(0.45*var(--main-width));
+.ltx_flex_figure.ltx_flex_table .ltx_flex_size_2 {
+  max-width: calc(0.5*var(--main-width));
 }
-.ltx_flex_size_3 > .ltx_subgraphics,
-.ltx_flex_size_3 > .ltx_subfigure,
-.ltx_flex_size_3 > .ltx_subfloat,
-.ltx_flex_size_3 > .ltx_subtable,
-.ltx_flex_size_3 > .ltx_subgraphics .ltx_graphics,
-.ltx_flex_size_3 > .ltx_subfigure .ltx_graphics,
-.ltx_flex_size_3 > .ltx_subfloat .ltx_graphics {
+.ltx_flex_size_2.ltx_tabular,
+.ltx_flex_size_2.ltx_graphics,
+.ltx_flex_size_2 .ltx_tabular,
+.ltx_flex_size_2 .ltx_graphics,
+.ltx_table.ltx_flex_size_2 .ltx_caption {
+  max-width: calc(0.46*var(--main-width));
+}
+.ltx_flex_figure.ltx_flex_table .ltx_flex_size_3 {
+  max-width: calc(0.33*var(--main-width));
+}
+
+.ltx_flex_size_3.ltx_tabular,
+.ltx_flex_size_3.ltx_graphics,
+.ltx_flex_size_3 .ltx_tabular,
+.ltx_flex_size_3 .ltx_graphics,
+.ltx_table.ltx_flex_size_3 .ltx_caption {
   max-width: calc(0.3*var(--main-width));
 }
-.ltx_flex_size_4 > .ltx_subgraphics,
-.ltx_flex_size_4 > .ltx_subfigure,
-.ltx_flex_size_4 > .ltx_subfloat,
-.ltx_flex_size_4 > .ltx_subtable,
-.ltx_flex_size_4 > .ltx_subgraphics .ltx_graphics,
-.ltx_flex_size_4 > .ltx_subfigure .ltx_graphics,
-.ltx_flex_size_4 > .ltx_subfloat .ltx_graphics {
+
+.ltx_flex_figure.ltx_flex_table .ltx_flex_size_4,
+.ltx_flex_figure.ltx_flex_table .ltx_flex_size_many {
+  max-width: calc(0.25*var(--main-width));
+}
+
+.ltx_flex_size_4.ltx_tabular,
+.ltx_flex_size_4.ltx_graphics,
+.ltx_flex_size_4 .ltx_tabular,
+.ltx_flex_size_4 .ltx_graphics,
+.ltx_table.ltx_flex_size_4 .ltx_caption {
   max-width: calc(0.24*var(--main-width));
 }
 /*Default: More than 4 items, tricky.
   quite often intended to auto-reflow... */
-.ltx_subgraphics,
-.ltx_subfigure,
-.ltx_subfloat,
-.ltx_subtable,
-.ltx_subgraphics .ltx_graphics,
-.ltx_subfigure .ltx_graphics,
-.ltx_subfloat .ltx_graphics {
+
+.ltx_flex_figure.ltx_flex_table .ltx_flex_size_many {
+  max-width: calc(0.28*var(--main-width));
+}
+  
+.ltx_flex_size_many.ltx_tabular,
+.ltx_flex_size_many.ltx_graphics,
+.ltx_flex_size_many .ltx_tabular,
+.ltx_flex_size_many .ltx_graphics,
+.ltx_table.ltx_flex_size_many .ltx_caption {
   max-width: calc(0.24*var(--main-width));
 }
 
 .ltx_flex_figure .ltx_subgraphics,
 .ltx_flex_figure .ltx_subfigure,
 .ltx_flex_figure .ltx_subfloat,
-.ltx_flex_figure .ltx_subtable {
+.ltx_flex_figure .ltx_subtable,
+.ltx_flex_figure .ltx_flex_size_1,
+.ltx_flex_figure .ltx_flex_size_2,
+.ltx_flex_figure .ltx_flex_size_3,
+.ltx_flex_figure .ltx_flex_size_4,
+.ltx_flex_figure .ltx_flex_size_many {
   flex: 1 1 0px;
-  margin: 0.1rem;
+  margin: 0.5rem;
+  padding: 0.1rem;
 }
 .ltx_flex_figure .ltx_flex_break {
   flex-basis: 100%;
   height: 0;
 }
 
-.ltx_subfigure, .ltx_subtable, .ltx_subfloat {
-  max-width: 24rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-}
 .ltx_subfigure > .ltx_figure,
 .ltx_subtable > .ltx_figure,
-.ltx_subfloat > .ltx_figure {
+.ltx_subfloat > .ltx_figure,
+.ltx_subfigure > .ltx_table,
+.ltx_subtable > .ltx_table,
+.ltx_subfloat > .ltx_table {
   margin:0em;
+}
+.ltx_flex_figure .ltx_tabular .ltx_td,
+.ltx_flex_figure .ltx_tabular .ltx_th {
+  padding:0.1rem 0.2rem;
 }
 /* Feature: zoom figure image on hover */
 .ltx_figure img {
@@ -837,21 +866,24 @@ svg {
 .ltx_inline-para  { display:inline; }
 .ltx_inline-block { display:inline-block; }
 /* experimental: flex model, to center short captions, justify long ones */
-.ltx_table,
-.ltx_figure {
+:not(.ltx_flex_figure) > .ltx_table,
+:not(.ltx_flex_figure) > .ltx_figure {
   display:flex;
   flex-direction:column;
   align-items:center;
   text-align:center;
   margin-top:4em;
   margin-bottom:4em;
-  margin-left: 0.5em;
-  margin-right: 0.5em; }
+  margin-left: 0.2em;
+  margin-right: 0.2em; }
 .ltx_table .ltx_caption,
 .ltx_figure .ltx_caption {
-  text-align:justify;
+  text-align: justify;
   margin-top:1.5em;
   margin-bottom:1.5rem;
+}
+.ltx_flex_figure .ltx_figure .ltx_caption {
+  text-align: center;
 }
 /* other notes, for example, the ones in deluxetable */
 .ltx_table,
