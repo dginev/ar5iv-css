@@ -725,7 +725,7 @@ img.ltx_img_square {
   flex-flow: row wrap;
   width: auto;
   justify-content: center;
-  align-items: baseline;
+  align-items: flex-end;
   object-fit: contain;
   margin-bottom: 1rem;
 }
@@ -739,7 +739,8 @@ img.ltx_img_square {
 .ltx_flex_size_1 .ltx_graphics,
 .ltx_flex_size_1.ltx_tabular,
 .ltx_flex_size_1.ltx_graphics,
-.ltx_table.ltx_flex_size_1 .ltx_caption {
+.ltx_table.ltx_flex_size_1 .ltx_caption,
+.ltx_minipage.ltx_flex_size_1 .ltx_float .ltx_caption {
   max-width:var(--main-width);
 }
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_2 {
@@ -749,7 +750,8 @@ img.ltx_img_square {
 .ltx_flex_size_2.ltx_graphics,
 .ltx_flex_size_2 .ltx_tabular,
 .ltx_flex_size_2 .ltx_graphics,
-.ltx_table.ltx_flex_size_2 .ltx_caption {
+.ltx_table.ltx_flex_size_2 .ltx_caption,
+.ltx_minipage.ltx_flex_size_2 .ltx_float .ltx_caption {
   max-width: calc(0.46*var(--main-width));
 }
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_3 {
@@ -760,7 +762,8 @@ img.ltx_img_square {
 .ltx_flex_size_3.ltx_graphics,
 .ltx_flex_size_3 .ltx_tabular,
 .ltx_flex_size_3 .ltx_graphics,
-.ltx_table.ltx_flex_size_3 .ltx_caption {
+.ltx_table.ltx_flex_size_3 .ltx_caption,
+.ltx_minipage.ltx_flex_size_3 .ltx_float .ltx_caption {
   max-width: calc(0.3*var(--main-width));
 }
 
@@ -773,7 +776,8 @@ img.ltx_img_square {
 .ltx_flex_size_4.ltx_graphics,
 .ltx_flex_size_4 .ltx_tabular,
 .ltx_flex_size_4 .ltx_graphics,
-.ltx_table.ltx_flex_size_4 .ltx_caption {
+.ltx_table.ltx_flex_size_4 .ltx_caption,
+.ltx_minipage.ltx_flex_size_4 .ltx_float .ltx_caption {
   max-width: calc(0.24*var(--main-width));
 }
 /*Default: More than 4 items, tricky.
@@ -787,7 +791,8 @@ img.ltx_img_square {
 .ltx_flex_size_many.ltx_graphics,
 .ltx_flex_size_many .ltx_tabular,
 .ltx_flex_size_many .ltx_graphics,
-.ltx_table.ltx_flex_size_many .ltx_caption {
+.ltx_table.ltx_flex_size_many .ltx_caption,
+.ltx_minipage.ltx_flex_size_many .ltx_float .ltx_caption {
   max-width: calc(0.24*var(--main-width));
 }
 
@@ -863,8 +868,10 @@ svg {
 .ltx_tabular .ltx_tabular {
   width:100%;
 }
-.ltx_inline-para  { display:inline; }
-.ltx_inline-block { display:inline-block; }
+.ltx_inline-para,
+.ltx_inline-para .ltx_para  { display:inline; }
+.ltx_inline-block,
+.ltx_inline-block .ltx_para { display:inline-block; }
 /* experimental: flex model, to center short captions, justify long ones */
 :not(.ltx_flex_figure) > .ltx_table,
 :not(.ltx_flex_figure) > .ltx_figure {
@@ -891,6 +898,19 @@ svg {
   text-align: justify;
 }
 /* floats, such as Algorithm listings */
+.ltx_minipage {
+  width: auto !important;
+}
+.ltx_minipage .ltx_float,
+.ltx_minipage .ltx_float .ltx_caption {
+  display: inline-block;
+}
+.ltx_listingline {
+  text-align:justify;
+  white-space:nowrap; 
+  min-height:1rem;
+  display:block;
+}
 .ltx_float {
     margin: 3.5rem; }
 .ltx_float .ltx_caption {
