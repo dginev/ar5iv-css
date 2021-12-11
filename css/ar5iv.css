@@ -739,6 +739,7 @@ img.ltx_img_square {
 .ltx_flex_size_1 .ltx_graphics,
 .ltx_flex_size_1.ltx_tabular,
 .ltx_flex_size_1.ltx_graphics,
+.ltx_lstlisting.ltx_flex_size_1,
 .ltx_table.ltx_flex_size_1 .ltx_caption,
 .ltx_minipage.ltx_flex_size_1 .ltx_float .ltx_caption {
   max-width:var(--main-width);
@@ -750,6 +751,7 @@ img.ltx_img_square {
 .ltx_flex_size_2.ltx_graphics,
 .ltx_flex_size_2 .ltx_tabular,
 .ltx_flex_size_2 .ltx_graphics,
+.ltx_lstlisting.ltx_flex_size_2,
 .ltx_table.ltx_flex_size_2 .ltx_caption,
 .ltx_minipage.ltx_flex_size_2 .ltx_float .ltx_caption {
   max-width: calc(0.46*var(--main-width));
@@ -762,6 +764,7 @@ img.ltx_img_square {
 .ltx_flex_size_3.ltx_graphics,
 .ltx_flex_size_3 .ltx_tabular,
 .ltx_flex_size_3 .ltx_graphics,
+.ltx_lstlisting.ltx_flex_size_3,
 .ltx_table.ltx_flex_size_3 .ltx_caption,
 .ltx_minipage.ltx_flex_size_3 .ltx_float .ltx_caption {
   max-width: calc(0.3*var(--main-width));
@@ -776,6 +779,7 @@ img.ltx_img_square {
 .ltx_flex_size_4.ltx_graphics,
 .ltx_flex_size_4 .ltx_tabular,
 .ltx_flex_size_4 .ltx_graphics,
+.ltx_lstlisting.ltx_flex_size_4,
 .ltx_table.ltx_flex_size_4 .ltx_caption,
 .ltx_minipage.ltx_flex_size_4 .ltx_float .ltx_caption {
   max-width: calc(0.24*var(--main-width));
@@ -791,6 +795,7 @@ img.ltx_img_square {
 .ltx_flex_size_many.ltx_graphics,
 .ltx_flex_size_many .ltx_tabular,
 .ltx_flex_size_many .ltx_graphics,
+.ltx_lstlisting.ltx_flex_size_many,
 .ltx_table.ltx_flex_size_many .ltx_caption,
 .ltx_minipage.ltx_flex_size_many .ltx_float .ltx_caption {
   max-width: calc(0.24*var(--main-width));
@@ -899,7 +904,9 @@ svg {
 }
 /* floats, such as Algorithm listings */
 .ltx_minipage {
+  /* !important needed due to use of element "style" attributes in latexml */
   width: auto !important;
+  align-self: normal;
 }
 .ltx_minipage .ltx_float,
 .ltx_minipage .ltx_float .ltx_caption {
@@ -911,6 +918,27 @@ svg {
   min-height:1rem;
   display:block;
 }
+.ltx_listingline .ltx_text {
+  /* !important needed due to use of element "style" attributes in latexml */
+  font-size: 0.7rem !important;
+}
+.ltx_listing {
+  display: block;
+}
+.ltx_listing > .ltx_framed_rectangle {
+  /* download arrow has a glitchy border rendering, disable it. */
+  border-style: none;
+}
+.ltx_tag_listingline {
+  padding-right:0.3rem;
+  border-right: solid;
+  border-width: thin;
+  margin-right: 0.3rem;
+  text-align: right;
+  width:1rem;
+  display: inline-block;
+}
+
 .ltx_float {
     margin: 3.5rem; }
 .ltx_float .ltx_caption {
@@ -1091,7 +1119,7 @@ dl.ltx_description dl.ltx_description dd { margin-left:3em; }
 .ltx_border_B  { border-bottom:0.063rem solid var(--border-light-color); }
 .ltx_border_L  { border-left:0.063rem solid var(--border-light-color); }
 /* Framing */
-.ltx_framed_rectangle { border-style:solid; border-width:0.063rem; }
+.ltx_framed_rectangle { border-style:solid; border-width:0.063rem; padding-left:0.3rem; padding-right: 0.3rem; }
 .ltx_framed_top       { border-top-style:solid; border-top-width:0.063rem; }
 .ltx_framed_left      { border-left-style:solid; border-left-width:0.063rem; }
 .ltx_framed_right     { border-right-style:solid; border-right-width:0.063rem; }
