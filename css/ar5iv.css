@@ -902,6 +902,9 @@ svg {
 .ltx_figure .ltx_parbox {
   text-align: justify;
 }
+.ltx_parbox {
+    text-indent:0em;
+    display: inline-block; }
 /* floats, such as Algorithm listings */
 .ltx_minipage {
   /* !important needed due to use of element "style" attributes in latexml */
@@ -926,7 +929,7 @@ svg {
   display: block;
 }
 .ltx_listing > .ltx_framed_rectangle {
-  /* download arrow has a glitchy border rendering, disable it. */
+  /* download arrow has a glitchy border, disable it. */
   border-style: none;
 }
 .ltx_tag_listingline {
