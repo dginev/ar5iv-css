@@ -199,10 +199,6 @@ div.ltx_keywords:empty:before {
 /* TODO: Untested */
 .ltx_date { text-align:center; font-size: 120%; margin:0.5em 0 0.5em 0; }
 
-/* Frontmatter notes: Author notes, Affiliation notes, Preprint notes */
-.ltx_note_frontmatter {
-  
-}
 /* Mainmatter Footnotes */
 .ltx_note {
   position: relative;
@@ -281,8 +277,8 @@ div.ltx_keywords:empty:before {
     overflow-wrap: break-word;
     width: 90%;
   }
-  .ltx_note:hover > .ltx_note_outer,
-  .ltx_note:active > .ltx_note_outer {
+  .ltx_note:not(.ltx_note_frontmatter):hover > .ltx_note_outer,
+  .ltx_note:not(.ltx_note_frontmatter):active > .ltx_note_outer {
     display: block;
     position: absolute;
     top: 0;
@@ -294,6 +290,28 @@ div.ltx_keywords:empty:before {
     border-width: 0.1rem 0;
     border-bottom: double;
     border-top: double;
+  }
+  /* Frontmatter notes: Author notes, Affiliation notes, Preprint notes 
+     get a standalone line in small-screen mode. */
+  .ltx_note.ltx_note_frontmatter {
+    display: block;
+    opacity: inherit;
+    float: left;
+    text-align: left;
+  }
+  .ltx_note.ltx_note_frontmatter > .ltx_note_mark {
+    display: none;
+  }
+  .ltx_note.ltx_note_frontmatter .ltx_note_outer {
+    display: block;
+    opacity: inherit;
+  }
+  .ltx_note.ltx_note_frontmatter .ltx_note_content {
+    border: none;
+    margin-left: 0px;
+  }
+  .ltx_note.ltx_note_frontmatter .ltx_note_content > .ltx_note_mark {
+    display: inline;
   }
 }
 
@@ -386,7 +404,18 @@ div.ltx_keywords:empty:before {
     position: absolute;
     left: var(--main-width-margin);
   }
+  /* Frontmatter notes: Author notes, Affiliation notes, Preprint notes */
+  .ltx_note.ltx_note_frontmatter > .ltx_note_mark {
+    display: none;
+  }
+  .ltx_note.ltx_note_frontmatter .ltx_note_content {
+    border: none;
+  }
+  .ltx_note.ltx_note_frontmatter .ltx_note_content > .ltx_note_mark {
+    display: none;
+  }
 }
+
 /* footnotetext are low-level notes without a type description */
 .ltx_role_footnotetext.ltx_note .ltx_note_type {
   display:none;
