@@ -464,6 +464,9 @@ div.ltx_keywords:empty:before {
 ul.ltx_toclist {
   padding-left: 1.8rem;
 }
+ul.ltx_toclist > .ltx_tocentry:first-of-type {
+  margin-top: 0.3rem;
+}
 /* top-level TOC has no indent */
 .ltx_TOC > ul.ltx_toclist {
   padding-left: 0rem;
