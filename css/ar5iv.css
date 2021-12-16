@@ -65,7 +65,7 @@ body {
     content:"."; display:block; height:0; clear:both; visibility:hidden; }
 .ltx_page_footer:before {
     content:"."; display:block; height:0; clear:both; visibility:hidden; }
-
+    
 .ltx_document {
   margin: auto;
   max-width: var(--main-width);
@@ -122,7 +122,7 @@ math {
 }
 
 /* title page image */
-article > div > img:first-of-type {
+article > div:not(.ltx_minipage) > img:first-of-type {
   max-width: 30rem;
   width: auto;
   height: auto;
@@ -740,7 +740,7 @@ img.ltx_img_landscape {
   height: 100%; }
 img.ltx_img_portrait {
   height: auto;
-  width: 100%; }
+  max-width: 100%; }
 img.ltx_img_square {
   width: auto;
   height: auto; }
@@ -905,6 +905,8 @@ svg {
 .ltx_tabular .ltx_tabular {
   width:100%;
 }
+.ltx_tabular.ltx_tabbing {
+  display: table; }
 .ltx_inline-para,
 .ltx_inline-para .ltx_para  { display:inline; }
 .ltx_inline-block,
@@ -940,12 +942,16 @@ svg {
 /* floats, such as Algorithm listings */
 .ltx_minipage {
   /* !important needed due to use of element "style" attributes in latexml */
-  width: auto !important;
+  /* width: auto !important; */
   align-self: normal;
+  display: inline-block;
 }
 .ltx_minipage .ltx_float,
 .ltx_minipage .ltx_float .ltx_caption {
   display: inline-block;
+}
+.ltx_minipage > .ltx_graphics {
+  max-width:100%;
 }
 .ltx_listingline {
   text-align:justify;
