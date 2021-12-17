@@ -404,6 +404,11 @@ div.ltx_keywords:empty:before {
     position: absolute;
     left: var(--main-width-margin);
   }
+  /* notes directly in abstract don't benefit from having a mark on wide displays */
+  .ltx_abstract > .ltx_note > .ltx_note_mark,
+  .ltx_title_document > .ltx_note > .ltx_note_mark {
+    display: none;
+  }
   /* Frontmatter notes: Author notes, Affiliation notes, Preprint notes */
   .ltx_note.ltx_note_frontmatter > .ltx_note_mark {
     display: none;
@@ -435,6 +440,7 @@ div.ltx_keywords:empty:before {
   margin-top: 4rem;
   margin-bottom: 2rem;
 }
+
 /* TODO: Can we get a better handle on the ToC title? */
 .ltx_title_abstract,.ltx_TOC > h6 {
   margin-top: 0;
@@ -732,17 +738,49 @@ blockquote.ltx_quote:after {
 /* ideally this is mediated through the zoom-on-click CSS feature */
 .ltx_graphics {
   display: block;
-  max-width:var(--main-width);
-  max-height:25rem;
 }
-img.ltx_img_landscape {
+/* let us avoid overflowing the screen width with images 
+   when we're viewing at less than --main-width */
+@media only screen and (max-width: 52rem) {
+  .ltx_graphics {
+    max-width:95%;
+  }
+}
+@media only screen and (min-width: 53rem) {
+  .ltx_graphics {
+    max-width:var(--main-width);
+  }
+}
+
+:not(.ltx_flex_cell) .ltx_img_landscape {
+  max-width:100%;
+  max-height:calc(var(--main-width)/1.33);
   width: auto;
-  height: 100%; }
-img.ltx_img_portrait {
-  height: auto;
-  max-width: 100%; }
-img.ltx_img_square {
-  width: auto;
+  height:auto; }
+:not(.ltx_flex_cell) .ltx_img_portrait {
+  max-height: var(--main-width); /* what is a reasonable "tallest" figure? */
+  width: auto; }
+:not(.ltx_flex_cell) .ltx_img_square {
+  max-height:calc(var(--main-width)/1.33);
+  width: auto; }
+  
+:not(.ltx_flex_cell) mtext img.ltx_img_landscape,
+:not(.ltx_flex_cell) mtext img.ltx_img_portrait,
+:not(.ltx_flex_cell) mtext img.ltx_img_square,
+:not(.ltx_flex_cell) .ltx_p img.ltx_img_landscape,
+:not(.ltx_flex_cell) .ltx_p img.ltx_img_portrait,
+:not(.ltx_flex_cell) .ltx_p img.ltx_img_square {
+  width: 1rem;
+  height: 1rem;
+  min-width: 1rem;
+  min-height: 1rem;
+}
+
+.ltx_flex_cell .ltx_img_landscape,
+.ltx_flex_cell .ltx_img_portrait,
+.ltx_flex_cell .ltx_img_square {
+  width: 100%;
+  min-width: 25rem;
   height: auto; }
 
 /* footnote graphics need to be contained to small sizes */
@@ -761,16 +799,27 @@ img.ltx_img_square {
   object-fit: contain;
   margin-bottom: 1rem;
 }
-.ltx_flex_figure .ltx_graphics,
-.ltx_flex_figure .ltx_graphics.ltx_centering {
+.ltx_flex_figure > .ltx_flex_cell > .ltx_graphics,
+.ltx_flex_figure > .ltx_flex_cell > .ltx_figure,
+.ltx_flex_figure > .ltx_flex_cell > .ltx_float,
+.ltx_flex_figure > .ltx_flex_cell > .ltx_minipage,
+.ltx_flex_figure > .ltx_flex_cell > .ltx_graphics.ltx_centering {
   margin: 0.1rem;
+  width: 100%;
+  max-height: 100%;
+}
+.ltx_flex_figure > .ltx_flex_cell > .ltx_minipage,
+.ltx_flex_figure > .ltx_flex_cell > .ltx_inline-block {
+  width: 100% !important;
+}
+.ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_1 {
+  margin-top: 3rem;
+  margin-bottom: 3rem;
 }
 
-.ltx_flex_size_1,
-.ltx_flex_size_1 .ltx_tabular,
-.ltx_flex_size_1 .ltx_graphics,
-.ltx_flex_size_1.ltx_tabular,
-.ltx_flex_size_1.ltx_graphics,
+
+.ltx_flex_cell.ltx_flex_size_1,
+.ltx_flex_cell.ltx_flex_size_1 .ltx_tabular,
 .ltx_lstlisting.ltx_flex_size_1,
 .ltx_table.ltx_flex_size_1 .ltx_caption,
 .ltx_minipage.ltx_flex_size_1 .ltx_float .ltx_caption {
@@ -779,27 +828,25 @@ img.ltx_img_square {
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_2 {
   max-width: calc(0.5*var(--main-width));
 }
+.ltx_flex_cell.ltx_flex_size_2,
 .ltx_flex_size_2.ltx_tabular,
-.ltx_flex_size_2.ltx_graphics,
 .ltx_flex_size_2 .ltx_tabular,
-.ltx_flex_size_2 .ltx_graphics,
 .ltx_lstlisting.ltx_flex_size_2,
 .ltx_table.ltx_flex_size_2 .ltx_caption,
 .ltx_minipage.ltx_flex_size_2 .ltx_float .ltx_caption {
-  max-width: calc(0.46*var(--main-width));
+  max-width: calc(0.5*var(--main-width));
 }
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_3 {
   max-width: calc(0.33*var(--main-width));
 }
 
+.ltx_flex_cell.ltx_flex_size_3,
 .ltx_flex_size_3.ltx_tabular,
-.ltx_flex_size_3.ltx_graphics,
 .ltx_flex_size_3 .ltx_tabular,
-.ltx_flex_size_3 .ltx_graphics,
 .ltx_lstlisting.ltx_flex_size_3,
 .ltx_table.ltx_flex_size_3 .ltx_caption,
 .ltx_minipage.ltx_flex_size_3 .ltx_float .ltx_caption {
-  max-width: calc(0.3*var(--main-width));
+  max-width: calc(0.33*var(--main-width));
 }
 
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_4,
@@ -807,14 +854,13 @@ img.ltx_img_square {
   max-width: calc(0.25*var(--main-width));
 }
 
+.ltx_flex_cell.ltx_flex_size_4,
 .ltx_flex_size_4.ltx_tabular,
-.ltx_flex_size_4.ltx_graphics,
 .ltx_flex_size_4 .ltx_tabular,
-.ltx_flex_size_4 .ltx_graphics,
 .ltx_lstlisting.ltx_flex_size_4,
 .ltx_table.ltx_flex_size_4 .ltx_caption,
 .ltx_minipage.ltx_flex_size_4 .ltx_float .ltx_caption {
-  max-width: calc(0.24*var(--main-width));
+  max-width: calc(0.25*var(--main-width));
 }
 /*Default: More than 4 items, tricky.
   quite often intended to auto-reflow... */
@@ -823,41 +869,27 @@ img.ltx_img_square {
   max-width: calc(0.28*var(--main-width));
 }
   
+.ltx_flex_cell.ltx_flex_size_many,
 .ltx_flex_size_many.ltx_tabular,
-.ltx_flex_size_many.ltx_graphics,
 .ltx_flex_size_many .ltx_tabular,
-.ltx_flex_size_many .ltx_graphics,
 .ltx_lstlisting.ltx_flex_size_many,
 .ltx_table.ltx_flex_size_many .ltx_caption,
 .ltx_minipage.ltx_flex_size_many .ltx_float .ltx_caption {
-  max-width: calc(0.24*var(--main-width));
+  max-width: calc(0.25*var(--main-width));
 }
 
-.ltx_flex_figure .ltx_subgraphics,
-.ltx_flex_figure .ltx_subfigure,
-.ltx_flex_figure .ltx_subfloat,
-.ltx_flex_figure .ltx_subtable,
-.ltx_flex_figure .ltx_flex_size_1,
-.ltx_flex_figure .ltx_flex_size_2,
-.ltx_flex_figure .ltx_flex_size_3,
-.ltx_flex_figure .ltx_flex_size_4,
-.ltx_flex_figure .ltx_flex_size_many {
+
+.ltx_flex_figure .ltx_flex_cell {
   flex: 1 1 0px;
-  margin: 0.5rem;
-  padding: 0.1rem;
+  margin: 0.1rem;
 }
 .ltx_flex_figure .ltx_flex_break {
   flex-basis: 100%;
   height: 0;
 }
 
-.ltx_subfigure > .ltx_figure,
-.ltx_subtable > .ltx_figure,
-.ltx_subfloat > .ltx_figure,
-.ltx_subfigure > .ltx_table,
-.ltx_subtable > .ltx_table,
-.ltx_subfloat > .ltx_table {
-  margin:0em;
+.ltx_flex_cell > .ltx_figure {
+  margin: 0em;
 }
 .ltx_flex_figure .ltx_tabular .ltx_td,
 .ltx_flex_figure .ltx_tabular .ltx_th {
@@ -912,8 +944,8 @@ svg {
 .ltx_inline-block,
 .ltx_inline-block .ltx_para { display:inline-block; }
 /* experimental: flex model, to center short captions, justify long ones */
-:not(.ltx_flex_figure) > .ltx_table,
-:not(.ltx_flex_figure) > .ltx_figure {
+:not(.ltx_flex_cell) .ltx_table,
+:not(.ltx_flex_cell) .ltx_figure {
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -981,7 +1013,9 @@ svg {
 }
 
 .ltx_float {
-    margin: 3.5rem; }
+  margin: 3.5rem; }
+.ltx_minipage > .ltx_float {
+  margin:0.2rem; }
 .ltx_float .ltx_caption {
   text-align:justify;
   border-top:solid var(--border-color);
