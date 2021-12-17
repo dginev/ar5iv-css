@@ -780,7 +780,6 @@ blockquote.ltx_quote:after {
 .ltx_flex_cell .ltx_img_portrait,
 .ltx_flex_cell .ltx_img_square {
   width: 100%;
-  min-width: 25rem;
   height: auto; }
 
 /* footnote graphics need to be contained to small sizes */
@@ -815,6 +814,19 @@ blockquote.ltx_quote:after {
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_1 {
   margin-top: 3rem;
   margin-bottom: 3rem;
+  min-width: 25rem;
+}
+.ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_2 img.ltx_graphics {
+  min-width: 20rem;
+}
+.ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_3 img.ltx_graphics {
+  min-width: 15rem;
+}
+.ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_4 img.ltx_graphics {
+  min-width: 5rem;
+}
+.ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_many img.ltx_graphics {
+  min-width: 3rem;
 }
 
 
