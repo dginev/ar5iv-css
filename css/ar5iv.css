@@ -24,6 +24,7 @@
   --fatal-text-color: #D8000C;
   --index-ref-color: lightcoral;
 }
+
 /* Main content */
 body {
   margin:0;
@@ -812,8 +813,6 @@ blockquote.ltx_quote:after {
   width: 100% !important;
 }
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_1 {
-  margin-top: 3rem;
-  margin-bottom: 3rem;
   min-width: 25rem;
 }
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_2 img.ltx_graphics {
@@ -823,10 +822,10 @@ blockquote.ltx_quote:after {
   min-width: 15rem;
 }
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_4 img.ltx_graphics {
-  min-width: 5rem;
+  min-width: 10rem;
 }
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_many img.ltx_graphics {
-  min-width: 3rem;
+  min-width: 10rem;
 }
 
 

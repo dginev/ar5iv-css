@@ -15,3 +15,10 @@
   --image-color: black;
   --image-background-color: white;
 }
+
+@media (prefers-color-scheme: dark) {
+  img, svg {
+    /* filter: brightness(.8) contrast(1.2); */
+    filter: invert(100%);
+  }
+}
