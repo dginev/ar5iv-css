@@ -33,7 +33,7 @@ body {
   background-color: var(--background-color);
 }
 .ltx_page_content {
-  margin: 4em 1em;
+  margin: 4rem 1rem;
   font-size: 1rem;
   font-weight: 300;
   clear:both;
@@ -150,7 +150,14 @@ article > div:not(.ltx_minipage) > img:first-of-type {
   font-family: inherit;
 }
 .ltx_authors {
+  display: flex;
+  flex-flow: row wrap;
+  width: auto;
+  justify-content: center;
+  align-items: center;
+  object-fit: contain;
   margin-top: 0rem;
+  margin-top: 0.75rem;
   margin-bottom: 0.75rem;
   text-align: center;
 }
@@ -163,9 +170,12 @@ span.ltx_personname > br.ltx_break + span {
   padding-top: 0.75em;
 }
 
-.ltx_creator,
-.ltx_author_before,
-.ltx_author_after { display:inline}
+.ltx_creator { 
+  flex: 1 1 0px;
+  padding: 0.5rem;
+ }
+/* do we want to display commas? */
+.ltx_author_before, .ltx_author_after { display: none;}
 .ltx_dates {
   margin-top: 0rem;
   margin-bottom: 1rem;
@@ -233,8 +243,8 @@ div.ltx_keywords:empty:before {
   display: block;
   margin-top: 0.5rem;
   margin-bottom: 2rem;
-  font-size: 1rem;
-  padding: 1rem;
+  font-size: 0.9rem;
+  padding: 0.2rem;
 }
 
 /* responsive footnote viewport widths */
@@ -296,8 +306,7 @@ div.ltx_keywords:empty:before {
      get a standalone line in small-screen mode. */
   .ltx_note.ltx_note_frontmatter {
     display: block;
-    opacity: inherit;
-    float: left;
+    opacity: inherit;    
     text-align: left;
   }
   .ltx_note.ltx_note_frontmatter > .ltx_note_mark {
@@ -313,6 +322,10 @@ div.ltx_keywords:empty:before {
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_content > .ltx_note_mark {
     display: inline;
+  }
+  /* similarly for notes left stranded in the top-level authors container */
+  .ltx_authors > .ltx_note .ltx_note_mark {
+    display: none;
   }
 }
 
@@ -416,9 +429,17 @@ div.ltx_keywords:empty:before {
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_content {
     border: none;
+    margin-bottom: 0rem;
+    padding-bottom: 0rem;
+    margin-top: 0rem;
+    padding-top: 0rem;
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_content > .ltx_note_mark {
     display: none;
+  }
+  .ltx_note.ltx_note_frontmatter > .ltx_note_outer {
+    margin-bottom: 0rem;
+    padding-bottom: 0rem;
   }
 }
 
@@ -451,7 +472,8 @@ div.ltx_keywords:empty:before {
   text-decoration: none;
   font-size: 1.4rem;
   font-weight: bold;
-  line-height: 1.15385;
+  font-family: var(--headings-font-family);
+  line-height: 1.15rem;
   /*padding-bottom: 1.3125rem;*/
   box-sizing: border-box;
   list-style: none;
@@ -492,8 +514,26 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   font-weight: bold;
   margin-bottom: 0.5em;
 }
+.ltx_tocentry_chapter > .ltx_ref > .ltx_ref_title > .ltx_tag,
 .ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag {
-  padding-right: 1rem;
+  margin-right: 1rem;
+}
+.ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref > .ltx_ref_title,
+.ltx_tocentry_subsection > .ltx_ref > .ltx_ref_title {
+  font-family: var(--text-font-family);
+}
+.ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref,
+.ltx_tocentry_subsection > .ltx_ref {
+  border-bottom: none;
+}
+
+.ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag_ref,
+.ltx_tocentry_subsection > .ltx_ref > .ltx_ref_title > .ltx_tag_ref {
+  border-bottom: 0.063rem dotted var(--link-text-color);
+  width: min-content;
+  display: inline-block;
+  line-height: 1.1rem;
+  margin-right: 0.3rem;
 }
 
 /* Various kinds of visual Tags */
@@ -605,15 +645,17 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   line-height: 1.5rem;
   text-align: left;
   vertical-align: text-top;
+  word-break: normal;
+  overflow-wrap: break-word;
 }
 @media only screen and (max-width: 50rem) {
   .ltx_bibitem .ltx_tag {
-    width: 25%;
+    width: 26%;
   }
 }
 @media only screen and (min-width: 50rem) {
   .ltx_bibitem .ltx_tag {
-    width: 12%;
+    width: 14%;
   }
 }
 .ltx_bibitem .ltx_bibblock {
@@ -917,15 +959,16 @@ blockquote.ltx_quote:after {
   transition: all .2s ease;
 }
 .ltx_figure img:active,
-.ltx_p > img.ltx_graphics:active {
+.ltx_p > img.ltx_graphics:active,
+.ltx_text > img.ltx_graphics:active {
   -webkit-transform:scale(1.8); /* Safari and Chrome */
   -moz-transform:scale(1.8); /* Firefox */
   -ms-transform:scale(1.8); /* IE 9 */
   -o-transform:scale(1.8); /* Opera */
   transform:scale(1.8);
   overflow: visible;
-  background-color: var(--background-color);
-  z-index: 10;
+  /* white zoom even in dark mode */
+  background-color: white;
 }
 /* Tweaks from arXiv */
 /* not all images are in figures, some are even inline in ltx_p */
@@ -961,14 +1004,15 @@ svg {
   flex-direction:column;
   align-items:center;
   text-align:center;
-  margin-top:4em;
-  margin-bottom:4em;
-  margin-left: 0.2em;
-  margin-right: 0.2em; }
+  margin-top:4rem;
+  margin-bottom:4rem;
+  margin-left: auto;
+  margin-right: auto; }
 .ltx_table .ltx_caption,
 .ltx_figure .ltx_caption {
   text-align: justify;
-  margin-top:1.5em;
+  margin-top:1.5rem;
+  line-height: 1.5rem;
   margin-bottom:1.5rem;
 }
 .ltx_flex_figure .ltx_figure .ltx_caption {
@@ -1088,7 +1132,12 @@ svg {
     margin-bottom: 1em;
 }
 .ltx_eqn_row   { display:table-row; }
-.ltx_eqn_cell  { display:table-cell; width:auto; }
+.ltx_eqn_cell  { 
+  display:table-cell;
+  width:auto;
+  padding-top:0.25rem;
+  padding-bottom:0.25rem;
+}
 .ltx_eqn_cell.ltx_eqn_eqno  {  width: 3em;}
 .ltx_tag.ltx_tag_equation,
 .ltx_tag.ltx_tag_equationgroup {
