@@ -1,8 +1,10 @@
 :root {
   /* TODO: style the rest */
   --background-color: #151515;
-  --text-color: #d4d4d4;
-  --link-text-color: #a6a6a6;
+  /* --text-color: #d4d4d4 */
+  /* --link-text-color: #a6a6a6 */
+  --text-color: #ddd; 
+  --link-text-color: #ddd;
   --border-color: white;
   --border-light-color: #d4d4d4;
   --note-mark-color: #daa002; /* color: #3f88c5; */
