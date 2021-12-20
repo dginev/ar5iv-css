@@ -163,7 +163,12 @@ article > div:not(.ltx_minipage) > img:first-of-type {
 }
 span.ltx_personname {
   font-size: 1rem;
-  white-space: nowrap;
+  display: inline-block;
+  overflow-wrap: break-word;
+  min-width: 14rem;
+}
+span.ltx_personname span:first {
+  font-size: 1.5rem;
 }
 span.ltx_personname > br.ltx_break + span {
   display: inline-block;
@@ -172,8 +177,11 @@ span.ltx_personname > br.ltx_break + span {
 
 .ltx_creator { 
   flex: 1 1 0px;
+  max-width: 100%;
   padding: 0.5rem;
- }
+  display: inline-block;
+  overflow-wrap: break-word;
+}
 /* do we want to display commas? */
 .ltx_author_before, .ltx_author_after { display: none;}
 .ltx_dates {
@@ -348,6 +356,7 @@ div.ltx_keywords:empty:before {
     display:block;
     margin-top: -1.8rem;
   }
+  /* highlight feature: */
   .ltx_note > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
   .ltx_note > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
   /* special case: affiliation in title */
@@ -671,6 +680,14 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_bib_article .bib-title { font-style:normal !important; }
 .ltx_bib_journal  { font-style:italic; }
 .ltx_bib_volume { font-weight:bold; }
+
+/* highlight feature for bibitem-tag */
+.ltx_tag_bibitem ~ *:active,
+.ltx_tag_bibitem ~ *:hover,
+.ltx_tag_bibitem:active ~ *,
+.ltx_tag_bibitem:hover ~ * {
+  background-color: var(--note-highlight-color);
+}
 
 /* indexes */
 .ltx_indexlist {
