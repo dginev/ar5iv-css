@@ -812,24 +812,24 @@ blockquote.ltx_quote:after {
   }
 }
 
-:not(.ltx_flex_cell) .ltx_img_landscape {
+:not(.ltx_flex_cell) > .ltx_img_landscape {
   max-width:100%;
   max-height:calc(var(--main-width)/1.33);
   width: auto;
   height:auto; }
-:not(.ltx_flex_cell) .ltx_img_portrait {
+:not(.ltx_flex_cell) > .ltx_img_portrait {
   max-height: var(--main-width); /* what is a reasonable "tallest" figure? */
   width: auto; }
-:not(.ltx_flex_cell) .ltx_img_square {
+:not(.ltx_flex_cell) > .ltx_img_square {
   max-height:calc(var(--main-width)/1.33);
   width: auto; }
   
-:not(.ltx_flex_cell) mtext img.ltx_img_landscape,
-:not(.ltx_flex_cell) mtext img.ltx_img_portrait,
-:not(.ltx_flex_cell) mtext img.ltx_img_square,
-:not(.ltx_flex_cell) .ltx_p img.ltx_img_landscape,
-:not(.ltx_flex_cell) .ltx_p img.ltx_img_portrait,
-:not(.ltx_flex_cell) .ltx_p img.ltx_img_square {
+mtext img.ltx_img_landscape,
+mtext img.ltx_img_portrait,
+mtext img.ltx_img_square,
+:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p img.ltx_img_landscape,
+:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p img.ltx_img_portrait,
+:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p img.ltx_img_square {
   width: 1rem;
   height: 1rem;
   min-width: 1rem;
