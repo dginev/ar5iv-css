@@ -241,6 +241,7 @@ div.ltx_keywords:empty:before {
 
 .ltx_note_content {
   display:block;
+  opacity: 100;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   margin:0.6rem;
@@ -249,6 +250,7 @@ div.ltx_keywords:empty:before {
 }
 .ltx_author_notes {
   display: block;
+  opacity: 100;
   margin-top: 0.5rem;
   margin-bottom: 2rem;
   font-size: 0.9rem;
@@ -299,11 +301,11 @@ div.ltx_keywords:empty:before {
   .ltx_note:not(.ltx_note_frontmatter):hover > .ltx_note_outer,
   .ltx_note:not(.ltx_note_frontmatter):active > .ltx_note_outer {
     display: block;
+    opacity: 100;
     position: absolute;
     top: 0;
     margin: auto;
     padding: 2rem;
-    opacity: 1;
     background-color: var(--background-color);
     z-index:10;
     border-width: 0.1rem 0;
@@ -314,14 +316,17 @@ div.ltx_keywords:empty:before {
      get a standalone line in small-screen mode. */
   .ltx_note.ltx_note_frontmatter {
     display: block;
+    opacity: 100;
     opacity: inherit;    
     text-align: left;
   }
   .ltx_note.ltx_note_frontmatter > .ltx_note_mark {
     display: none;
+    opacity: 0;
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_outer {
     display: block;
+    opacity: 100;
     opacity: inherit;
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_content {
@@ -334,6 +339,7 @@ div.ltx_keywords:empty:before {
   /* similarly for notes left stranded in the top-level authors container */
   .ltx_authors > .ltx_note .ltx_note_mark {
     display: none;
+    opacity: 0;
   }
 }
 
@@ -342,6 +348,7 @@ div.ltx_keywords:empty:before {
 @media only screen and (min-width: 96rem) {
   .ltx_note_outer {
     display: block;
+    opacity: 100;
     position:relative;
     clear:both;
     float: right;
@@ -354,6 +361,7 @@ div.ltx_keywords:empty:before {
   }
   .ltx_note_content > .ltx_note_mark {
     display:block;
+    opacity: 100;
     margin-top: -1.8rem;
   }
   /* highlight feature: */
@@ -367,9 +375,11 @@ div.ltx_keywords:empty:before {
   /* affiliatons have some weirdness... e.g. if they appear in titles, they're special footnotes */
   .ltx_title.ltx_title_document .ltx_note_outer {
     display: block;
+    opacity: 100;
   }
   .ltx_title.ltx_title_document .ltx_note_type {
     display: none;
+    opacity: 0;
   }
   /* TODO: Until we can dedup affiliations, we have no choice but to hide them first, show them on hover.
            Even on large screens. */
@@ -402,11 +412,11 @@ div.ltx_keywords:empty:before {
   figcaption .ltx_note:hover > .ltx_note_outer,
   figcaption .ltx_note:active > .ltx_note_outer {
     display: block;
+    opacity: 100;
     position: absolute;
     top: 0;
     margin: auto;
     padding: 2rem;
-    opacity: 1;
     background-color: var(--background-color);
     z-index:10;
     border-width: 0.1rem 0;
@@ -418,10 +428,12 @@ div.ltx_keywords:empty:before {
   .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer,
   .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer {
     display: block;
+    opacity: 100;
   }
   /* on large screens, low-level latex footnote overrides without a mark */
   .ltx_role_footnotetext.ltx_note .ltx_note_mark {
     display:none;
+    opacity: 0;
   }
   .ltx_role_footnotetext.ltx_note .ltx_note_outer {
     position: absolute;
@@ -431,10 +443,12 @@ div.ltx_keywords:empty:before {
   .ltx_abstract > .ltx_note > .ltx_note_mark,
   .ltx_title_document > .ltx_note > .ltx_note_mark {
     display: none;
+    opacity: 0;
   }
   /* Frontmatter notes: Author notes, Affiliation notes, Preprint notes */
   .ltx_note.ltx_note_frontmatter > .ltx_note_mark {
     display: none;
+    opacity: 0;
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_content {
     border: none;
@@ -445,6 +459,7 @@ div.ltx_keywords:empty:before {
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_content > .ltx_note_mark {
     display: none;
+    opacity: 0;
   }
   .ltx_note.ltx_note_frontmatter > .ltx_note_outer {
     margin-bottom: 0rem;
@@ -455,6 +470,7 @@ div.ltx_keywords:empty:before {
 /* footnotetext are low-level notes without a type description */
 .ltx_role_footnotetext.ltx_note .ltx_note_type {
   display:none;
+  opacity: 0;
 }
 /*======================================================================
   Document Structure; Titles & Frontmatter */
@@ -633,11 +649,9 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 }
 
 /* Bibliographies */
-/* .ltx_bibliography {} */
 .ltx_bibliography dt { margin-right:0.5em; float:left; }
 .ltx_bibliography dd { margin-left:3em; }
-/* .ltx_biblist {} */
-/* .ltx_tag_bibitem {} */
+
 .ltx_bibitem {
   display:table;
   table-layout: fixed;
