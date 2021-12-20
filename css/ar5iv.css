@@ -74,11 +74,14 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-.ltx_para {
+.ltx_para,
+.ltx_abstract .ltx_p,
+.ltx_acknowledgements {
   font-family: var(--text-font-family);
-  margin-bottom: 1.5rem;
   text-align: justify;
   text-justify: inter-word;
+  line-height: 1.5rem;
+  margin-bottom: 1.5rem;
   /* if a flex figure comes before the para, avoid collisions */
   clear: both; 
 }
@@ -349,8 +352,8 @@ div.ltx_keywords:empty:before {
   .ltx_note_outer {
     display: block;
     opacity: 100;
-    position:relative;
-    clear:both;
+    position: relative;
+    clear: both;
     float: right;
     padding-bottom: 2rem;
     padding-right: 2rem;
@@ -426,12 +429,18 @@ div.ltx_keywords:empty:before {
   /* affiliations may still pop-up in the side margin, 
      looks a bit better in the title page */
   .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer,
-  .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer {
+  .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer,
+  .ltx_personname .ltx_role_footnote > .ltx_note_mark:hover + .ltx_note_outer,
+  .ltx_personname .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer {
     display: block;
     opacity: 100;
+    position:absolute;
+    left: 0;
   }
   /* on large screens, low-level latex footnote overrides without a mark */
-  .ltx_role_footnotetext.ltx_note .ltx_note_mark {
+  .ltx_role_footnotetext.ltx_note .ltx_note_mark,
+  /* also regular footnotes are hidden on author names, to avoid unfortunate collisions */
+  .ltx_personname .ltx_role_footnote .ltx_note_outer {
     display:none;
     opacity: 0;
   }
@@ -1067,6 +1076,12 @@ svg {
 .ltx_minipage .ltx_float,
 .ltx_minipage .ltx_float .ltx_caption {
   display: inline-block;
+}
+/* often minipages are inline-blocks, for which "vertical-align" is inactive */
+/* so we also default to an auto margin in order to center */
+.ltx_minipage.ltx_align_middle {
+  margin: auto;
+  width: auto !important;
 }
 .ltx_minipage > .ltx_graphics {
   max-width:100%;
