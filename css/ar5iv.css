@@ -551,7 +551,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 }
 .ltx_TOC > .ltx_toclist > .ltx_tocentry {
   list-style-type:none;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.3rem;
 }
 .ltx_tocentry  {
   list-style-type:none;
@@ -574,12 +574,14 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   font-family: var(--text-font-family);
 }
 .ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref,
-.ltx_tocentry_subsection > .ltx_ref {
+.ltx_tocentry_subsection > .ltx_ref,
+.ltx_tocentry_subsubsection > .ltx_ref {
   border-bottom: none;
 }
 
 .ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag_ref,
-.ltx_tocentry_subsection > .ltx_ref > .ltx_ref_title > .ltx_tag_ref {
+.ltx_tocentry_subsection > .ltx_ref > .ltx_ref_title > .ltx_tag_ref,
+.ltx_tocentry_subsubsection > .ltx_ref > .ltx_ref_title > .ltx_tag_ref {
   border-bottom: 0.063rem dotted var(--link-text-color);
   width: min-content;
   display: inline-block;
