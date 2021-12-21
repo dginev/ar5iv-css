@@ -211,8 +211,9 @@ div.ltx_keywords:empty:before {
   content:"Keywords: ";
   font-weight: bold;
 }
-.ltx_keywords {
-  margin-top: 1rem;
+.ltx_keywords,
+.ltx_classification {
+  margin-bottom: 1.5rem;
   font-size: 1rem;
   font-family: var(--text-font-family);
   font-weight: normal; 
@@ -660,7 +661,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 }
 
 /* Theorems and other statements */
-.ltx_theorem  {margin:1em 0em 1em 0em; }
+.ltx_theorem, .ltx_proof  { margin:2rem 0rem 1rem 0rem; }
 
 /* TODO: this approach to .ltx_item is still not satisfying, especially for nested lists */
 .ltx_item > .ltx_theorem { margin-left: 1em; }
@@ -1191,15 +1192,15 @@ svg {
     display:table;
     width:100%;
     border-collapse:collapse;
-    margin-top: 1em;
-    margin-bottom: 1em;
+    margin-top: 0.75em;
+    margin-bottom: 0.75em;
 }
 .ltx_eqn_row   { display:table-row; }
 .ltx_eqn_cell  { 
   display:table-cell;
   width:auto;
-  padding-top:0.25rem;
-  padding-bottom:0.25rem;
+  padding-top:0.3rem;
+  padding-bottom:0.3rem;
 }
 .ltx_eqn_cell.ltx_eqn_eqno  {  width: 3em;}
 .ltx_tag.ltx_tag_equation,
