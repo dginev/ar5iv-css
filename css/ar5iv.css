@@ -88,8 +88,10 @@ body {
 .ltx_p {
   line-height: 1.5rem;
   /* by default, p doesn't indent */
-  text-indent:0em;
+  text-indent:0rem;
   white-space:normal;
+  /* no top margin, stay snug with titles */
+  margin-top: 0rem;
 }
 .ltx_text {
   font-family: var(--text-font-family);
@@ -512,7 +514,7 @@ div.ltx_keywords:empty:before {
 /* TODO: Can we get a better handle on the ToC title? */
 .ltx_title_abstract,.ltx_TOC > h6 {
   margin-top: 0;
-  margin-bottom: 0;
+  margin-bottom: 1.5rem;
   padding-top: 0;
   color: var(--link-text-color);
   text-decoration: none;
@@ -537,7 +539,7 @@ div.ltx_keywords:empty:before {
   margin-bottom:2rem;
 }
 ul.ltx_toclist {
-  padding-left: 1.8rem;
+  padding-left: 2.5rem;
 }
 ul.ltx_toclist > .ltx_tocentry:first-of-type {
   margin-top: 0.3rem;
@@ -563,6 +565,8 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_tocentry_chapter > .ltx_ref > .ltx_ref_title > .ltx_tag,
 .ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag {
   margin-right: 1rem;
+  display: inline-block;
+  min-width: 1.5rem;
 }
 .ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref > .ltx_ref_title,
 .ltx_tocentry_subsection > .ltx_ref > .ltx_ref_title {
@@ -616,18 +620,18 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_title_subsection    { 
   font-size:1.2rem;
   font-weight:bold;
-  margin-bottom:1.5rem; 
+  margin-bottom:1rem;
 }
 .ltx_title_subsubsection {
   font-size:1rem;
   font-weight:bold;
-  margin-bottom:1.5rem; 
+  margin-bottom:1rem; 
 }
 .ltx_title_paragraph {
   font-size:1rem;
   font-weight:bold;
-  display:inline;
-  margin-right:1rem; 
+  margin-right:1rem;
+  margin-bottom: 0.5rem;
 }
 .ltx_title_subparagraph { 
   font-size:1rem;
@@ -648,7 +652,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 
 .ltx_part, .ltx_chapter { margin-bottom: 5rem;}
 .ltx_section { margin-bottom: 2.5rem;}
-.ltx_subsection { margin-bottom: 1.5rem;}
+.ltx_subsection { margin-bottom: 2rem;}
 .ltx_subsubsection { margin-bottom: .5rem;}
 .ltx_section .ltx_para:first-of-type .ltx_p:first-of-type {
   /* TODO: this is debatable */
@@ -1058,6 +1062,9 @@ svg {
   margin-bottom:4rem;
   margin-left: auto;
   margin-right: auto; }
+.ltx_caption {
+  font-family: var(--text-font-family);
+}
 .ltx_table .ltx_caption,
 .ltx_figure .ltx_caption {
   text-align: justify;
@@ -1248,6 +1255,7 @@ li.ltx_item > .ltx_tag {
 }
 .ltx_item .ltx_para {
   margin-bottom: 0em;
+  display: inline;
 }
 .ltx_item + .ltx_item {
   margin-top: 1em;
