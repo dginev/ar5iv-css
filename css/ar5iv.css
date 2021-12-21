@@ -113,6 +113,10 @@ math {
   font-family: var(--math-font-family);
   word-wrap: break-word;
 }
+/* add some padding to math table cells, e.g. space out cells with fractions */
+mtd {
+  padding: 0.1rem;
+}
 
 /* eLife-like links */
 .ltx_ref {
@@ -182,8 +186,11 @@ span.ltx_personname > br.ltx_break + span {
   flex: 1 1 0px;
   max-width: 100%;
   padding: 0.5rem;
-  display: inline-block;
   overflow-wrap: break-word;
+}
+.ltx_creator br.ltx_break {
+  flex-basis: 100%;
+  height: 0;
 }
 /* do we want to display commas? */
 .ltx_author_before, .ltx_author_after { display: none;}
@@ -254,6 +261,11 @@ div.ltx_keywords:empty:before {
 .ltx_author_notes {
   display: block;
   opacity: 100;
+  /* the min-width here is trying to force affiliation information 
+     on its own dedicated full-width line in the flex author block
+     maybe we should evolve latexml to offer a flex_size_* attribute
+     also on .ltx_creator elements? then this can be made cleaner. */
+  min-width: 21rem;
   margin-top: 0.5rem;
   margin-bottom: 2rem;
   font-size: 0.9rem;
@@ -746,7 +758,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 }
 
 /* Feature: stylized standalone quotes */
-blockquote.ltx_quote {
+:not(.ltx_quote) > blockquote.ltx_quote {
   border-left: 0.188rem solid var(--border-color);
   font-size: 1em;
   font-style: italic;
@@ -756,7 +768,7 @@ blockquote.ltx_quote {
   position: relative;
   z-index: 0;
 }
-blockquote.ltx_quote:before {
+:not(.ltx_quote) > blockquote.ltx_quote:before {
     content: "";
     position: absolute;
     top: 50%;
@@ -766,7 +778,7 @@ blockquote.ltx_quote:before {
     width: 0.25rem;
     margin-top: -1rem;
 }
-blockquote.ltx_quote:after {
+:not(.ltx_quote) > blockquote.ltx_quote:after {
     content: "“";
     position: absolute;
     top: 50%;
@@ -850,9 +862,9 @@ blockquote.ltx_quote:after {
 mtext img.ltx_img_landscape,
 mtext img.ltx_img_portrait,
 mtext img.ltx_img_square,
-:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p img.ltx_img_landscape,
-:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p img.ltx_img_portrait,
-:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p img.ltx_img_square {
+:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p:not(.ltx_align_center) img.ltx_img_landscape,
+:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p:not(.ltx_align_center) img.ltx_img_portrait,
+:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p:not(.ltx_align_center) img.ltx_img_square {
   width: 1rem;
   height: 1rem;
   min-width: 1rem;
@@ -903,10 +915,8 @@ mtext img.ltx_img_square,
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_3 img.ltx_graphics {
   min-width: 15rem;
 }
-.ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_4 img.ltx_graphics {
-  min-width: 10rem;
-}
-.ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_many img.ltx_graphics {
+/* default: */
+.ltx_flex_figure > .ltx_flex_cell img.ltx_graphics {
   min-width: 10rem;
 }
 
