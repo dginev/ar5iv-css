@@ -676,7 +676,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 
 /* Bibliographies */
 .ltx_bibliography dt { margin-right:0.5em; float:left; }
-.ltx_bibliography dd { margin-left:3em; }
+.ltx_bibliography dd { margin-left: 3em; }
 
 .ltx_bibitem {
   display:table;
@@ -1192,8 +1192,8 @@ svg {
     display:table;
     width:100%;
     border-collapse:collapse;
-    margin-top: 0.75em;
-    margin-bottom: 0.75em;
+    margin-top: 0.65rem;
+    margin-bottom: 0.65rem;
 }
 .ltx_eqn_row   { display:table-row; }
 .ltx_eqn_cell  { 
@@ -1278,7 +1278,10 @@ dl.ltx_description dd.ltx_item {
   margin-left:3em;
   text-indent: 0em;
 }
-dl.ltx_description dl.ltx_description dd { margin-left:3em; }
+dl.ltx_description dl.ltx_description dd {
+  margin-left:3em;
+  margin-bottom: 0.75em;
+}
 
 /*======================================================================
  Borders and such */
