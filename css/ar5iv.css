@@ -46,6 +46,8 @@
 }
 [data-theme="dark"] img, svg {
   filter: brightness(.8) contrast(1.2);
+  background-color: white;
+  color: black;
 }
 
 /* Main content */
@@ -945,9 +947,12 @@ mtext img.ltx_img_square,
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_3 img.ltx_graphics {
   min-width: 15rem;
 }
+.ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_4 img.ltx_graphics {
+  min-width: 10rem;
+}
 /* default: */
 .ltx_flex_figure > .ltx_flex_cell img.ltx_graphics {
-  min-width: 10rem;
+  min-width: 7rem;
 }
 
 
