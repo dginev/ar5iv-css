@@ -438,6 +438,8 @@ div.ltx_keywords:empty:before {
   */
   th .ltx_note_outer, 
   td .ltx_note_outer,
+  .ltx_th .ltx_note_outer,
+  .ltx_td .ltx_note_outer,
   figcaption .ltx_note_outer,
   .ltx_role_affiliation > .ltx_note_outer {
     display: none;
@@ -450,8 +452,12 @@ div.ltx_keywords:empty:before {
   }
   th .ltx_note:hover > .ltx_note_outer,
   th .ltx_note:active > .ltx_note_outer,
+  .ltx_th .ltx_note:hover > .ltx_note_outer,
+  .ltx_th .ltx_note:active > .ltx_note_outer,
   td .ltx_note:hover > .ltx_note_outer,
   td .ltx_note:active > .ltx_note_outer,
+  .ltx_td .ltx_note:hover > .ltx_note_outer,
+  .ltx_td .ltx_note:active > .ltx_note_outer,
   figcaption .ltx_note:hover > .ltx_note_outer,
   figcaption .ltx_note:active > .ltx_note_outer {
     display: block;
@@ -1376,3 +1382,9 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_FATAL       { text-align: left; display:inline; color:var(--fatal-text-color); }
 .ltx_rdf          { display:none; }
 .ltx_missing, .ltx_missing_label, .ltx_nounicode { color:var(--error-text-color);}
+
+/* math specific */
+merror.ltx_ERROR {
+  font-size: 0.75rem;
+  background-color: var(--background-color);
+}
