@@ -49,6 +49,11 @@
   background-color: white;
   color: black;
 }
+[data-theme="light"] img, svg {
+  filter: none;
+  background-color: white;
+  color: black;
+}
 
 /* Main content */
 body {
@@ -726,6 +731,17 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   top: 0.24rem;
   line-height: 1.5rem;
   text-align: left;
+  /* alternative: 
+     but what is the stable best practice here? */
+  /*
+    text-align: right;
+    left: -1.8rem;
+    top: 0.5rem;  
+    
+    .ltx_biblist {
+      margin-left: -6rem;
+    }
+  */
   vertical-align: text-top;
   word-break: normal;
   overflow-wrap: break-word;
@@ -900,9 +916,9 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 mtext img.ltx_img_landscape,
 mtext img.ltx_img_portrait,
 mtext img.ltx_img_square,
-:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p:not(.ltx_align_center) img.ltx_img_landscape,
-:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p:not(.ltx_align_center) img.ltx_img_portrait,
-:not(.ltx_flex_cell):not(.ltx_figure) > .ltx_p:not(.ltx_align_center) img.ltx_img_square {
+:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) img.ltx_img_landscape,
+:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) img.ltx_img_portrait,
+:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) img.ltx_img_square {
   width: 1rem;
   height: 1rem;
   min-width: 1rem;
@@ -1089,8 +1105,8 @@ svg {
 .ltx_inline-block,
 .ltx_inline-block .ltx_para { display:inline-block; }
 /* experimental: flex model, to center short captions, justify long ones */
-:not(.ltx_flex_cell) .ltx_table,
-:not(.ltx_flex_cell) .ltx_figure {
+:not(.ltx_flex_cell) > .ltx_table,
+:not(.ltx_flex_cell) > .ltx_figure {
   display:flex;
   flex-direction:column;
   align-items:center;
@@ -1190,6 +1206,15 @@ svg {
   background-color: var(--border-color) !important;
 }
 
+/* ltx_transformed_outer and ltx_transformed_inner mostly come out broken at the moment
+   e.g. we need to debug 2106.15835, where we try to squeeze a table down, and fail
+   There are plenty of other examples in arXiv. For now, disable the outer sizing
+*/
+.ltx_transformed_outer {
+  width: auto !important;
+  height: auto !important;
+}
+
 /*======================================================================
  Inline Basics
 
@@ -1238,7 +1263,12 @@ svg {
   padding-top:0.3rem;
   padding-bottom:0.3rem;
 }
-.ltx_eqn_cell.ltx_eqn_eqno  {  width: 3em;}
+.ltx_eqn_cell.ltx_eqn_eqno  {
+  width: 3em;
+  /* avoid line-breaking complex eqn labels */
+  /* see eqn. A_2 at 0708.2787 for an example */
+  white-space: nowrap;
+}
 .ltx_tag.ltx_tag_equation,
 .ltx_tag.ltx_tag_equationgroup {
   font-size: 0.9em;
@@ -1317,6 +1347,18 @@ dl.ltx_description dd.ltx_item {
 dl.ltx_description dl.ltx_description dd {
   margin-left:3em;
   margin-bottom: 0.75em;
+}
+
+/* Lists inside a table-containing figure
+   should still be left-aligned.
+   See 2005.00832, Table IV, for example */
+.ltx_table .ltx_itemize,
+.ltx_table .ltx_enumerate,
+.ltx_table .ltx_description {
+  text-align: justify;
+  text-justify: inter-word;
+  font-family: var(--text-font-family);
+  line-height: 1.5rem;
 }
 
 /*======================================================================
