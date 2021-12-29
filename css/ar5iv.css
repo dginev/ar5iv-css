@@ -17,6 +17,7 @@
   --image-color: black;
   --image-background-color: white;
   --link-text-color: #212121;
+  --email-link-color: #026ecb;
   --note-mark-color: #026ecb; /* color: #3f88c5; */
   --note-highlight-color: #ffffd4;
   --info-text-color: #01719d;
@@ -36,6 +37,7 @@
   --border-light-color: #d4d4d4;
   --note-mark-color: #daa002; /* color: #3f88c5; */
   --note-highlight-color: midnightblue;
+  --email-link-color: darkcyan;
   /* TODO: consider dedicated info, warning and fatal colors*/
   --error-text-color: #d84148;
   --index-ref-color: #cd5b45;
@@ -586,6 +588,8 @@ div.ltx_keywords:empty:before {
 
 /* TODO: not yet tested */
 .ltx_role_dedicatory { font-size:100%; font-style:italic; text-align:center; margin:1em;}
+
+.ltx_role_email > a { color: var(--email-link-color); }
 
 /* Table of Contents, main page display */
 .ltx_TOC {
