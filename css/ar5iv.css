@@ -201,6 +201,7 @@ article > div:not(.ltx_minipage) > img:first-of-type {
   text-align: center;
 }
 span.ltx_personname {
+  font-family: var(--text-font-family);
   font-size: 1rem;
   display: inline-block;
   overflow-wrap: break-word;
@@ -230,6 +231,7 @@ span.ltx_personname > br.ltx_break + span {
   margin-top: 0rem;
   margin-bottom: 1rem;
   text-align: center;
+  font-family: var(--text-font-family);
 }
 .ltx_role_author + .ltx_role_author {
   margin-left: 2rem;  
@@ -259,7 +261,12 @@ div.ltx_keywords:empty:before {
 }
 
 /* TODO: Untested */
-.ltx_date { text-align:center; font-size: 120%; margin:0.5em 0 0.5em 0; }
+.ltx_date { 
+  font-family: var(--text-font-family);
+  text-align:center;
+  font-size: 120%;
+  margin:0.5em 0 0.5em 0; 
+}
 
 /* Mainmatter Footnotes */
 .ltx_note {
@@ -288,6 +295,7 @@ div.ltx_keywords:empty:before {
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
   margin:0.6rem;
+  font-family: var(--text-font-family);
   line-height: 1.5rem;
   overflow-wrap: break-word;
 }
@@ -301,6 +309,7 @@ div.ltx_keywords:empty:before {
   min-width: 21rem;
   margin-top: 0.5rem;
   margin-bottom: 2rem;
+  font-family: var(--text-font-family);
   font-size: 0.9rem;
   padding: 0.2rem;
 }
