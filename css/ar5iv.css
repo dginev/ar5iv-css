@@ -355,8 +355,8 @@ div.ltx_keywords:empty:before {
     overflow-wrap: break-word;
     width: 90%;
   }
-  .ltx_note:not(.ltx_note_frontmatter):hover > .ltx_note_outer,
-  .ltx_note:not(.ltx_note_frontmatter):active > .ltx_note_outer {
+  .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):hover > .ltx_note_outer,
+  .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):active > .ltx_note_outer {
     display: block;
     opacity: 100;
     position: absolute;
@@ -540,6 +540,14 @@ div.ltx_keywords:empty:before {
 .ltx_role_footnotetext.ltx_note .ltx_note_type {
   display:none;
   opacity: 0;
+}
+/* affiliationmark notes were only provided a verbatim mark, deactivate them */
+.ltx_note.ltx_role_affiliationmark > .ltx_note_mark {
+  color: var(--text-color);
+}
+.ltx_note.ltx_role_affiliationmark > .ltx_note_outer {
+  display: none !important;
+  opacity: 0 !important;
 }
 /*======================================================================
   Document Structure; Titles & Frontmatter */
