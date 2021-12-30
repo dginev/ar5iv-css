@@ -615,7 +615,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   margin-bottom: 0.5rem;
 }
 .ltx_TOC > .ltx_toclist > .ltx_tocentry > a.ltx_ref {
-  display: block;
+  display: inline-block;
   border-bottom: none;
   font-weight: bold;
   margin-bottom: 0.5em;
