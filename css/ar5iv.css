@@ -428,7 +428,10 @@ div.ltx_keywords:empty:before {
   .ltx_note > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
   /* special case: affiliation in title */
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
-  .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content {
+  .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
+  /* special case: badly formatted author notes without inner markup */
+  .ltx_author_notes > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
+  .ltx_author_notes > span > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content {
     background-color: var(--note-highlight-color);
   }
   /* affiliatons have some weirdness... e.g. if they appear in titles, they're special footnotes */
@@ -457,7 +460,9 @@ div.ltx_keywords:empty:before {
   .ltx_th .ltx_note_outer,
   .ltx_td .ltx_note_outer,
   figcaption .ltx_note_outer,
-  .ltx_role_affiliation > .ltx_note_outer {
+  .ltx_role_affiliation > .ltx_note_outer,
+  .ltx_author_notes > .ltx_note .ltx_note_outer,
+  .ltx_author_notes > span > .ltx_note .ltx_note_outer {
     display: none;
     opacity: 0;
   }
@@ -493,7 +498,9 @@ div.ltx_keywords:empty:before {
   .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer,
   .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer,
   .ltx_personname .ltx_role_footnote > .ltx_note_mark:hover + .ltx_note_outer,
-  .ltx_personname .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer {
+  .ltx_personname .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer,
+  .ltx_author_notes > .ltx_note  > .ltx_note_mark:hover + .ltx_note_outer,
+  .ltx_author_notes > span > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer {
     display: block;
     opacity: 100;
     position:absolute;
@@ -510,27 +517,28 @@ div.ltx_keywords:empty:before {
     position: absolute;
     left: var(--main-width-margin);
   }
-  /* notes directly in abstract don't benefit from having a mark on wide displays */
+  /* notes directly in abstract, or document, don't benefit from
+     having a mark on wide displays */
   .ltx_abstract > .ltx_note > .ltx_note_mark,
-  .ltx_title_document > .ltx_note > .ltx_note_mark {
+  .ltx_title_document > .ltx_note > .ltx_note_mark,
+  .ltx_document > .ltx_note > .ltx_note_mark,
+  .ltx_document > .ltx_note > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
+  /* also frontmatter notes: Author notes, Affiliation notes, Preprint notes */
+  .ltx_note.ltx_note_frontmatter > .ltx_note_mark,
+  .ltx_note.ltx_note_frontmatter > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
+  /* the inner marks on "malformed" author block notes */
+  .ltx_author_notes > .ltx_note  > .ltx_note_outer .ltx_note_mark,
+  .ltx_author_notes > span > .ltx_note > .ltx_note_outer .ltx_note_mark {
     display: none;
     opacity: 0;
   }
-  /* Frontmatter notes: Author notes, Affiliation notes, Preprint notes */
-  .ltx_note.ltx_note_frontmatter > .ltx_note_mark {
-    display: none;
-    opacity: 0;
-  }
+
   .ltx_note.ltx_note_frontmatter .ltx_note_content {
     border: none;
     margin-bottom: 0rem;
     padding-bottom: 0rem;
     margin-top: 0rem;
     padding-top: 0rem;
-  }
-  .ltx_note.ltx_note_frontmatter .ltx_note_content > .ltx_note_mark {
-    display: none;
-    opacity: 0;
   }
   .ltx_note.ltx_note_frontmatter > .ltx_note_outer {
     margin-bottom: 0rem;
