@@ -506,23 +506,31 @@ div.ltx_keywords:empty:before {
     position:absolute;
     left: 0;
   }
-  /* on large screens, low-level latex footnote overrides without a mark */
-  .ltx_role_footnotetext.ltx_note .ltx_note_mark,
   /* also regular footnotes are hidden on author names, to avoid unfortunate collisions */
   .ltx_personname .ltx_role_footnote .ltx_note_outer {
     display:none;
     opacity: 0;
   }
-  .ltx_role_footnotetext.ltx_note .ltx_note_outer {
+  /* footnotemark + footnotetext combinations come from hand-crafted typesetting
+     see 1806.0319 for a good example. Let us try to avoid the obvious clashes 
+     with similarly hand-crafted CSS typesetting. */
+  .ltx_note.ltx_role_footnotetext .ltx_note_outer {
     position: absolute;
     left: var(--main-width-margin);
   }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(2) .ltx_note_outer { top: 8rem; }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(3) .ltx_note_outer { top: 16rem; }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(4) .ltx_note_outer { top: 24rem; }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(5) .ltx_note_outer { top: 32rem; }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(6) .ltx_note_outer { top: 40rem; }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(7) .ltx_note_outer { top: 48rem; }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(8) .ltx_note_outer { top: 56rem; }
   /* notes directly in abstract, or document, don't benefit from
      having a mark on wide displays */
   .ltx_abstract > .ltx_note > .ltx_note_mark,
   .ltx_title_document > .ltx_note > .ltx_note_mark,
   .ltx_document > .ltx_note > .ltx_note_mark,
-  .ltx_document > .ltx_note > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
+  .ltx_document > .ltx_note:not(.ltx_role_footnotetext) > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
   /* also frontmatter notes: Author notes, Affiliation notes, Preprint notes */
   .ltx_note.ltx_note_frontmatter > .ltx_note_mark,
   .ltx_note.ltx_note_frontmatter > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
@@ -547,7 +555,7 @@ div.ltx_keywords:empty:before {
 }
 
 /* footnotetext are low-level notes without a type description */
-.ltx_role_footnotetext.ltx_note .ltx_note_type {
+.ltx_note.ltx_role_footnotetext .ltx_note_type {
   display:none;
   opacity: 0;
 }
@@ -1254,6 +1262,8 @@ svg {
 }
 .ltx_rule {
   color: var(--border-color);
+  /* for hand-drwan bits such as  a QED symbol */
+  vertical-align: middle;
   /* latexml often produces an element style="background:black;" for 
     .ltx_rule nodes, which makes them impossible to style beyond the author intent.
     as this is experimental, we take the liberty of overriding those with !important.
