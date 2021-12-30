@@ -1245,6 +1245,9 @@ svg {
   width:1rem;
   display: inline-block;
 }
+/* for now hide the download button for listings, 
+   needs some styling thought and also ensuring it works. */
+.ltx_listing_data { display: none; }
 
 .ltx_float {
   margin: 3.5rem; }
