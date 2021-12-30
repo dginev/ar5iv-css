@@ -1129,6 +1129,12 @@ svg {
 .ltx_inline-para .ltx_para  { display:inline; }
 .ltx_inline-block,
 .ltx_inline-block .ltx_para { display:inline-block; }
+
+/* TODO: it appears our width estimations for the individual rows of an inline block
+         are not always accurate? Revert ot auto for now,
+         see 2105.00613 for examples */
+.ltx_inline-block > .ltx_p { width: auto !important; }
+
 /* experimental: flex model, to center short captions, justify long ones */
 :not(.ltx_flex_cell) > .ltx_table,
 :not(.ltx_flex_cell) > .ltx_figure {
