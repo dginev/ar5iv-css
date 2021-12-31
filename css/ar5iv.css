@@ -1289,8 +1289,8 @@ svg {
  Note that LaTeX(ML)'s font model doesn't map quite exactly to CSS's
  Font Families => font-family 
 */
-.ltx_font_serif      { font-family: serif; }
-.ltx_font_sansserif  { font-family: sans-serif; }
+.ltx_font_serif      { font-family: var(--text-font-family); }
+.ltx_font_sansserif  { font-family: var(--headings-font-family); }
 .ltx_font_typewriter { font-family: var(--code-font-family); }
 /* dingbats should be converted to unicode? */
 /* Math font families handled within math: script, symbol, fraktur, blackboard ? */
