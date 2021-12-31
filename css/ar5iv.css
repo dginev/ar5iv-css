@@ -28,11 +28,11 @@
 }
 
 /* Dark theme */
+/* Help from design-minded enthusiasts is most welcome! */
 [data-theme="dark"] {
-  /* TODO: style the rest */
-  --background-color: #151515;
-  --text-color: #ddd; 
-  --link-text-color: #ddd;
+  --background-color: #0d1117;
+  --text-color: #c9d1d9; 
+  --link-text-color: #c9d1d9;
   --border-color: white;
   --border-light-color: #d4d4d4;
   --note-mark-color: #daa002; /* color: #3f88c5; */
