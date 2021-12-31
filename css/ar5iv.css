@@ -1283,6 +1283,9 @@ svg {
   height: auto !important;
 }
 
+/* \phantom - hide content but still allocate stand-in space */
+.ltx_phantom { visibility: hidden; }
+
 /*======================================================================
  Inline Basics
 
