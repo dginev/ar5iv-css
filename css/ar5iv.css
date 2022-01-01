@@ -1496,7 +1496,8 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_ERROR       { text-align: left; display:inline; color:var(--error-text-color); }
 .ltx_FATAL       { text-align: left; display:inline; color:var(--fatal-text-color); }
 .ltx_rdf          { display:none; }
-.ltx_missing, .ltx_missing_label, .ltx_nounicode { color:var(--error-text-color);}
+.ltx_missing, .ltx_nounicode { color:var(--error-text-color);}
+.ltx_missing_label { color: var(--warning-text-color); }
 
 /* math specific */
 merror.ltx_ERROR {
