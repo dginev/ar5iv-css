@@ -61,10 +61,28 @@
 body {
   margin:0;
   height: 100%;
+  width: 100%;
   color: var(--text-color);
   background-color: var(--background-color);
 }
+/* getting some rather unpleasant horizontal scroll on Chrome on large screens,
+   likely due to the way footnotes get laid out? Upgrade ideas welcome. */
+@media only screen and (max-width: 95.99rem) {
+  body {
+    overflow-x: scroll;
+  }
+}
+@media only screen and (min-width: 96rem) {
+  body {
+    overflow-x: hidden;
+  }
+}
+
+.ltx_page_main {
+  width: 100%;
+}
 .ltx_page_content {
+  width: 100%;
   margin: 4rem 1rem;
   font-size: 1rem;
   font-weight: 300;
