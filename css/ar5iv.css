@@ -280,6 +280,9 @@ div.ltx_keywords:empty:before {
   font-style: normal;
   font-size: 0.85em;
 }
+.ltx_note + .ltx_note {
+  padding-left: 0.2rem;
+}
 /* the mark is in "em", but the outer note is in "rem",
   as we have a unified footnote presentation */
 .ltx_note_outer {
