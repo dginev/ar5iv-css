@@ -1487,7 +1487,10 @@ dl.ltx_description dl.ltx_description dd {
 /*======================================================================
  Misc */
 /* .ltx_verbatim*/
-.ltx_verbatim { text-align:left; }
+.ltx_verbatim { 
+  text-align:left; 
+  font-size: 90%;
+}
 /*======================================================================
  Meta stuff */
 .ltx_tag_note { display: none; }
