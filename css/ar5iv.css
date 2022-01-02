@@ -162,7 +162,9 @@ mtd {
 .ltx_cite {
   font-style: normal;
 }
-
+.ltx_cite + .ltx_cite {
+  padding-left: 0.2rem;
+}
 /* title page image */
 article > div:not(.ltx_minipage) > img:first-of-type {
   max-width: 30rem;
@@ -1231,6 +1233,7 @@ svg {
 }
 .ltx_listing {
   display: block;
+  max-width: var(--main-width);
 }
 .ltx_listing > .ltx_framed_rectangle {
   /* download arrow has a glitchy border, disable it. */
