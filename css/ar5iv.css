@@ -1475,10 +1475,16 @@ dl.ltx_description dl.ltx_description dd {
  Borders and such */
 .ltx_tabular { display:inline-table; border-collapse:collapse; }
 .ltx_tabular.ltx_centering { display:table; }
-.ltx_graphics.ltx_centering { 
+.ltx_graphics.ltx_centering,
+.ltx_picture.ltx_centering { 
   margin: auto;
   text-align: center;
 }
+/* usually within text, center them vertically as well */
+.ltx_picture.ltx_centering {
+  vertical-align: middle;
+}
+
 .ltx_thead,
 .ltx_tfoot,
 .ltx_tbody   { display:table-row-group; }
