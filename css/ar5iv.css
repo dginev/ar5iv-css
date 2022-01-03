@@ -1008,7 +1008,9 @@ mtext object.ltx_img_square,
 :not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) object.ltx_img_portrait,
 :not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) object.ltx_img_square {
   width: 1rem;
-  height: 1rem;
+  /* setting height is not that reliable here, as we have cases genuinely used as inline diagrams */
+  /* see 1502.04633, just above Observation 3.2 */
+  /* height: 1rem; */
   min-width: 1rem;
   min-height: 1rem;
 }
@@ -1017,6 +1019,8 @@ mtext > .ltx_graphics,
 .ltx_markedasmath > .ltx_graphics,
 .ltx_markedasmath.ltx_graphics {
   display: inline;
+  /* see 1502.04633 at (3.3) for a width overflow example */
+  max-width: var(--main-width) !important
 }
 .ltx_flex_cell .ltx_img_landscape,
 .ltx_flex_cell .ltx_img_portrait,
