@@ -983,27 +983,27 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   }
 }
 
-:not(.ltx_flex_cell) > .ltx_img_landscape {
+:not(mtext):not(.ltx_flex_cell) > .ltx_img_landscape {
   max-width:100%;
   max-height:calc(var(--main-width)/1.33);
   width: auto;
   height:auto; }
-:not(.ltx_flex_cell) > .ltx_img_portrait {
+:not(mtext):not(.ltx_flex_cell) > .ltx_img_portrait {
   max-height: var(--main-width); /* what is a reasonable "tallest" figure? */
   width: auto; }
-:not(.ltx_flex_cell) > .ltx_img_square {
+:not(mtext):not(.ltx_flex_cell) > .ltx_img_square {
   max-height:calc(var(--main-width)/1.33);
   width: auto; }
 
 /* images in the text/math flow are sometimes used when
    e.g. unicode didn't have the appropriate symbol at the time.
    We size them close to letters. See e.g. 2108.04810 */
-mtext img.ltx_img_landscape,
-mtext img.ltx_img_portrait,
-mtext img.ltx_img_square,
-mtext object.ltx_img_landscape,
-mtext object.ltx_img_portrait,
-mtext object.ltx_img_square,
+:not(.ltx_eqn_cell) > math mtext img.ltx_img_landscape,
+:not(.ltx_eqn_cell) > math mtext img.ltx_img_portrait,
+:not(.ltx_eqn_cell) > math mtext img.ltx_img_square,
+:not(.ltx_eqn_cell) > math mtext object.ltx_img_landscape,
+:not(.ltx_eqn_cell) > math mtext object.ltx_img_portrait,
+:not(.ltx_eqn_cell) > math mtext object.ltx_img_square,
 :not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) img.ltx_img_landscape,
 :not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) img.ltx_img_portrait,
 :not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) img.ltx_img_square,
