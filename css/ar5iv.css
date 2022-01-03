@@ -132,9 +132,13 @@ body {
   text-justify: inter-word;
   line-height: 1.5rem;
   margin-bottom: 1.5rem;
-  /* if a flex figure comes before the para, avoid collisions */
-  clear: both; 
 }
+/* If a flex figure comes before the para, avoid collisions.
+   (note: avoid doing clear:both; for all paragraphs, or it creates needless
+    vertical whitespace in cases where we have footnotes) */
+.ltx_figure + .ltx_para,
+.ltx_flex_figure + .ltx_para { clear: both; }
+
 .ltx_p {
   line-height: 1.5rem;
   /* by default, p doesn't indent */
@@ -758,7 +762,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_outdent { margin-left: -2em; }
 
 .ltx_part, .ltx_chapter { margin-bottom: 5rem;}
-.ltx_section { margin-bottom: 2.5rem;}
+.ltx_section, .ltx_bibliography { margin-bottom: 2.5rem;}
 .ltx_subsection { margin-bottom: 2rem;}
 .ltx_subsubsection { margin-bottom: .5rem;}
 .ltx_section .ltx_para:first-of-type .ltx_p:first-of-type {
