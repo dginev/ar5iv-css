@@ -154,8 +154,11 @@ body {
 .ltx_indent > .ltx_p:first-child { text-indent:2em!important; }
 .ltx_noindent > .ltx_p:first-child { text-indent:0em!important; }
 
-/* Ought to be easily removable/overridable? */
-.ltx_pagination.ltx_role_newpage { height:2em; }
+.ltx_pagination.ltx_role_newpage { 
+  /* use margins to ensure newpage breaks, to avoid stacking heights in cases where it is used after logical blocks */
+  margin-top: 2rem;
+  display:block;
+}
 
 /* TODO: need to pick+deploy some math fonts... */
 /* math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup {
@@ -1020,7 +1023,7 @@ mtext > .ltx_graphics,
 .ltx_markedasmath.ltx_graphics {
   display: inline;
   /* see 1502.04633 at (3.3) for a width overflow example */
-  max-width: var(--main-width) !important
+  max-width: calc(0.9*var(--main-width)) !important;
 }
 .ltx_flex_cell .ltx_img_landscape,
 .ltx_flex_cell .ltx_img_portrait,
