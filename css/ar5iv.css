@@ -994,15 +994,17 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   }
 }
 
-:not(mtext):not(.ltx_flex_cell) > .ltx_img_landscape {
+/* The common use of negations is likely a sign we need more work in the data model 
+   for subfigures and images in general... but it's a start: */
+:not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_landscape {
   max-width:100%;
   max-height:calc(var(--main-width)/1.33);
   width: auto;
   height:auto; }
-:not(mtext):not(.ltx_flex_cell) > .ltx_img_portrait {
+:not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_portrait {
   max-height: var(--main-width); /* what is a reasonable "tallest" figure? */
   width: auto; }
-:not(mtext):not(.ltx_flex_cell) > .ltx_img_square {
+:not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_square {
   max-height:calc(var(--main-width)/1.33);
   width: auto; }
 
@@ -1204,6 +1206,16 @@ svg {
   color: var(--image-color);
   background-color: var(--image-background-color);
 }
+foreignObject .ltx_text {
+  /* should we experiment?
+     maybe try a temporary font-corrected text box in SVG...     
+  display: inline-block;
+  margin-top: -0.3rem;
+  margin-left: -0.2rem; */
+  /* for now just avoid wraps: */
+  word-wrap: initial;
+  white-space:nowrap;
+}
 
 /* TODO: test! subtables */
 .ltx_tabular .ltx_tabular {
@@ -1275,7 +1287,7 @@ svg {
 }
 .ltx_listingline {
   text-align:justify;
-  white-space:nowrap; 
+  white-space:nowrap;
   min-height:1rem;
   display:block;
 }
