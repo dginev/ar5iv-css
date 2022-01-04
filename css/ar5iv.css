@@ -655,6 +655,11 @@ div.ltx_keywords:empty:before {
 /* TODO: not yet tested */
 .ltx_role_dedicatory { font-size:100%; font-style:italic; text-align:center; margin:1em;}
 
+/* ensure emails are presented on a standalone line */
+.ltx_role_email {
+  display: block;
+}
+
 .ltx_role_email > a { color: var(--email-link-color); }
 
 /* Table of Contents, main page display */
