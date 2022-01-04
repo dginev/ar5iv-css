@@ -268,6 +268,13 @@ span.ltx_personname > br.ltx_break + span {
 .ltx_role_author + .ltx_role_author {
   margin-left: 2rem;  
 }
+/* space out affiliation sub-entries */
+.ltx_affiliation_institution,
+.ltx_affiliation_department, 
+.ltx_affiliation_country {
+    margin-left: 0.25rem;
+    margin-right: 0.25rem;
+    white-space: nowrap; }
 /* sometimes ltx_keywords only contains a single text node */
 /* and we can't write a selector for ".ltx_keywords that only has text" via CSS... 
    so just fix the completely empty buggy case */
