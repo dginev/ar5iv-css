@@ -176,6 +176,12 @@ math {
 mtd {
   padding: 0.1rem;
 }
+/* Sometimes .ltx_markedasmath may contain an actual math element
+   with a textual trailing dot, say in a <td> (1910.08129)
+   avoid breaks in those cases */
+.ltx_markedasmath {
+  white-space: nowrap;
+}
 
 /* eLife-like links */
 .ltx_ref {
@@ -981,9 +987,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 /* Single central figure image */
 /* Sizing here is a bit biased towards landscape images */
 /* ideally this is mediated through the zoom-on-click CSS feature */
-.ltx_graphics {
-  display: block;
-}
+.ltx_graphics { display: block; }
 /* let us avoid overflowing the screen width with images 
    when we're viewing at less than --main-width */
 @media only screen and (max-width: 52rem) {
@@ -996,6 +1000,8 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
     max-width:var(--main-width);
   }
 }
+/* mini images in captions are used inline */
+.ltx_caption .ltx_graphics { display: inline-block; }
 
 /* The common use of negations is likely a sign we need more work in the data model 
    for subfigures and images in general... but it's a start: */
