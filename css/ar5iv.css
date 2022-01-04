@@ -1279,6 +1279,7 @@ svg {
 .ltx_listing {
   display: block;
   max-width: var(--main-width);
+  margin-bottom: 1rem;
 }
 .ltx_listing > .ltx_framed_rectangle {
   /* download arrow has a glitchy border, disable it. */
@@ -1296,7 +1297,10 @@ svg {
 /* for now hide the download button for listings, 
    needs some styling thought and also ensuring it works. */
 .ltx_listing_data { display: none; }
-
+/* keep listings spaced as-is in justified paragraphs
+   example: 2111.08099, end of Intro */
+.ltx_lstlisting.ltx_text {
+  white-space: break-spaces; }
 .ltx_float {
   margin: 3.5rem; }
 .ltx_minipage > .ltx_float {
