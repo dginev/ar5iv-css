@@ -401,12 +401,12 @@ div.ltx_keywords:empty:before {
   .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):not(.ltx_role_footnotemark):active > .ltx_note_outer {
     display: block;
     opacity: 100;
+    z-index: 100;
     position: absolute;
     top: 0;
     margin: auto;
     padding: 2rem;
     background-color: var(--background-color);
-    z-index:10;
     border-width: 0.1rem 0;
     border-bottom: double;
     border-top: double;
@@ -473,6 +473,7 @@ div.ltx_keywords:empty:before {
   .ltx_author_notes > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
   .ltx_author_notes > span > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content {
     background-color: var(--note-highlight-color);
+    z-index: 100;
   }
   /* affiliatons have some weirdness... e.g. if they appear in titles, they're special footnotes */
   .ltx_title.ltx_title_document .ltx_note_outer {
@@ -523,12 +524,12 @@ div.ltx_keywords:empty:before {
   figcaption .ltx_note:active > .ltx_note_outer {
     display: block;
     opacity: 100;
+    z-index: 100;
     position: absolute;
     top: 0;
     margin: auto;
     padding: 2rem;
     background-color: var(--background-color);
-    z-index:10;
     border-width: 0.1rem 0;
     border-bottom: double;
     border-top: double;
@@ -543,6 +544,7 @@ div.ltx_keywords:empty:before {
   .ltx_author_notes > span > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer {
     display: block;
     opacity: 100;
+    z-index: 100;
     position:absolute;
     left: 0;
   }
@@ -855,6 +857,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_tag_bibitem:active ~ *,
 .ltx_tag_bibitem:hover ~ * {
   background-color: var(--note-highlight-color);
+  z-index: 100;
 }
 
 /* indexes */
