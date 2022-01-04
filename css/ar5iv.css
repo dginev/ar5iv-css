@@ -130,6 +130,7 @@ body {
   font-family: var(--text-font-family);
   text-align: justify;
   text-justify: inter-word;
+  hyphens: auto;
   line-height: 1.5rem;
   margin-bottom: 1.5rem;
 }
@@ -317,6 +318,8 @@ div.ltx_keywords:empty:before {
 .ltx_note {
   position: relative;
   text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
   word-spacing:-0.05rem;
   font-style: normal;
   font-size: 0.85em;
@@ -970,7 +973,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 .ltx_align_left     { text-align:left; }
 .ltx_align_right    { text-align:right; }
 .ltx_align_center   { text-align:center; }
-.ltx_align_justify  { text-align:justify; }
+.ltx_align_justify  { text-align:justify; text-justify: inter-word; hyphens: auto;}
 .ltx_align_top      { vertical-align:top; }
 .ltx_align_bottom   { vertical-align:bottom; }
 .ltx_align_middle   { vertical-align:middle; }
@@ -1339,7 +1342,9 @@ foreignObject .ltx_text {
 .ltx_minipage > .ltx_float {
   margin:0.2rem; }
 .ltx_float .ltx_caption {
-  text-align:justify;
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
   border-top:solid var(--border-color);
   border-bottom:solid var(--border-color);
   border-width: 0.1rem;
@@ -1515,6 +1520,7 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_table .ltx_description {
   text-align: justify;
   text-justify: inter-word;
+  hyphens: auto;
   font-family: var(--text-font-family);
   line-height: 1.5rem;
 }
