@@ -231,7 +231,6 @@ article > div:not(.ltx_minipage) > img:first-of-type {
   justify-content: center;
   align-items: center;
   object-fit: contain;
-  margin-top: 0rem;
   margin-top: 0.75rem;
   margin-bottom: 0.75rem;
   text-align: center;
@@ -1085,7 +1084,7 @@ mtext > .ltx_graphics,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_float,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_minipage,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_graphics.ltx_centering {
-  margin: 0.1rem;
+  margin: 0.1rem auto 0.1rem;
   width: 100%;
   max-height: 100%;
 }
@@ -1174,7 +1173,7 @@ mtext > .ltx_graphics,
 
 .ltx_flex_figure .ltx_flex_cell {
   flex: 1 1 0px;
-  margin: 0.1rem;
+  margin: 0.1rem auto 0.1rem;
 }
 .ltx_flex_figure .ltx_flex_break {
   flex-basis: 100%;
@@ -1260,18 +1259,15 @@ foreignObject .ltx_text {
   flex-direction:column;
   align-items:center;
   text-align:center;
-  margin-top:4rem;
-  margin-bottom:4rem;
-  margin-left: auto;
-  margin-right: auto; }
+  margin:4rem auto 4rem; }
 .ltx_caption {
   font-family: var(--text-font-family);
 }
 .ltx_table .ltx_caption,
 .ltx_figure .ltx_caption {
   text-align: justify;
-  margin-top:1.5rem;
   line-height: 1.5rem;
+  margin-top:1.5rem;
   margin-bottom:1.5rem;
 }
 .ltx_flex_figure .ltx_figure .ltx_caption {
@@ -1344,9 +1340,9 @@ foreignObject .ltx_text {
 .ltx_lstlisting.ltx_text {
   white-space: break-spaces; }
 .ltx_float {
-  margin: 3.5rem; }
+  margin: 3.5rem auto 3.5rem; }
 .ltx_minipage > .ltx_float {
-  margin:0.2rem; }
+  margin:0.2rem auto 0.2rem; }
 .ltx_float .ltx_caption {
   text-align: justify;
   text-justify: inter-word;
@@ -1420,8 +1416,7 @@ foreignObject .ltx_text {
     display:table;
     width:100%;
     border-collapse:collapse;
-    margin-top: 0.65rem;
-    margin-bottom: 0.65rem;
+    margin: 0.65rem auto 0.65rem;
 }
 .ltx_eqn_row   { display:table-row; }
 .ltx_eqn_cell  { 
