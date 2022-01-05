@@ -1011,18 +1011,20 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 /* mini images in captions are used inline */
 .ltx_caption .ltx_graphics { display: inline-block; }
 
-/* The common use of negations is likely a sign we need more work in the data model 
-   for subfigures and images in general... but it's a start: */
+/* Note 1: The common use of negations is likely a sign we need more work in the data model 
+   for subfigures and images in general... but it's a start. */
+/* Note 2: what is a reasonable "tallest" figure? All ratios subject to further tweaking. */
 :not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_landscape {
   max-width:100%;
-  max-height:calc(var(--main-width)/1.33);
+  max-height: calc(var(--main-width)/1.66);
   width: auto;
   height:auto; }
 :not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_portrait {
-  max-height: var(--main-width); /* what is a reasonable "tallest" figure? */
+  max-height: var(--main-width);
+  max-width: calc(var(--main-width)/1.33);
   width: auto; }
 :not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_square {
-  max-height:calc(var(--main-width)/1.33);
+  max-height: calc(var(--main-width)/1.33);
   width: auto; }
 
 /* images in the text/math flow are sometimes used when
