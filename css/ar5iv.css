@@ -1034,12 +1034,13 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 :not(.ltx_eqn_cell) > math mtext object.ltx_img_landscape,
 :not(.ltx_eqn_cell) > math mtext object.ltx_img_portrait,
 :not(.ltx_eqn_cell) > math mtext object.ltx_img_square,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) img.ltx_img_landscape,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) img.ltx_img_portrait,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) img.ltx_img_square,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) object.ltx_img_landscape,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) object.ltx_img_portrait,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner) > .ltx_p:not(.ltx_align_center) object.ltx_img_square {
+/* with all of these negations, starting to wonder if this should just be a rule only on .ltx_para > .ltx_p ? */
+:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) img.ltx_img_landscape,
+:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) img.ltx_img_portrait,
+:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) img.ltx_img_square,
+:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) object.ltx_img_landscape,
+:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) object.ltx_img_portrait,
+:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) object.ltx_img_square {
   width: 1rem;
   /* setting height is not that reliable here, as we have cases genuinely used as inline diagrams */
   /* see 1502.04633, just above Observation 3.2 */
@@ -1288,6 +1289,9 @@ foreignObject .ltx_text {
   /* width: auto !important; */
   align-self: normal;
   display: inline-block;
+}
+.ltx_minipage.ltx_align_center {
+  align-self: center;
 }
 .ltx_minipage .ltx_float,
 .ltx_minipage .ltx_float .ltx_caption {
