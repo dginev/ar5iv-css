@@ -193,6 +193,7 @@ mtd {
 }
 .ltx_cite {
   font-style: normal;
+  white-space: pre-wrap;
 }
 .ltx_cite + .ltx_cite {
   padding-left: 0.2rem;
@@ -775,10 +776,13 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   font-size:1rem;
   font-weight:bold;
   display:inline;
-  margin-left:2em;
-  margin-right:1em; 
+  margin:0rem 1rem 0rem 2rem;
 }
 
+/* indent the first subparagraph content p for visual effect (maybe?) */
+.ltx_section .ltx_subparagraph > .ltx_para:first-of-type > .ltx_p {
+  text-indent: 2rem;
+}
 /* Hack to simulate run-in! put class="ltx_runin" on a title or tag
    for it to run-into the following text. */
 .ltx_runin { display:inline; }
@@ -802,6 +806,9 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 
 /* TODO: this approach to .ltx_item is still not satisfying, especially for nested lists */
 .ltx_item > .ltx_theorem { margin-left: 1em; }
+
+/* reduce bottom margin for logical paragraphs in theorem envs */
+.ltx_theorem > .ltx_para { margin-bottom: .5rem; }
 
 .ltx_title_theorem, .ltx_title_proof {
   font-family: var(--headings-font-family);
