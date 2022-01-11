@@ -252,6 +252,11 @@ span.ltx_personname > br.ltx_break + span {
   display: inline-block;
   padding-top: 0.75em;
 }
+/* Try to limit the spacing via consequtive breaks in personname.
+  It doesn't usually translate to good HTML rendering (0709.4011). */
+span.ltx_personname > .ltx_break + .ltx_break {
+    display: none;
+}
 
 .ltx_creator { 
   flex: 1 1 0px;
