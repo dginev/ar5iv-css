@@ -76,13 +76,15 @@ body {
   body {
     overflow-x: hidden;
   }
+  .ltx_page_content {
+    width: 100%;
+  }
 }
 
 .ltx_page_main {
   width: 100%;
 }
 .ltx_page_content {
-  width: 100%;
   margin: 4rem 1rem;
   font-size: 1rem;
   font-weight: 300;
