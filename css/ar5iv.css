@@ -1261,6 +1261,12 @@ foreignObject .ltx_text {
   white-space:nowrap;
 }
 
+/* tables in logical paragraphs get spaced out 
+   similar to a textual paragraph */
+.ltx_para > .ltx_tabular {
+  margin-bottom: 1rem;
+}
+
 /* TODO: test! subtables */
 .ltx_tabular .ltx_tabular {
   width:100%;
