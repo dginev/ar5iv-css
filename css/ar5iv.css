@@ -268,6 +268,10 @@ span.ltx_personname > br.ltx_break + span {
 span.ltx_personname > .ltx_break + .ltx_break {
     display: none;
 }
+/* also avoid paragraphs that just contain a break, our CSS margins can be trusted. */
+.ltx_para > .ltx_break:first-child:last-child {
+  display: none;
+}
 
 .ltx_creator { 
   flex: 1 1 0px;
@@ -1295,6 +1299,9 @@ foreignObject .ltx_text {
          are not always accurate? Revert ot auto for now,
          see 2105.00613 for examples */
 .ltx_inline-block > .ltx_p { width: auto !important; }
+/* also some parbox sizing goes wrong in the title of hep-th/0001161, avoid for now. */
+.ltx_title_document > .ltx_parbox,
+.ltx_title_document > .ltx_inline-block { width: auto !important; }
 
 /* experimental: flex model, to center short captions, justify long ones */
 :not(.ltx_flex_cell) > .ltx_table,
