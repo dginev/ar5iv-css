@@ -203,6 +203,11 @@ mtd {
 .ltx_td .ltx_cite {
   white-space: pre-wrap;
 }
+/* paper over: disable italic that slipped into inline cites */
+.ltx_cite .ltx_font_italic {
+  font-style: normal;
+}
+
 /* title page image */
 article > div:not(.ltx_minipage) > img:first-of-type {
   max-width: 30rem;
@@ -503,18 +508,20 @@ div.ltx_keywords:empty:before {
     display: none;
     opacity: 0;
   }
-  /* TODO: Until we can dedup affiliations, we have no choice but to hide them first, show them on hover.
-           Even on large screens. */
-  /* AND! footnotes in Tables are ALWAYS collapsed 
-          until we figure out side margins with 
-          relative positioning in tables (flexbox?)
-  */
-  /* a related issue to the in-table footnotes appears also in figcaptions 
-    since we are currently using flex for them, the relative margin-right offset 
-    in the rule below produces rather unpredictable results, placing the footnotes
-    somewhat scattered, based on the current width of the figcaption.
-    So we also collapse in figcaption for now...
-  */
+/* TODO:
+1. Until we can dedup affiliations, we have no choice but to hide them first, show them on hover.
+  Even on large screens.
+2. AND! footnotes in Tables are ALWAYS collapsed 
+  until we figure out side margins with 
+  relative positioning in tables (flexbox?)
+3. a related issue to the in-table footnotes appears also in figcaptions 
+  since we are currently using flex for them, the relative margin-right offset 
+  in the rule below produces rather unpredictable results, placing the footnotes
+  somewhat scattered, based on the current width of the figcaption.
+  So we also collapse in figcaption for now...
+4. the "PSFrag replacing x by y was dropped" notes are also distracting, 
+   e.g. cs/0001008 (not acted on here)
+*/
   th .ltx_note_outer, 
   td .ltx_note_outer,
   .ltx_th .ltx_note_outer,
@@ -971,6 +978,12 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   margin-bottom: 0;
 }
 .ltx_quote > .ltx_break:last-child {
+  display: none;
+}
+/* paper over: 
+  see 1910.06706 for a quote with a child p
+  with many trailing breaks */
+.ltx_quote .ltx_break + .ltx_break + .ltx_break {
   display: none;
 }
 /* suppress top margins, e.g. via breaks */
