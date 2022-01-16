@@ -194,6 +194,11 @@ mtd {
   text-decoration: none;
   overflow-wrap: break-word;
 }
+/* can contain images, see orcid icons at arxiv:1707.04393 */
+.ltx_ref > .ltx_graphics {
+  border-bottom: none;
+  display: inline; }
+
 .ltx_cite {
   font-style: normal;
 }
