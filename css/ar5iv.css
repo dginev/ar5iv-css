@@ -171,7 +171,8 @@ body {
 /* math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup {
   background-color: white;
 } */
-math {
+math,
+mjx-container {
   font-family: var(--math-font-family);
   word-wrap: break-word;
   white-space: nowrap;
@@ -211,6 +212,9 @@ mtd {
 /* paper over: disable italic that slipped into inline cites */
 .ltx_cite .ltx_font_italic {
   font-style: normal;
+}
+.ltx_cite > .ltx_ref {
+  white-space: nowrap;
 }
 
 /* title page image */
@@ -1611,7 +1615,20 @@ dl.ltx_description dl.ltx_description dd {
   padding:0.1em 0.5em;
   max-width: var(--main-width);
   word-wrap: break-word;
+}
+/*
+lost the paper id, but ltx_td needs to be normal
+   since long textual cells are common. */
+.ltx_tabular .ltx_td {
   white-space: normal;
+}
+/* see the last table in 1607.01446 for why 
+   th should be nowrap;
+  TODO: Maybe our latexml data model needs to evolve to add classes,
+  with types of content in the cells? 
+  Numbers and text may be best treated separately. */
+.ltx_tabular .ltx_th {
+  white-space: nowrap;
 }
 /* regular lines */
 .ltx_border_t  { border-top:0.063rem solid var(--border-color); }
@@ -1629,15 +1646,17 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_border_B  { border-bottom:0.063rem solid var(--border-light-color); }
 .ltx_border_L  { border-left:0.063rem solid var(--border-light-color); }
 /* Framing */
-/* common setup */
-.ltx_framed_rectangle,
-.ltx_framed_top,
-.ltx_framed_left,
-.ltx_framed_right,
-.ltx_framed_bottom,
-.ltx_framed_underline,
-.ltx_framed_topbottom,
-.ltx_framed_leftright { display: inline-block; }
+/* common setup, but what is the right selector?
+   they need to be inline inside ltx_p (see 1703.08608),
+   and inline-block when used on images... */
+:not(.ltx_p) > .ltx_framed_rectangle,
+:not(.ltx_p) > .ltx_framed_top,
+:not(.ltx_p) > .ltx_framed_left,
+:not(.ltx_p) > .ltx_framed_right,
+:not(.ltx_p) > .ltx_framed_bottom,
+:not(.ltx_p) > .ltx_framed_underline,
+:not(.ltx_p) > .ltx_framed_topbottom,
+:not(.ltx_p) > .ltx_framed_leftright { display: inline-block; }
 /* specific features */
 .ltx_framed_rectangle { border-style:solid; border-width:0.063rem; padding-left:0.3rem; padding-right: 0.3rem; }
 .ltx_framed_top       { border-top-style:solid; border-top-width:0.063rem; }
@@ -1676,4 +1695,7 @@ dl.ltx_description dl.ltx_description dd {
 merror.ltx_ERROR {
   font-size: 0.75rem;
   background-color: var(--background-color);
+}
+mjx-merror {
+  background-color: var(--background-color) !important;
 }
