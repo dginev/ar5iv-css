@@ -1624,6 +1624,16 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_border_B  { border-bottom:0.063rem solid var(--border-light-color); }
 .ltx_border_L  { border-left:0.063rem solid var(--border-light-color); }
 /* Framing */
+/* common setup */
+.ltx_framed_rectangle,
+.ltx_framed_top,
+.ltx_framed_left,
+.ltx_framed_right,
+.ltx_framed_bottom,
+.ltx_framed_underline,
+.ltx_framed_topbottom,
+.ltx_framed_leftright { display: inline-block; }
+/* specific features */
 .ltx_framed_rectangle { border-style:solid; border-width:0.063rem; padding-left:0.3rem; padding-right: 0.3rem; }
 .ltx_framed_top       { border-top-style:solid; border-top-width:0.063rem; }
 .ltx_framed_left      { border-left-style:solid; border-left-width:0.063rem; }
