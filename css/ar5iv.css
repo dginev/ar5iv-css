@@ -1615,11 +1615,6 @@ dl.ltx_description dl.ltx_description dd {
   padding:0.1em 0.5em;
   max-width: var(--main-width);
   word-wrap: break-word;
-}
-/*
-lost the paper id, but ltx_td needs to be normal
-   since long textual cells are common. */
-.ltx_tabular .ltx_td {
   white-space: normal;
 }
 /* see the last table in 1607.01446 for why 
@@ -1627,7 +1622,7 @@ lost the paper id, but ltx_td needs to be normal
   TODO: Maybe our latexml data model needs to evolve to add classes,
   with types of content in the cells? 
   Numbers and text may be best treated separately. */
-.ltx_tabular .ltx_th {
+.ltx_tabular .ltx_th.ltx_th_column {
   white-space: nowrap;
 }
 /* regular lines */
