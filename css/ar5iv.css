@@ -310,6 +310,15 @@ span.ltx_personname > .ltx_break + .ltx_break {
     margin-left: 0.25rem;
     margin-right: 0.25rem;
     white-space: nowrap; }
+
+/* in multi-affiliation markup, e.g. produced by authblk.sty,
+   we can do a vertical stack for each author */
+span.ltx_role_affiliation + span.ltx_role_affiliation {
+  margin-top: 0.5rem;
+  display: block;
+}
+    
+    
 /* sometimes ltx_keywords only contains a single text node */
 /* and we can't write a selector for ".ltx_keywords that only has text" via CSS... 
    so just fix the completely empty buggy case */
@@ -693,7 +702,10 @@ div.ltx_keywords:empty:before {
   display: block;
 }
 
-.ltx_role_email > a { color: var(--email-link-color); }
+.ltx_role_email > a {
+  color: var(--email-link-color);
+  text-decoration: none;
+}
 
 /* Table of Contents, main page display */
 .ltx_TOC {
@@ -776,10 +788,22 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_title_acknowledgements,
 .ltx_title_appendix,
 .ltx_title_index,
-.ltx_title_bibliography  { 
+.ltx_title_bibliography,
+/* semantic heuristic (part 1)
+   bold spans with trailing breaks are headings
+   see math/0002050 for example */
+span.ltx_font_bold > .ltx_break:last-child
+  { 
   font-size:1.4rem;
   font-weight:bold;
   margin-bottom:1.5rem; 
+}
+/* semantic heuristic (part 2) 
+   bold spans with trailing breaks are section headings
+   so they were preceded by a section. 
+   add to top would have been the .ltx_subsection bottom margin */
+span.ltx_font_bold > .ltx_break:last-child {
+  margin-top:2rem;
 }
 .ltx_title_subsection    { 
   font-size:1.2rem;
