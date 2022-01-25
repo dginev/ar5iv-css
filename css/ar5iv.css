@@ -1137,7 +1137,8 @@ mtext > .ltx_graphics,
 .ltx_flex_cell .ltx_img_portrait,
 .ltx_flex_cell .ltx_img_square {
   width: 100%;
-  height: auto; }
+  height: auto;
+  max-height: var(--main-width); }
 
 /* footnote graphics need to be contained to small sizes */
 .ltx_note_content .ltx_graphics {
@@ -1160,7 +1161,7 @@ mtext > .ltx_graphics,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_float,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_minipage,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_graphics.ltx_centering {
-  margin: 0.1rem auto 0.1rem;
+  margin: 0.1rem 1px 0.1rem;
   width: 100%;
   max-height: 100%;
 }
@@ -1249,7 +1250,7 @@ mtext > .ltx_graphics,
 
 .ltx_flex_figure .ltx_flex_cell {
   flex: 1 1 0px;
-  margin: 0.1rem auto 0.1rem;
+  margin: 0.1rem 1px 0.1rem;
 }
 .ltx_flex_figure .ltx_flex_break {
   flex-basis: 100%;
