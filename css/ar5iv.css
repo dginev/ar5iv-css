@@ -1040,6 +1040,14 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   display: none;
 }
 
+/* Feature: epigraphs, see e.g. 1911.01547 */
+/* we use important for now, as latexml adds 
+   per-element "style" attributes */
+blockquote.ltx_epigraph {
+  width: calc(0.5*var(--main-width)) !important;
+  margin-left: calc(0.45*var(--main-width)) !important;
+}
+
 /* ================================= */
 /* from LaTeXML.css, possibly edited */
 /* ================================= */
