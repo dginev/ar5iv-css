@@ -1477,6 +1477,14 @@ foreignObject .ltx_text {
   width: auto !important;
   height: auto !important;
 }
+span.ltx_transformed_inner {
+  display: inline-block;
+}
+/* see flipped RL in 1912.02875 for one example */
+.ltx_transformed_inner > .ltx_p {
+  margin: 0;
+  padding: 0;
+}
 
 /* \phantom - hide content but still allocate stand-in space */
 .ltx_phantom { visibility: hidden; }
