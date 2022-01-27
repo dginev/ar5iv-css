@@ -1,6 +1,6 @@
 {
   "name": "ar5iv-css",
-  "version": "0.7.0",
+  "version": "0.7.1",
   "description": "Experimental CSS to style arXiv articles converted with LaTeXML",
   "main": "ar5iv.css",
   "repository": "git@github.com:dginev/ar5iv-css.git",
