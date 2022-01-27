@@ -396,7 +396,7 @@ div.ltx_keywords:empty:before {
      on its own dedicated full-width line in the flex author block
      maybe we should evolve latexml to offer a flex_size_* attribute
      also on .ltx_creator elements? then this can be made cleaner. */
-  min-width: 21rem;
+  min-width: 20rem;
   margin-top: 0.5rem;
   margin-bottom: 2rem;
   font-family: var(--text-font-family);
