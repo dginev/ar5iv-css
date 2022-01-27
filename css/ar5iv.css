@@ -1608,7 +1608,7 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right { min-width:2e
 li.ltx_item > .ltx_tag {
   display:inline;
   margin-left: -2.5rem;
-  padding-right: 1rem;
+  padding-right: 0.5rem;
   text-align:right; }
 .ltx_item .ltx_tag + .ltx_para,
 .ltx_item .ltx_tag + .ltx_para .ltx_p  {
