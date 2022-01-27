@@ -1119,6 +1119,16 @@ blockquote.ltx_epigraph {
   max-height: calc(var(--main-width)/1.33);
   width: auto; }
 
+/* intention: downsize keeping the aspect ratio, when on a viewport smaller than main-width */
+@media only screen and (max-width: 52rem) {
+  :not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_portrait {
+    height: auto;
+  }
+  :not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_square {
+    height: auto; 
+  }
+}
+
 /* images in the text/math flow are sometimes used when
    e.g. unicode didn't have the appropriate symbol at the time.
    We size them close to letters. See e.g. 2108.04810 */
@@ -1188,8 +1198,15 @@ mtext > .ltx_graphics,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_inline-block {
   width: 100% !important;
 }
-.ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_1 {
-  min-width: 25rem;
+@media only screen and (max-width: 46rem) {
+  .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_1 {
+    min-width: 20rem;
+  }
+}
+@media only screen and (min-width: 46.01rem) {
+  .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_1 {
+    min-width: 25rem;
+  }
 }
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_2 img.ltx_graphics {
   min-width: 20rem;
