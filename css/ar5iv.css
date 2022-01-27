@@ -410,12 +410,12 @@ div.ltx_keywords:empty:before {
     width: 20rem;
   }
 }
-@media only screen and (min-width: 46.01rem) and (max-width: 49.99rem) {
+@media only screen and (min-width: 46.01rem) and (max-width: 51.99rem) {
   .ltx_note_outer {
     width: 46rem;
   }
 }
-@media only screen and (min-width: 49.99rem) and (max-width: 95.99rem) {
+@media only screen and (min-width: 52rem) and (max-width: 95.99rem) {
   .ltx_note_outer {
     width: 50rem;
   }
@@ -911,12 +911,12 @@ span.ltx_font_bold > .ltx_break:last-child {
   word-break: normal;
   overflow-wrap: break-word;
 }
-@media only screen and (max-width: 50rem) {
+@media only screen and (max-width: 52rem) {
   .ltx_bibitem .ltx_tag {
     width: 26%;
   }
 }
-@media only screen and (min-width: 50rem) {
+@media only screen and (min-width: 52.01rem) {
   .ltx_bibitem .ltx_tag {
     width: 14%;
   }
@@ -1095,7 +1095,7 @@ blockquote.ltx_epigraph {
     max-width:95%;
   }
 }
-@media only screen and (min-width: 53rem) {
+@media only screen and (min-width: 52.01rem) {
   .ltx_graphics {
     max-width:var(--main-width);
   }
