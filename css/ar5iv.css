@@ -1504,6 +1504,11 @@ span.ltx_transformed_inner {
   margin: 0;
   padding: 0;
 }
+/* TODO: Maybe re-allow after latexml becomes very accurate with equation transforms? 
+ see equations 1 and 2 in arXiv:2111.15640 */
+.ltx_eqn_cell > .ltx_transformed_outer > .ltx_transformed_inner {
+  transform: none !important;
+}
 
 /* \phantom - hide content but still allocate stand-in space */
 .ltx_phantom { visibility: hidden; }
