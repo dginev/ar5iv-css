@@ -344,6 +344,10 @@ div.ltx_keywords:empty:before {
   font-weight: bold;
   font-style:normal;
 }
+/* Two-column papers may want to choose their break-points in titles,
+  yet the browser can manage on its own in single-column ar5iv.
+  Example: section headings of 1701.00123 */
+.ltx_title > br.ltx_break { display: none; }
 
 /* TODO: Untested */
 .ltx_date {
