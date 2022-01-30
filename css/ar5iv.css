@@ -1506,7 +1506,11 @@ span.ltx_transformed_inner {
 }
 /* TODO: Maybe re-allow after latexml becomes very accurate with equation transforms? 
  see equations 1 and 2 in arXiv:2111.15640 */
-.ltx_eqn_cell > .ltx_transformed_outer > .ltx_transformed_inner {
+.ltx_eqn_cell > .ltx_transformed_outer > .ltx_transformed_inner,
+/* TODO: Similarly, scale() on tables seems to be unpredictably different than the intention in PDF,
+ disable for now? Needs a proper latexml fix.
+ Example: subfigure scaled tables in 2111.00396 */
+.ltx_flex_cell > .ltx_transformed_outer > .ltx_transformed_inner {
   transform: none !important;
 }
 
