@@ -1674,10 +1674,12 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_tabular { display:inline-table; border-collapse:collapse; }
 .ltx_tabular.ltx_centering {
   display:table;
-  margin: auto; }
+  margin-left: auto;
+  margin-right: auto; }
 .ltx_graphics.ltx_centering,
 .ltx_picture.ltx_centering {
-  margin: auto;
+  margin-left: auto;
+  margin-right: auto;
   text-align: center;
 }
 /* usually within text, center them vertically as well */
