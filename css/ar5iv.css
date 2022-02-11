@@ -989,8 +989,12 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   line-height: 1rem;
 }
 
-/* Feature: stylized standalone quotes */
-:not(.ltx_quote) > blockquote.ltx_quote {
+/* Feature: stylized standalone quotes
+   
+   Note:
+   exclude epigraphs, which have their own right-aligned
+   design, currently via inline "style" attributes. */
+:not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph) {
   border-left: 0.188rem solid var(--border-color);
   font-size: 1em;
   font-style: italic;
@@ -1000,7 +1004,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   position: relative;
   z-index: 0;
 }
-:not(.ltx_quote) > blockquote.ltx_quote:before {
+:not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph):before {
     content: "";
     position: absolute;
     top: 50%;
@@ -1010,7 +1014,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
     width: 0.25rem;
     margin-top: -1rem;
 }
-:not(.ltx_quote) > blockquote.ltx_quote:after {
+:not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph):after {
     content: "“";
     position: absolute;
     top: 50%;
