@@ -314,8 +314,9 @@ span.ltx_personname > .ltx_break + .ltx_break {
 
 /* in multi-affiliation markup, e.g. produced by authblk.sty,
    we can do a vertical stack for each author */
-span.ltx_role_affiliation + span.ltx_role_affiliation,
-span.ltx_role_orcid + span.ltx_role_affiliation {
+/* Detail: avoid vertical breaks for the case in which affiliations are notes */
+span.ltx_role_affiliation:not(.ltx_note) + span.ltx_role_affiliation:not(.ltx_note),
+span.ltx_role_orcid + span.ltx_role_affiliation:not(.ltx_note) {
   margin-top: 0.5rem;
   display: block;
 }
