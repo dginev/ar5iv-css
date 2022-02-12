@@ -216,6 +216,15 @@ mtd {
 }
 .ltx_cite > .ltx_ref {
   white-space: nowrap;
+  /* why inline-block with a custom line height?
+    cites separated with text nodes holding semicolons
+    get spaced out too far with the "justified" text alignment. 
+    example: see the three cites at the beginning of 2006.09882's Introduction 
+    
+    These are also interpreted slightly differently on different browsers...
+    Maybe a better approach exists? */
+  display: inline-block;
+  line-height: 1.4rem;
 }
 
 /* title page image */
