@@ -8,7 +8,7 @@
   --text-font-family: "Noto Serif", serif;
   --math-font-family: "STIX Two Math", "Cambria Math", "Noto Serif", serif;
   --math-caligraphic-font-family: "Lucida Calligraphy", "Zapf Chancery","URW Chancery L";
-  --code-font-family: monospace;
+  --code-font-family: "Noto Sans Mono", monospace;
   /* default color theme is light */
   --background-color: white;
   --text-color: #292929;
