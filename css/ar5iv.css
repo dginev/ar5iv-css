@@ -225,6 +225,8 @@ mtd {
     Maybe a better approach exists? */
   display: inline-block;
   line-height: 1.4rem;
+  /* see the introduction at 1810.10704 for why text-indent needs to be 0 */
+  text-indent: 0;
 }
 
 /* title page image */
