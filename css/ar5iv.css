@@ -1514,6 +1514,21 @@ foreignObject .ltx_text {
   width: auto !important;
   height: auto !important;
 }
+
+/* For now, disable transformed_inner over figures and tables as well */
+.ltx_table > .ltx_inline-block > .ltx_transformed_inner,
+.ltx_figure > .ltx_inline-block > .ltx_transformed_inner,
+.ltx_table > .ltx_transformed_outer > .ltx_transformed_inner,
+.ltx_figure > .ltx_transformed_outer > .ltx_transformed_inner,
+/* sometimes latexml copies a tabular scaffold under a figure too faithfully,
+   see figures in 1909.02255 for examples. */
+.ltx_tr:only-child > .ltx_td:only-child > .ltx_inline-block > .ltx_transformed_inner,
+.ltx_tr:only-child > .ltx_td:only-child > .ltx_p:only-child > .ltx_inline-block > .ltx_transformed_inner,
+.ltx_tr:only-child > .ltx_td:only-child > .ltx_transformed_outer > .ltx_transformed_inner,
+.ltx_tr:only-child > .ltx_td:only-child > .ltx_p:only-child > .ltx_transformed_outer > .ltx_transformed_inner {
+   transform: none !important;
+}
+
 span.ltx_transformed_inner {
   display: inline-block;
 }
