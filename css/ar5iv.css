@@ -1742,25 +1742,18 @@ dl.ltx_description dl.ltx_description dd {
 /* Framing */
 /* common setup, but what is the right selector?
    they need to be inline inside ltx_p (see 1703.08608),
-   and inline-block when used on images... */
-:not(.ltx_p) > .ltx_framed_rectangle,
-:not(.ltx_p) > .ltx_framed_top,
-:not(.ltx_p) > .ltx_framed_left,
-:not(.ltx_p) > .ltx_framed_right,
-:not(.ltx_p) > .ltx_framed_bottom,
-:not(.ltx_p) > .ltx_framed_underline,
-:not(.ltx_p) > .ltx_framed_topbottom,
-/* how do we avoid adding these inline ltx_p wrappers?
-   see figures in 1909.12119 */
-.ltx_figure > .ltx_p > .ltx_framed_leftright,
-.ltx_figure > .ltx_p > .ltx_framed_rectangle,
-.ltx_figure > .ltx_p > .ltx_framed_top,
-.ltx_figure > .ltx_p > .ltx_framed_left,
-.ltx_figure > .ltx_p > .ltx_framed_right,
-.ltx_figure > .ltx_p > .ltx_framed_bottom,
-.ltx_figure > .ltx_p > .ltx_framed_underline,
-.ltx_figure > .ltx_p > .ltx_framed_topbottom,
-.ltx_figure > .ltx_p > .ltx_framed_leftright
+   and inline-block when used on images...
+   On closer look, the difference is that framed rectangles which are *empty*
+   render correct only with display:inline;
+   This became clear while also examining cases of spans in p which *require*
+   inline-block to get the right border (see 1708.02728). */
+.ltx_framed_rectangle:not(:empty),
+.ltx_framed_top:not(:empty),
+.ltx_framed_left:not(:empty),
+.ltx_framed_right:not(:empty),
+.ltx_framed_bottom:not(:empty),
+.ltx_framed_underline:not(:empty),
+.ltx_framed_topbottom:not(:empty)
  { display: inline-block; }
 /* specific features */
 .ltx_framed_rectangle { border-style:solid; border-width:0.063rem; padding-left:0.3rem; padding-right: 0.3rem; }
