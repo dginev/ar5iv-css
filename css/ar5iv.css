@@ -1357,6 +1357,11 @@ mtext > .ltx_graphics,
 svg {
   color: var(--image-color);
   background-color: var(--image-background-color);
+  /* Collisions can be really bizarre, especially when 
+    due to flawed latex interpretation.
+    See Fig 1 in 0709.4426, for a vertical case.
+    For now: require svg content is underneath the main page. */
+  z-index: -1;
 }
 foreignObject .ltx_text {
   /* should we experiment?
