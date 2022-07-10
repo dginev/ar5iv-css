@@ -218,9 +218,9 @@ mtd {
   white-space: nowrap;
   /* why inline-block with a custom line height?
     cites separated with text nodes holding semicolons
-    get spaced out too far with the "justified" text alignment. 
-    example: see the three cites at the beginning of 2006.09882's Introduction 
-    
+    get spaced out too far with the "justified" text alignment.
+    example: see the three cites at the beginning of 2006.09882's Introduction
+
     These are also interpreted slightly differently on different browsers...
     Maybe a better approach exists? */
   display: inline-block;
@@ -693,8 +693,10 @@ div.ltx_keywords:empty:before {
   margin-bottom: 2rem;
 }
 
-/* TODO: Can we get a better handle on the ToC title? */
-.ltx_title_abstract,.ltx_TOC > h6 {
+/* TODO: Can we get a better handle on the ToC title?
+   Update: we now have a "ltx_title_contents" class, consider
+           deprecating the h6 selector soon. */
+.ltx_title_abstract,.ltx_TOC > h6, .ltx_title_contents {
   margin-top: 0;
   margin-bottom: 1.5rem;
   padding-top: 0;
@@ -1002,7 +1004,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 }
 
 /* Feature: stylized standalone quotes
-   
+
    Note:
    exclude epigraphs, which have their own right-aligned
    design, currently via inline "style" attributes. */
@@ -1061,7 +1063,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 }
 
 /* Feature: epigraphs, see e.g. 1911.01547 */
-/* we use important for now, as latexml adds 
+/* we use important for now, as latexml adds
    per-element "style" attributes */
 blockquote.ltx_epigraph {
   width: calc(0.5*var(--main-width)) !important;
@@ -1145,7 +1147,7 @@ blockquote.ltx_epigraph {
     height: auto;
   }
   :not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_square {
-    height: auto; 
+    height: auto;
   }
 }
 
@@ -1166,7 +1168,7 @@ blockquote.ltx_epigraph {
 :not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) object.ltx_img_portrait,
 :not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) object.ltx_img_square {
   width: 1rem;
-  /* setting height is not that reliable here, as we have cases genuinely used as inline diagrams 
+  /* setting height is not that reliable here, as we have cases genuinely used as inline diagrams
      see 1502.04633, just above Observation 3.2 */
   /* height: 1rem; */
   /* also, these rules need to be !important or we get weird collisions,
@@ -1357,7 +1359,7 @@ mtext > .ltx_graphics,
 svg {
   color: var(--image-color);
   background-color: var(--image-background-color);
-  /* Collisions can be really bizarre, especially when 
+  /* Collisions can be really bizarre, especially when
     due to flawed latex interpretation.
     See Fig 1 in 0709.4426, for a vertical case.
     For now: require svg content is underneath the main page. */
@@ -1544,7 +1546,7 @@ span.ltx_transformed_inner {
   margin: 0;
   padding: 0;
 }
-/* TODO: Maybe re-allow after latexml becomes very accurate with equation transforms? 
+/* TODO: Maybe re-allow after latexml becomes very accurate with equation transforms?
  see equations 1 and 2 in arXiv:2111.15640 */
 .ltx_eqn_cell > .ltx_transformed_outer > .ltx_transformed_inner,
 /* TODO: Similarly, scale() on tables seems to be unpredictably different than the intention in PDF,
