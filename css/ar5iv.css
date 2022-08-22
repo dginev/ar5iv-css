@@ -159,7 +159,9 @@ body {
   font-family: inherit;
 }
 /* explicit control of indentation (on ltx_para) */
-.ltx_indent > .ltx_p:first-child { text-indent:2em!important; }
+.ltx_indent > .ltx_p:first-child,
+section.ltx_pruned_first > .ltx_title+.ltx_para>.ltx_p,
+section.ltx_indent_first > .ltx_title+.ltx_para>.ltx_p { text-indent:2em!important; }
 .ltx_noindent > .ltx_p:first-child { text-indent:0em!important; }
 
 .ltx_pagination.ltx_role_newpage {
@@ -1080,6 +1082,7 @@ blockquote.ltx_epigraph {
 .ltx_block,
 .ltx_para {
     display: block; }
+.ltx_inline-quote,
 .ltx_quote.ltx_outerquote, .ltx_quote.ltx_innerquote {
   display: inline;
 }
