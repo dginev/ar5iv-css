@@ -1395,6 +1395,7 @@ foreignObject .ltx_text {
 .ltx_inline-para .ltx_para  { display:inline; }
 .ltx_inline-block,
 .ltx_inline-block .ltx_para { display:inline-block; }
+.ltx_nodisplay { display: none; }
 
 /* TODO: it appears our width estimations for the individual rows of an inline block
          are not always accurate? Revert ot auto for now,
@@ -1578,14 +1579,12 @@ span.ltx_transformed_inner {
 .ltx_font_medium     { font-weight: normal; }
 /* Font Shapes => font-style or font-variant */
 .ltx_font_italic     {
-  font-style: italic;
-  font-variant:discretionary-ligatures; }
+  font-style: italic; }
 .ltx_font_upright    {
   font-style: normal;
   font-variant:normal; }
 .ltx_font_slanted    {
-  font-style: oblique;
-  font-variant:discretionary-ligatures; }
+  font-style: oblique; }
 .ltx_font_smallcaps  {
   font-variant: small-caps;
   font-style:normal; }
