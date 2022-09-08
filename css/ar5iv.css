@@ -1538,7 +1538,12 @@ foreignObject .ltx_text {
 .ltx_tr:only-child > .ltx_td:only-child > .ltx_inline-block > .ltx_transformed_inner,
 .ltx_tr:only-child > .ltx_td:only-child > .ltx_p:only-child > .ltx_inline-block > .ltx_transformed_inner,
 .ltx_tr:only-child > .ltx_td:only-child > .ltx_transformed_outer > .ltx_transformed_inner,
-.ltx_tr:only-child > .ltx_td:only-child > .ltx_p:only-child > .ltx_transformed_outer > .ltx_transformed_inner {
+.ltx_tr:only-child > .ltx_td:only-child > .ltx_p:only-child > .ltx_transformed_outer > .ltx_transformed_inner,
+/* sometimes the inline block is *wrapping* the table, see
+/* https://ar5iv.labs.arxiv.org/html/2110.07681#A1.p6.10
+   a :has(table) selector could be made more precise, when browser support is available. */
+.ltx_para > .ltx_inline-block:only-child.ltx_transformed_outer > .ltx_transformed_inner
+{
    transform: none !important;
 }
 
