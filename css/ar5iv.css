@@ -1492,8 +1492,12 @@ foreignObject .ltx_text {
 .ltx_listing_data { display: none; }
 /* keep listings spaced as-is in justified paragraphs
    example: 2111.08099, end of Intro */
-.ltx_lstlisting.ltx_text {
-  white-space: break-spaces; }
+.ltx_lstlisting.ltx_text { white-space: break-spaces; }
+/* also, keep listings left-aligned,
+   even if the author wanted them centered in TeX.
+   The authors of 2006.16852 made the request. */
+.ltx_lstlisting.ltx_align_center { text-align: left; }
+
 .ltx_float {
   margin: 3.5rem auto 3.5rem; }
 .ltx_minipage > .ltx_float {
