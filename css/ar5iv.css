@@ -1473,6 +1473,9 @@ foreignObject .ltx_text {
   white-space: nowrap;
   min-height: 1rem;
   display: block;
+  /* default font-size for a listing line, as sometimes text doesn't have a wrapper,
+     e.g. see the leading "#" in 2109.04981, figure 5 */
+  font-size: 0.7rem;
 }
 .ltx_listing .ltx_listingline .ltx_text {
   /* !important needed due to use of element "style" attributes in latexml */
