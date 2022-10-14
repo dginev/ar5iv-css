@@ -1533,6 +1533,10 @@ foreignObject .ltx_text {
 .ltx_figure > .ltx_inline-block > .ltx_transformed_inner,
 .ltx_table > .ltx_transformed_outer > .ltx_transformed_inner,
 .ltx_figure > .ltx_transformed_outer > .ltx_transformed_inner,
+/* see 0901.0489 for an example where the div.ltx_table itself has a transform */
+.ltx_table.ltx_transformed_outer > .ltx_transformed_inner,
+/* see 2006.13760 for an example where the div.ltx_figure itself has a transform */
+.ltx_figure.ltx_transformed_outer > .ltx_transformed_inner,
 /* sometimes latexml copies a tabular scaffold under a figure too faithfully,
    see figures in 1909.02255 for examples. */
 .ltx_tr:only-child > .ltx_td:only-child > .ltx_inline-block > .ltx_transformed_inner,
@@ -1545,6 +1549,7 @@ foreignObject .ltx_text {
 .ltx_para > .ltx_inline-block:only-child.ltx_transformed_outer > .ltx_transformed_inner
 {
    transform: none !important;
+   width: initial !important;
 }
 
 span.ltx_transformed_inner {
