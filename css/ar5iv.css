@@ -1457,16 +1457,6 @@ foreignObject .ltx_text {
 .ltx_minipage > .ltx_graphics {
   max-width:100%;
 }
-.ltx_listingline {
-  text-align:justify;
-  white-space:nowrap;
-  min-height:1rem;
-  display:block;
-}
-.ltx_listingline .ltx_text {
-  /* !important needed due to use of element "style" attributes in latexml */
-  font-size: 0.7rem !important;
-}
 .ltx_listing {
   display: block;
   max-width: var(--main-width);
@@ -1476,7 +1466,19 @@ foreignObject .ltx_text {
   /* download arrow has a glitchy border, disable it. */
   border-style: none;
 }
-.ltx_tag_listingline {
+/* ensure that listingline rules have a listing ancestor,
+   as e.g. 1403.1525 currently has listinglines inside ltx_theorem */
+.ltx_listing .ltx_listingline {
+  text-align: justify;
+  white-space: nowrap;
+  min-height: 1rem;
+  display: block;
+}
+.ltx_listing .ltx_listingline .ltx_text {
+  /* !important needed due to use of element "style" attributes in latexml */
+  font-size: 0.7rem !important;
+}
+.ltx_listing .ltx_tag_listingline {
   padding-right:0.3rem;
   border-right: solid;
   border-width: thin;
