@@ -1010,7 +1010,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
    Note:
    exclude epigraphs, which have their own right-aligned
    design, currently via inline "style" attributes. */
-:not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph) {
+:not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph):not(div.ltx_authors) + {
   border-left: 0.188rem solid var(--border-color);
   font-size: 1em;
   font-style: italic;
