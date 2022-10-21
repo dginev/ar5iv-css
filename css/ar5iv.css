@@ -1546,6 +1546,8 @@ foreignObject .ltx_text {
 .ltx_table.ltx_transformed_outer > .ltx_transformed_inner,
 /* see 2006.13760 for an example where the div.ltx_figure itself has a transform */
 .ltx_figure.ltx_transformed_outer > .ltx_transformed_inner,
+/* see 1504.02179 for an example where div.ltx_inline-block itself has a transform */
+.ltx_inline-block.ltx_transformed_outer > .ltx_transformed_inner,
 /* sometimes latexml copies a tabular scaffold under a figure too faithfully,
    see figures in 1909.02255 for examples. */
 .ltx_tr:only-child > .ltx_td:only-child > .ltx_inline-block > .ltx_transformed_inner,
