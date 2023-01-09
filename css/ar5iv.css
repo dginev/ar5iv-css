@@ -518,7 +518,7 @@ div.ltx_keywords:empty:before {
     clear: both;
     float: right;
     padding-bottom: 2rem;
-    padding-right: 2rem;
+    padding-right: 3rem;
   }
   .ltx_note_content {
     border-style: double none none none;
