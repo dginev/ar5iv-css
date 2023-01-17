@@ -1077,6 +1077,22 @@ blockquote.ltx_epigraph {
   margin-left: calc(0.45*var(--main-width)) !important;
 }
 
+/* Exception: some articles carelessly use {quote} instead of abstract */
+/* see ar5iv#253 and ar5iv-css#3 for examples */
+.ltx_authors + .ltx_para:has(+ .ltx_section) > blockquote.ltx_quote:only-child,
+.ltx_titlepage:not(:has(.ltx_abstract)) > blockquote.ltx_quote:last-child,
+.ltx_abstract > .ltx_title_abstract + blockquote.ltx_quote:last-child {
+    max-width: 90%;
+    margin: auto;
+    border-left: initial;
+    font-size: initial;
+    font-style: initial;
+    line-height: initial;
+    padding: initial;
+    position: initial;
+    z-index: initial;
+}
+
 /* ================================= */
 /* from LaTeXML.css, possibly edited */
 /* ================================= */
