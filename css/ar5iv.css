@@ -6,8 +6,10 @@
   /* fonts */
   --headings-font-family: "Noto Sans", sans-serif;
   --text-font-family: "Noto Serif", serif;
-  --math-font-family: "STIX Two Math", "Cambria Math", "Noto Serif", serif;
-  --math-caligraphic-font-family: "Lucida Calligraphy", "Zapf Chancery","URW Chancery L";
+  --math-font-family: "STIX Two Math", "Cambria Math", math;
+  /* Should we do anything special for caligraphic?
+     e.g. "Lucida Calligraphy","Zapf Chancery","URW Chancery L", TeX Gyre Termes...*/
+  --math-caligraphic-font-family: "STIX Two Math", "Cambria Math", math;
   --code-font-family: "Noto Sans Mono", monospace;
   /* default color theme is light */
   --background-color: white;
@@ -170,10 +172,6 @@ section.ltx_indent_first > .ltx_title+.ltx_para>.ltx_p { text-indent:2em!importa
   display:block;
 }
 
-/* TODO: need to pick+deploy some math fonts... */
-/* math.ltx_Math, semantics, mrow, mpadded, mover, munder, mi, mn, mo, msup, msub, msqrt, munder, mtext, mfrac, mmultiscripts, msubsup {
-  background-color: white;
-} */
 math,
 mjx-container {
   font-family: var(--math-font-family);
@@ -291,6 +289,13 @@ span.ltx_personname > br.ltx_break + span {
 span.ltx_personname > .ltx_break + .ltx_break {
     display: none;
 }
+/* The person name metadata is not the best place to do math-based scripted "dagger" marks.
+   The precise sizing tricks for PDF don't really work well in HTML. Ignore them.
+   see arXiv:2006.13760 */
+.ltx_personname math mtext[mathsize] {
+  font-size: inherit !important;
+}
+
 /* also avoid paragraphs that just contain a break, our CSS margins can be trusted. */
 .ltx_para > .ltx_break:first-child:last-child {
   display: none;
@@ -1457,6 +1462,18 @@ foreignObject .ltx_text {
 .ltx_minipage > .ltx_graphics {
   max-width:100%;
 }
+/* minipages need some dedicated work (ar5iv#83),
+   but for now we can accommodate with a bit of special-case padding; */
+.ltx_flex_size_2 .ltx_tabular.ltx_minipage {
+  margin: 1rem;
+}
+.ltx_flex_size_3 .ltx_tabular.ltx_minipage {
+  margin: 0.66rem;
+}
+.ltx_flex_size_4 .ltx_tabular.ltx_minipage {
+  margin: 0.5rem;
+}
+
 .ltx_listing {
   display: block;
   max-width: var(--main-width);
@@ -1816,7 +1833,6 @@ dl.ltx_description dl.ltx_description dd {
 
 /*======================================================================
  Misc */
-/* .ltx_verbatim*/
 .ltx_verbatim {
   text-align:left;
   font-size: 90%;
@@ -1843,4 +1859,49 @@ merror.ltx_ERROR {
 }
 mjx-merror {
   background-color: var(--background-color) !important;
+}
+
+/*======================================================================
+  Fine-tuning for the state of MathML in 2023
+
+  When a formula starts approaching half the line in horizontal width,
+   today's "text-align: justify" tends to fail pretty miserably
+   (adding large wells of whitespace),
+   as we have no way of reflowing/breaking the formula.
+   Meanwhile, "text-align: left" remains reliable in its simplicity.
+
+  We us a latexml-specific heuristic of "7 mrows" for formulas of this quality.
+   An example is item 2.9 in section 2.6 of arXiv:2105.10386 */
+.ltx_item:has(> .ltx_para > .ltx_p > math mrow:nth-of-type(7)),
+.ltx_p:has(> math mrow:nth-of-type(7)) {
+  text-align: left;
+}
+
+/* see discussion at github.com/w3c/mathml-core/issues/39 */
+mfrac > * {
+  font-size: inherit;
+  padding: 0.1em;
+}
+
+/*======================================================================
+  Fixes for known markup Bugs
+
+  B1. We have certain semi-supported bindings where a bibliography will be detected, but a paper
+   will also mark it manually as e.g. \section{Bibliography}.
+   (see arXiv:astro-ph/0001001)
+   Detect: A section with only a title (no content) as a previous sibling to a bibliography
+   Resolution: hide the extra section element. */
+.ltx_section:has(> .ltx_title_section:only-child):has(+ .ltx_bibliography) {
+  display: none;
+}
+
+/* B2. Bibitems whose bib blocks are entirely empty are better hidden (maybe?)
+   best avoided entirely in latexml
+.ltx_bibitem:not(:has(> .ltx_bibblock > *)) {
+  display: none;
+} */
+
+/* B3. ltx_parbox having too narrow widths in tables (see ar5iv#191) */
+.ltx_th .ltx_parbox, .ltx_tr .ltx_parbox {
+  width: initial !important;
 }
