@@ -693,6 +693,8 @@ div.ltx_keywords:empty:before {
   font-size: 100%;
   font-weight: normal;
   font-family: var(--headings-font-family);
+  text-wrap: balance;
+  max-inline-size: 52rem;
 }
 /* Abstract */
 .ltx_abstract {
@@ -1921,4 +1923,9 @@ mfrac > * {
 /* B3. ltx_parbox having too narrow widths in tables (see ar5iv#191) */
 .ltx_th .ltx_parbox, .ltx_tr .ltx_parbox {
   width: initial !important;
+}
+
+.ltx_para.ltx_minipage.ltx_align_center {
+  margin: auto;
+  display: block;
 }
