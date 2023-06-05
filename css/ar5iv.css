@@ -941,7 +941,8 @@ span.ltx_font_bold > .ltx_break:last-child {
 @media only screen and (max-width: 52rem) {
   .ltx_bibitem .ltx_tag {
     display: block;
-    width: 26%;
+    padding-bottom: 0.33em;
+    width: 36%;
   }
 }
 @media only screen and (min-width: 52.01rem) {
