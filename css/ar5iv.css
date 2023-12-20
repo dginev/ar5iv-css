@@ -674,6 +674,11 @@ div.ltx_keywords:empty:before {
   display:none;
   opacity: 0;
 }
+/* margin notes do not need the type description visualized */
+.ltx_note.ltx_role_margin .ltx_note_type {
+  display:none;
+  opacity: 0;
+}
 /* some notes were only provided a verbatim mark, deactivate them */
 .ltx_note.ltx_role_affiliationmark > .ltx_note_mark,
 .ltx_note.ltx_role_footnotemark > .ltx_note_mark {
