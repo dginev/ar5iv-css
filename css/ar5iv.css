@@ -1654,6 +1654,22 @@ span.ltx_transformed_inner {
 .ltx_font_mathcaligraphic {
   font-family: var(--math-caligraphic-font-family); }
 
+/* Fallbacks for when content+mathvariant cannot be mapped to Unicode */
+.ltx_mathvariant_italic        { font-style: italic; }
+.ltx_mathvariant_bold          { font-weight: bold; }
+.ltx_mathvariant_bold-italic   { font-style: italic; font-weight: bold; }
+.ltx_mathvariant_sans-serif             { font-family: sans-serif; }
+.ltx_mathvariant-bold-sans-serif        { font-family: sans-serif; font-weight: bold; }
+.ltx_mathvariant-sans-serif-italic      { font-family: sans-serif; font-style: italic; }
+.ltx_mathvariant-bold-sans-serif-italic { font-family: sans-serif; font-style: italic; font-weight: bold; }
+.ltx_mathvariant_monospace     { font-family: monospace; }
+/* Can we say anything generic about double-struck, script or fraktur ? */
+.ltx_mathvariant_double-struck { font-weight: bold; }
+.ltx_mathvariant_script        { font-family: var(--math-caligraphic-font-family), cursive; }
+.ltx_mathvariant_bold-script   { font-family: var(--math-caligraphic-font-family), cursive; font-weight: bold; }
+/* .ltx_mathvariant-fraktur       { } ??? */
+.ltx_mathvariant_bold-fraktur  { font-weight: bold; }
+
 /* equations in non-aligned mode (not normally used) */
 .ltx_eqn_div { display:block; width:95%; text-align:center; }
 
