@@ -879,8 +879,8 @@ span.ltx_font_bold > .ltx_break:last-child {
 .ltx_runin { display:inline; }
 .ltx_runin:after { content:" "; }
 .ltx_runin + .ltx_para,
-.ltx_runin + .ltx_para p,
-.ltx_runin + p { display:inline; }
+.ltx_runin + .ltx_para p:first-child,
+.ltx_runin + p:first-child { display:inline; }
 .ltx_outdent { margin-left: -2em; }
 
 .ltx_part, .ltx_chapter { margin-bottom: 5rem;}
@@ -1110,6 +1110,7 @@ blockquote.ltx_epigraph {
 .ltx_p,
 .ltx_quote,
 .ltx_block,
+.ltx_logical-block,
 .ltx_para {
     display: block; }
 .ltx_inline-quote,
@@ -1421,8 +1422,8 @@ foreignObject .ltx_text {
 }
 .ltx_tabular.ltx_tabbing {
   display: table; }
-.ltx_inline-para,
-.ltx_inline-para .ltx_para  { display:inline; }
+.ltx_inline-logical-block,
+.ltx_inline-logical-block .ltx_para  { display:inline; }
 .ltx_inline-block,
 .ltx_inline-block .ltx_para { display:inline-block; }
 .ltx_nodisplay { display: none; }
