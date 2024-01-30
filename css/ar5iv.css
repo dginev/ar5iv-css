@@ -689,6 +689,9 @@ div.ltx_keywords:empty:before {
   display: none !important;
   opacity: 0 !important;
 }
+
+.ltx_note.ltx_marginpar_left { display:none; }
+
 /*======================================================================
   Document Structure; Titles & Frontmatter */
 
@@ -911,7 +914,7 @@ span.ltx_font_bold > .ltx_break:last-child {
 
 /* Bibliographies */
 .ltx_bibliography dt { margin-right:0.5em; float:left; }
-.ltx_bibliography dd { margin-left: 3em; }
+.ltx_bibliography dd { margin-left: clamp(1em, 4.5%, 3em); }
 
 .ltx_bibitem {
   display:table;
@@ -1467,8 +1470,6 @@ foreignObject .ltx_text {
     display: inline-block; }
 /* floats, such as Algorithm listings */
 .ltx_minipage {
-  /* !important needed due to use of element "style" attributes in latexml */
-  /* width: auto !important; */
   align-self: normal;
   display: inline-block;
 }
@@ -1533,6 +1534,7 @@ foreignObject .ltx_text {
   width:1rem;
   display: inline-block;
 }
+.ltx_lst_space { white-space: pre; }
 /* for now hide the download button for listings,
    needs some styling thought and also ensuring it works. */
 .ltx_listing_data { display: none; }
@@ -1662,12 +1664,14 @@ span.ltx_transformed_inner {
 .ltx_mathvariant_sans-serif             { font-family: sans-serif; }
 .ltx_mathvariant-bold-sans-serif        { font-family: sans-serif; font-weight: bold; }
 .ltx_mathvariant-sans-serif-italic      { font-family: sans-serif; font-style: italic; }
-.ltx_mathvariant-bold-sans-serif-italic { font-family: sans-serif; font-style: italic; font-weight: bold; }
+.ltx_mathvariant-bold-sans-serif-italic {
+  font-family: sans-serif; font-style: italic; font-weight: bold; }
 .ltx_mathvariant_monospace     { font-family: monospace; }
 /* Can we say anything generic about double-struck, script or fraktur ? */
 .ltx_mathvariant_double-struck { font-weight: bold; }
 .ltx_mathvariant_script        { font-family: var(--math-caligraphic-font-family), cursive; }
-.ltx_mathvariant_bold-script   { font-family: var(--math-caligraphic-font-family), cursive; font-weight: bold; }
+.ltx_mathvariant_bold-script   {
+  font-family: var(--math-caligraphic-font-family), cursive; font-weight: bold; }
 /* .ltx_mathvariant-fraktur       { } ??? */
 .ltx_mathvariant_bold-fraktur  { font-weight: bold; }
 
@@ -1815,6 +1819,9 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_th      { display:table-cell; }
 
 .ltx_framed  { border:0.063rem solid var(--border-color);}
+/* avoid padding/margin collapse */
+span.ltx_framed       { display:inline-block; text-indent:0; }
+
 .ltx_tabular .ltx_td,
 .ltx_tabular .ltx_th {
   padding:0.1em 0.5em;
@@ -1822,6 +1829,20 @@ dl.ltx_description dl.ltx_description dd {
   word-wrap: break-word;
   white-space: normal;
 }
+.ltx_tabular .ltx_td.ltx_nopad_l,
+.ltx_tabular .ltx_th.ltx_nopad_l { padding-left:0; }
+.ltx_tabular .ltx_td.ltx_nopad_r,
+.ltx_tabular .ltx_th.ltx_nopad_r { padding-right:0; }
+
+/* min-height does NOT apply to tr! */
+.ltx_tabular .ltx_tr td:first-child::after,
+.ltx_tabular .ltx_tr th:first-child::after {
+  content: "";
+  display: inline-block;
+  vertical-align: top;
+  min-height: 1em;
+}
+
 /* see the last table in 1607.01446 for why
    th should be nowrap;
   TODO: Maybe our latexml data model needs to evolve to add classes,
@@ -1892,6 +1913,7 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_FATAL       { font-weight: normal; color:var(--fatal-text-color); }
 .ltx_rdf          { display:none; }
 .ltx_missing, .ltx_nounicode { color:var(--error-text-color);}
+.ltx_nodisplay    { display:none; }
 .ltx_missing_label { color: var(--warning-text-color); }
 
 /* math specific */
