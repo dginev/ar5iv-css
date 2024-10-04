@@ -1,7 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@400..700');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400..700;1,400..700');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400..700;1,400..700');
-@import url('https://fonts.googleapis.com/css2?family=STIX+Two+Math');
+@import url('https://fonts.cdnfonts.com/css/latin-modern-math');
 
 /*======================================================================
    Fallback fonts -- check locally if CDN access is blocked. */
@@ -71,9 +71,3 @@
     font-style: normal;
     src: local("Noto Serif"),
          local("NotoSerif-Regular"); }
-  @font-face {
-    font-display: fallback;
-    font-family: "STIX Two Math Fallback";
-    font-style: normal;
-    src: local("STIX Two Math"),
-         local("STIXTwoMath-Regular"); }

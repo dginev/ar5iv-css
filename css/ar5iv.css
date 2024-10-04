@@ -6,10 +6,10 @@
   /* fonts */
   --headings-font-family: "Noto Sans", "Noto Sans Fallback", sans-serif;
   --text-font-family: "Noto Serif", "Noto Serif Fallback", serif;
-  --math-font-family: "STIX Two Math", "STIX Two Math Fallback", "Cambria Math", math;
+  --math-font-family: "latin modern math", "Cambria Math", math;
   /* Should we do anything special for caligraphic?
      e.g. "Lucida Calligraphy","Zapf Chancery","URW Chancery L", TeX Gyre Termes...*/
-  --math-caligraphic-font-family: "STIX Two Math", "STIX Two Math Fallback", "Cambria Math", math;
+  --math-caligraphic-font-family: "latin modern math", "Cambria Math", math;
   --code-font-family: "Noto Sans Mono", "Noto Sans Mono Fallback", monospace;
   /* default color theme is light */
   --background-color: white;
