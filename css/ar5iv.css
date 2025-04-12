@@ -164,7 +164,7 @@ body {
 .ltx_indent > .ltx_p:first-child,
 section.ltx_pruned_first > .ltx_title+.ltx_para>.ltx_p,
 section.ltx_indent_first > .ltx_title+.ltx_para>.ltx_p { text-indent:2em!important; }
-.ltx_noindent > .ltx_p:first-child { text-indent:0em!important; }
+.ltx_noindent > .ltx_p:first-child { text-indent:0rem!important; }
 
 .ltx_pagination.ltx_role_newpage {
   /* use margins to ensure newpage breaks, to avoid stacking heights in cases where it is used after logical blocks */
@@ -729,7 +729,7 @@ div.ltx_keywords:empty:before {
 }
 .ltx_abstract p:first-of-type {
   /* TODO: this is debatable */
-  text-indent:0em; }
+  text-indent:0rem; }
 
 /* TODO: not yet tested */
 .ltx_role_dedicatory { font-size:100%; font-style:italic; text-align:center; margin:1em;}
@@ -884,6 +884,7 @@ span.ltx_font_bold > .ltx_break:last-child {
 .ltx_runin + .ltx_para,
 .ltx_runin + .ltx_para p:first-child,
 .ltx_runin + p:first-child { display:inline; }
+
 .ltx_outdent { margin-left: -2em; }
 
 .ltx_part, .ltx_chapter { margin-bottom: 5rem;}
@@ -892,7 +893,7 @@ span.ltx_font_bold > .ltx_break:last-child {
 .ltx_subsubsection { margin-bottom: .5rem;}
 .ltx_section .ltx_para:first-of-type .ltx_p:first-of-type {
   /* TODO: this is debatable */
-  text-indent: 0em;
+  text-indent: 0rem;
 }
 
 /* Theorems and other statements */
@@ -962,7 +963,7 @@ span.ltx_font_bold > .ltx_break:last-child {
   display:inline-block;
   text-align: left;
   padding-left: 0.5em;
-  max-width: 40em;
+  max-width: 40rem;
   line-height: 1.5rem;
   vertical-align: text-top;
 }
@@ -1032,7 +1033,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   font-size: 1em;
   font-style: italic;
   line-height: 1.5em;
-  margin: 1.1em 0em;
+  margin: 1.1em 0rem;
   padding: 0.5em 2em;
   position: relative;
   z-index: 0;
@@ -1353,7 +1354,7 @@ mtext > .ltx_graphics,
 }
 
 .ltx_flex_cell > .ltx_figure {
-  margin: 0em;
+  margin: 0rem;
 }
 .ltx_flex_figure .ltx_tabular .ltx_td,
 .ltx_flex_figure .ltx_tabular .ltx_th {
@@ -1402,16 +1403,29 @@ svg {
     For now: require svg content is underneath the main page. */
   z-index: -1;
 }
-foreignObject .ltx_text {
-  /* should we experiment?
-     maybe try a temporary font-corrected text box in SVG...
-  display: inline-block;
-  margin-top: -0.3rem;
-  margin-left: -0.2rem; */
-  /* for now just avoid wraps: */
-  word-wrap: initial;
-  white-space:nowrap;
+
+/*SVG (pgf/tikz & xy) basics
+Layout depends heavily on TeX's fonts which are more compact than typical browser's fonts */
+
+/* Use flex to center the FO's content (horizontally & vertically) over the FO's size */
+svg foreignObject > .ltx_foreignobject_container {
+  display:flex;
+  flex-wrap:wrap;
+  align-content:center;
+  justify-content:center;
+  width:100%;
+  height:100%;
+  & p {
+    line-height: 1;
+    text-align: left;
+  }
 }
+
+
+/* Stuff appearing in svg:foreignObject */
+.ltx_svg_fog foreignObject  { margin:0; padding:0; overflow:visible; }
+.ltx_svg_fog foreignObject > p { margin:0; padding:0; display:block; }
+/*.ltx_svg_fog foreignObject > p { margin:0; padding:0; display:block; white-space:nowrap; }*/
 
 /* tables in logical paragraphs get spaced out
    similar to a textual paragraph */
@@ -1426,7 +1440,7 @@ foreignObject .ltx_text {
 .ltx_tabular.ltx_tabbing {
   display: table; }
 .ltx_inline-logical-block,
-.ltx_inline-logical-block .ltx_para  { display:inline; }
+.ltx_inline-logical-block .ltx_para  { display:inline; text-indent: 0px;}
 .ltx_inline-block,
 .ltx_inline-block .ltx_para { display:inline-block; }
 .ltx_nodisplay { display: none; }
@@ -1466,7 +1480,7 @@ foreignObject .ltx_text {
   text-align: justify;
 }
 .ltx_parbox {
-    text-indent:0em;
+    text-indent:0rem;
     display: inline-block; }
 /* floats, such as Algorithm listings */
 .ltx_minipage {
@@ -1500,6 +1514,9 @@ foreignObject .ltx_text {
 .ltx_flex_size_4 .ltx_tabular.ltx_minipage {
   margin: 0.5rem;
 }
+
+.ltx_overlay {position:relative; }
+.ltx_overlay > span:nth-child(2) {position:absolute; left:0; }
 
 .ltx_listing {
   display: block;
@@ -1672,7 +1689,6 @@ span.ltx_transformed_inner {
 .ltx_mathvariant_script        { font-family: var(--math-caligraphic-font-family), cursive; }
 .ltx_mathvariant_bold-script   {
   font-family: var(--math-caligraphic-font-family), cursive; font-weight: bold; }
-/* .ltx_mathvariant-fraktur       { } ??? */
 .ltx_mathvariant_bold-fraktur  { font-weight: bold; }
 
 /* equations in non-aligned mode (not normally used) */
@@ -1747,12 +1763,20 @@ li.ltx_item > .ltx_tag {
   margin-left: -2.5rem;
   padding-right: 0.5rem;
   text-align:right; }
-.ltx_item .ltx_tag + .ltx_para,
-.ltx_item .ltx_tag + .ltx_para .ltx_p  {
-  display:inline;
+.ltx_item .ltx_tag + .ltx_para {
+  vertical-align:top;
+  display:inline-block;
+  & .ltx_p  {
+    display:inline;
+  }
 }
+
+.ltx_item > .ltx_para > .ltx_p:first-child {
+  text-indent:0rem; }
+.ltx_item > .ltx_para > .ltx_p { margin-top:0rem; margin-bottom:0rem; }
+
 .ltx_item .ltx_para {
-  margin-bottom: 0em;
+  margin-bottom: 0rem;
   display: inline;
 }
 .ltx_item + .ltx_item {
@@ -1760,7 +1784,7 @@ li.ltx_item > .ltx_tag {
 }
 /*TODO: Confusing override. maybe dt should have the ltx_tag_item class instead of ltx_item? */
 dd.ltx_item + dt.ltx_item {
-  margin-top: 0em;
+  margin-top: 0rem;
 }
 dl.ltx_description {
   list-style-type: none;
@@ -1773,7 +1797,7 @@ dl.ltx_description dt {
 }
 dl.ltx_description dd.ltx_item {
   margin-left:3em;
-  text-indent: 0em;
+  text-indent: 0rem;
 }
 dl.ltx_description dl.ltx_description dd {
   margin-left:3em;
