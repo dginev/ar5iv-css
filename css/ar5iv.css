@@ -308,6 +308,13 @@ span.ltx_personname > .ltx_break + .ltx_break {
   max-width: 100%;
   padding: 0.5rem;
   overflow-wrap: break-word;
+  
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: auto;
+  align-items: center;
+  object-fit: contain;
 }
 .ltx_creator br.ltx_break {
   flex-basis: 100%;
@@ -421,7 +428,8 @@ div.ltx_keywords:empty:before {
      on its own dedicated full-width line in the flex author block
      maybe we should evolve latexml to offer a flex_size_* attribute
      also on .ltx_creator elements? then this can be made cleaner. */
-  min-width: 20rem;
+  /* min-width: 20rem; */
+  min-width: max-content;
   margin-top: 0.5rem;
   margin-bottom: 2rem;
   font-family: var(--text-font-family);
@@ -1406,20 +1414,44 @@ svg {
   z-index: -1;
 }
 
-/*SVG (pgf/tikz & xy) basics
-Layout depends heavily on TeX's fonts which are more compact than typical browser's fonts */
-
-/* Use flex to center the FO's content (horizontally & vertically) over the FO's size */
+/*SVG (pgf/tikz & xy) basics */
+foreignObject {
+  translate: 0 0.1em;
+  --fo_width: 100%;
+}
+/* Use flex to vertically center foreignObject,
+   to accommodate potentially tall line-box */
 svg foreignObject > .ltx_foreignobject_container {
   display:flex;
-  flex-wrap:wrap;
-  align-content:center;
-  justify-content:center;
-  width:100%;
+  align-items:center;
+  width: clamp(calc(0.3*var(--main-width)),var(--fo_width),100%);
   height:100%;
-  & > .ltx_foreignobject_content .ltx_p {
-    line-height: 1;
+
+  /* Also horizontally for single math, since Chrome adds a lot of left/right spacing. */
+  &:has( > .ltx_foreignobject_content > math:only-child) {
+    justify-content:center;
+  }
+  /* If multiple children, give more space to avoid unexpected line breaks
+   due to font differences. */
+  &:has( > .ltx_foreignobject_content > :not(:only-child)) {
+    width:calc(1.1 * var(--fo_width));
+  }
+  & > .ltx_foreignobject_content {
+    display:block;
+    line-height: 1rem;
+    font-family: var(--text-font-family);
+    /* This adjustment is specific for Noto Sans, and is generally quite fragile.
+       Changing the text font will likely damage the positioning in SVG, which is very sensitive
+       to font metrics. This will likely be a subject of future improvements in LaTeXML. */
+    font-size: 0.8em;
     text-align: left;
+    & * {
+      width: inherit !important;
+      line-height: 1;
+    }
+    & .ltx_itemize {
+      padding: 0.2rem 0 0.2rem 0;
+    }
   }
 }
 
@@ -1771,6 +1803,9 @@ li.ltx_item > .ltx_tag {
   & .ltx_p  {
     display:inline;
   }
+}
+span.ltx_item .ltx_tag + span.ltx_para {
+  display:inline;
 }
 
 .ltx_item > .ltx_para > .ltx_p:first-child {
