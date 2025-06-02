@@ -293,7 +293,6 @@ span.ltx_personname > .ltx_break + .ltx_break {
   max-width: 100%;
   padding: 0.5rem;
   overflow-wrap: break-word;
-  
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -1159,8 +1158,12 @@ blockquote.ltx_epigraph {
     max-width:var(--main-width);
   }
 }
-/* mini images in captions are used inline */
-.ltx_caption .ltx_graphics { display: inline-block; }
+/* mini images in captions, personnames are used inline */
+.ltx_caption .ltx_graphics,
+.ltx_personname .ltx_graphics,
+.ltx_author_notes .ltx_graphics {
+  display: inline-block;
+}
 
 /* Note 1: The common use of negations is likely a sign we need more work in the data model
    for subfigures and images in general... but it's a start. */
