@@ -1564,18 +1564,22 @@ svg foreignObject > .ltx_foreignobject_container {
      e.g. see the leading "#" in 2109.04981, figure 5 */
   font-size: 0.7rem;
 }
-.ltx_listing .ltx_listingline .ltx_text {
-  /* !important needed due to use of element "style" attributes in latexml */
-  font-size: 0.7rem !important;
-}
 .ltx_listing .ltx_tag_listingline {
   padding-right:0.3rem;
   border-right: solid;
   border-width: thin;
   margin-right: 0.3rem;
   text-align: right;
-  width:1rem;
+  width:1.3rem;
   display: inline-block;
+  & > .ltx_text {
+    /* see algorithm 2 in 2406.04076, for an example of the numbering tags getting wide. */
+    word-break: keep-all;
+    word-wrap: normal;
+    /* !important needed due to use of element "style" attributes in latexml */
+    /* Sometimes the 80% downscale is too much, 0.7rem is a good pragmatic constant */
+    font-size: 0.7rem !important;
+  }
 }
 .ltx_lst_space { white-space: pre; }
 /* for now hide the download button for listings,
