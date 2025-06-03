@@ -1419,10 +1419,20 @@ svg foreignObject > .ltx_foreignobject_container {
   width: clamp(calc(0.3*var(--main-width)),var(--fo_width),100%);
   height:100%;
 
-  /* Also horizontally for single math, since Chrome adds a lot of left/right spacing. */
-  &:has( > .ltx_foreignobject_content > math:only-child) {
+  /* We need an approach that also behaves well in pgfplots axes, which are a bit too low-level to
+     survive centering of a custom-positioned axis tick.
+     See 1709.07394, Figure 11, for an informative example.
+
+     One idea is to introduce classes that
+     indicate what TeX environment the SVG originated from. Another is to address the default
+     browser spaces with direct overrides. 
+  
+  /* [Failed] Also horizontally for single math, since Chrome adds a lot of left/right spacing. */
+  /* &:has( > .ltx_foreignobject_content > math:only-child) {
     justify-content:center;
-  }
+  } */
+  /* ---- */
+
   /* If multiple children, give more space to avoid unexpected line breaks
    due to font differences. */
   &:has( > .ltx_foreignobject_content > :not(:only-child)) {
