@@ -528,6 +528,7 @@ div.ltx_keywords:empty:before {
     border-width: 0.1rem 0;
   }
   .ltx_note_content > .ltx_note_mark {
+    position: absolute;
     display:block;
     opacity: 100;
     margin-top: -1.8rem;
