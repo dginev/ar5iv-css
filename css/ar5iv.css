@@ -1924,6 +1924,9 @@ span.ltx_framed       { display:inline-block; text-indent:0; }
 .ltx_border_R  { border-right:0.063rem solid var(--border-light-color); }
 .ltx_border_B  { border-bottom:0.063rem solid var(--border-light-color); }
 .ltx_border_L  { border-left:0.063rem solid var(--border-light-color); }
+/* arydshln.sty */
+.ltx_border_r_dashed    { border-right:0.063rem dashed var(--border-color); }
+.ltx_border_b_dashed    { border-bottom:0.063rem dashed var(--border-color); }
 /* Framing */
 /* common setup, but what is the right selector?
    they need to be inline inside ltx_p (see 1703.08608),
