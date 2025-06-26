@@ -893,7 +893,12 @@ span.ltx_font_bold > .ltx_break:last-child {
 }
 
 /* Theorems and other statements */
-.ltx_theorem, .ltx_proof  { margin:2rem 0rem 1rem 0rem; }
+.ltx_theorem, .ltx_proof  { 
+  margin:2rem 0rem 1rem 0rem; 
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
 
 /* TODO: this approach to .ltx_item is still not satisfying, especially for nested lists */
 .ltx_item > .ltx_theorem { margin-left: 1em; }
