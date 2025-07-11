@@ -1421,9 +1421,11 @@ svg foreignObject > .ltx_foreignobject_container {
   height:100%;
 
   /* Also horizontally for single math, since Chrome adds a lot of left/right spacing. */
-  &:has( > .ltx_foreignobject_content > math:only-child) {
+  /* Note: this doesn't work in *all* cases, see Fig. 1 in arXiv:2501.11021 */
+  /* &:has( > .ltx_foreignobject_content > math:only-child) {
     justify-content:center;
-  }
+  } */
+
   /* If multiple children, give more space to avoid unexpected line breaks
    due to font differences. */
   &:has( > .ltx_foreignobject_content > :not(:only-child)) {
@@ -1562,6 +1564,9 @@ svg foreignObject > .ltx_foreignobject_container {
   max-width: var(--main-width);
   margin-bottom: 1rem;
 }
+.ltx_framed > .ltx_listing {
+    margin-bottom: 0rem;
+}
 .ltx_listing > .ltx_framed_rectangle {
   /* download arrow has a glitchy border, disable it. */
   border-style: none;
@@ -1619,8 +1624,7 @@ svg foreignObject > .ltx_foreignobject_container {
   border-width: 0.1rem;
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
-  padding-top: 0.2rem;
-  padding-bottom: 0.2rem;
+  padding: 0.2rem;
 }
 .ltx_rule {
   color: var(--border-color);
@@ -1809,6 +1813,7 @@ li.ltx_item > .ltx_tag {
 .ltx_item .ltx_tag + .ltx_para {
   vertical-align:top;
   display:inline-block;
+  width: calc(100% - 0.5rem);
   & .ltx_p  {
     display:inline;
   }
@@ -1827,6 +1832,9 @@ span.ltx_item .ltx_tag + span.ltx_para {
 }
 .ltx_item + .ltx_item {
   margin-top: 1em;
+}
+dt.ltx_item + dd.ltx_item {
+  margin-top: 0;
 }
 
 /*TODO: Confusing override. maybe dt should have the ltx_tag_item class instead of ltx_item? */
