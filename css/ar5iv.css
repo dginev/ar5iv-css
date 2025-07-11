@@ -24,8 +24,8 @@
   --note-highlight-color: #ffffd4;
   --info-text-color: #01719d;
   --warning-text-color: #d09e05;
-  --error-text-color: #D8000C;
-  --fatal-text-color: #D8000C;
+  --error-text-color: #d8000c;
+  --fatal-text-color: #d8000c;
   --index-ref-color: #026ecb;
 }
 
@@ -49,12 +49,14 @@
   --image-color: black;
   --image-background-color: white;
 }
-[data-theme="dark"] img, svg {
-  filter: brightness(.8) contrast(1.2);
+[data-theme="dark"] img,
+svg {
+  filter: brightness(0.8) contrast(1.2);
   background-color: white;
   color: black;
 }
-[data-theme="light"] img, svg {
+[data-theme="light"] img,
+svg {
   filter: none;
   background-color: white;
   color: black;
@@ -62,7 +64,7 @@
 
 /* Main content */
 body {
-  margin:0;
+  margin: 0;
   height: 100%;
   width: 100%;
   color: var(--text-color);
@@ -76,15 +78,18 @@ body {
   margin: 4rem 1rem;
   font-size: 1rem;
   font-weight: 300;
-  clear:both;
+  clear: both;
 }
-.ltx_page_header  { border-bottom:0.1em solid; margin-bottom:0.5em; }
-.ltx_page_footer  {
-  clear:both;
+.ltx_page_header {
+  border-bottom: 0.1em solid;
+  margin-bottom: 0.5em;
+}
+.ltx_page_footer {
+  clear: both;
   text-align: right;
   width: auto;
   margin: auto;
-  border-top:0.1em solid;
+  border-top: 0.1em solid;
   max-width: var(--main-width);
 }
 .ltx_page_logo {
@@ -93,7 +98,8 @@ body {
   text-align: right;
   padding: 0.5rem;
 }
-.ltx_page_logo > a {/* eLife-like links */
+.ltx_page_logo > a {
+  /* eLife-like links */
   border-bottom: 0.063rem dotted var(--link-text-color);
   color: var(--link-text-color);
   text-decoration: none;
@@ -103,9 +109,19 @@ body {
 .ltx_page_header:after,
 .ltx_page_footer:after,
 .ltx_page_content:after {
-    content:"."; display:block; height:0; clear:both; visibility:hidden; }
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
 .ltx_page_footer:before {
-    content:"."; display:block; height:0; clear:both; visibility:hidden; }
+  content: ".";
+  display: block;
+  height: 0;
+  clear: both;
+  visibility: hidden;
+}
 
 .ltx_document {
   margin: auto;
@@ -128,13 +144,15 @@ body {
    (note: avoid doing clear:both; for all paragraphs, or it creates needless
     vertical whitespace in cases where we have footnotes) */
 .ltx_figure + .ltx_para,
-.ltx_flex_figure + .ltx_para { clear: both; }
+.ltx_flex_figure + .ltx_para {
+  clear: both;
+}
 
 .ltx_p {
   line-height: 1.5rem;
   /* by default, p doesn't indent */
-  text-indent:0rem;
-  white-space:normal;
+  text-indent: 0rem;
+  white-space: normal;
   /* no top margin, stay snug with titles */
   margin-top: 0rem;
 }
@@ -147,14 +165,18 @@ body {
 }
 /* explicit control of indentation (on ltx_para) */
 .ltx_indent > .ltx_p:first-child,
-section.ltx_pruned_first > .ltx_title+.ltx_para>.ltx_p,
-section.ltx_indent_first > .ltx_title+.ltx_para>.ltx_p { text-indent:2em!important; }
-.ltx_noindent > .ltx_p:first-child { text-indent:0rem!important; }
+section.ltx_pruned_first > .ltx_title + .ltx_para > .ltx_p,
+section.ltx_indent_first > .ltx_title + .ltx_para > .ltx_p {
+  text-indent: 2em !important;
+}
+.ltx_noindent > .ltx_p:first-child {
+  text-indent: 0rem !important;
+}
 
 .ltx_pagination.ltx_role_newpage {
   /* use margins to ensure newpage breaks, to avoid stacking heights in cases where it is used after logical blocks */
   margin-top: 2rem;
-  display:block;
+  display: block;
 }
 
 math,
@@ -184,7 +206,8 @@ mtd {
 /* can contain images, see orcid icons at arxiv:1707.04393 */
 .ltx_ref > .ltx_graphics {
   border-bottom: none;
-  display: inline; }
+  display: inline;
+}
 
 .ltx_cite {
   font-style: normal;
@@ -274,7 +297,7 @@ span.ltx_personname > br.ltx_break + span {
   It doesn't usually translate to good HTML rendering (0709.4011). */
 
 span.ltx_personname > .ltx_break + .ltx_break {
-    display: none;
+  display: none;
 }
 /* The person name metadata is not the best place to do math-based scripted "dagger" marks.
    The precise sizing tricks for PDF don't really work well in HTML. Ignore them.
@@ -305,7 +328,10 @@ span.ltx_personname > .ltx_break + .ltx_break {
   height: 0;
 }
 /* do we want to display commas? */
-.ltx_author_before, .ltx_author_after { display: none;}
+.ltx_author_before,
+.ltx_author_after {
+  display: none;
+}
 .ltx_dates {
   margin-top: 0rem;
   margin-bottom: 1rem;
@@ -319,25 +345,26 @@ span.ltx_personname > .ltx_break + .ltx_break {
 .ltx_affiliation_institution,
 .ltx_affiliation_department,
 .ltx_affiliation_country {
-    margin-left: 0.25rem;
-    margin-right: 0.25rem;
-    white-space: nowrap; }
+  margin-left: 0.25rem;
+  margin-right: 0.25rem;
+  white-space: nowrap;
+}
 
 /* in multi-affiliation markup, e.g. produced by authblk.sty,
    we can do a vertical stack for each author */
 /* Detail: avoid vertical breaks for the case in which affiliations are notes */
-span.ltx_role_affiliation:not(.ltx_note) + span.ltx_role_affiliation:not(.ltx_note),
+span.ltx_role_affiliation:not(.ltx_note)
+  + span.ltx_role_affiliation:not(.ltx_note),
 span.ltx_role_orcid + span.ltx_role_affiliation:not(.ltx_note) {
   margin-top: 0.5rem;
   display: block;
 }
 
-
 /* sometimes ltx_keywords only contains a single text node */
 /* and we can't write a selector for ".ltx_keywords that only has text" via CSS...
    so just fix the completely empty buggy case */
 div.ltx_keywords:empty:before {
-  content:"Keywords: ";
+  content: "Keywords: ";
   font-weight: bold;
 }
 .ltx_keywords,
@@ -354,19 +381,21 @@ div.ltx_keywords:empty:before {
   display: inline;
   font-size: 1rem;
   font-weight: bold;
-  font-style:normal;
+  font-style: normal;
 }
 /* Two-column papers may want to choose their break-points in titles,
   yet the browser can manage on its own in single-column ar5iv.
   Example: section headings of 1701.00123 */
-.ltx_title > br.ltx_break { display: none; }
+.ltx_title > br.ltx_break {
+  display: none;
+}
 
 /* TODO: Untested */
 .ltx_date {
   font-family: var(--text-font-family);
-  text-align:center;
+  text-align: center;
   font-size: 120%;
-  margin:0.5em 0 0.5em 0;
+  margin: 0.5em 0 0.5em 0;
 }
 
 /* Mainmatter Footnotes */
@@ -375,7 +404,7 @@ div.ltx_keywords:empty:before {
   text-align: justify;
   text-justify: inter-word;
   hyphens: auto;
-  word-spacing:-0.05rem;
+  word-spacing: -0.05rem;
   font-style: normal;
   font-size: 0.85em;
 }
@@ -396,11 +425,11 @@ div.ltx_keywords:empty:before {
 }
 
 .ltx_note_content {
-  display:block;
+  display: block;
   opacity: 100;
   padding-top: 0.5rem;
   padding-bottom: 0.5rem;
-  margin:0.6rem;
+  margin: 0.6rem;
   font-family: var(--text-font-family);
   line-height: 1.5rem;
   overflow-wrap: break-word;
@@ -438,7 +467,7 @@ div.ltx_keywords:empty:before {
     width: 50rem;
   }
 }
-@media only screen and (min-width: 96rem)  and (max-width: 108.99rem) {
+@media only screen and (min-width: 96rem) and (max-width: 108.99rem) {
   .ltx_note_outer {
     width: 20rem;
     margin-right: -24rem;
@@ -463,8 +492,14 @@ div.ltx_keywords:empty:before {
     overflow-wrap: break-word;
     width: 90%;
   }
-  .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):not(.ltx_role_footnotemark):hover > .ltx_note_outer,
-  .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):not(.ltx_role_footnotemark):active > .ltx_note_outer {
+  .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):not(
+      .ltx_role_footnotemark
+    ):hover
+    > .ltx_note_outer,
+  .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):not(
+      .ltx_role_footnotemark
+    ):active
+    > .ltx_note_outer {
     display: block;
     opacity: 100;
     z-index: 100;
@@ -526,7 +561,7 @@ div.ltx_keywords:empty:before {
   }
   .ltx_note_content > .ltx_note_mark {
     position: absolute;
-    display:block;
+    display: block;
     opacity: 100;
     margin-top: -1.8rem;
   }
@@ -551,7 +586,7 @@ div.ltx_keywords:empty:before {
     display: none;
     opacity: 0;
   }
-/* TODO:
+  /* TODO:
 1. Until we can dedup affiliations, we have no choice but to hide them first, show them on hover.
   Even on large screens.
 2. AND! footnotes in Tables are ALWAYS collapsed
@@ -576,7 +611,9 @@ div.ltx_keywords:empty:before {
     display: none;
     opacity: 0;
   }
-  th .ltx_note_content, td .ltx_note_content, figcaption .ltx_note_content {
+  th .ltx_note_content,
+  td .ltx_note_content,
+  figcaption .ltx_note_content {
     font-weight: normal;
     overflow-wrap: break-word;
     width: 90%;
@@ -609,17 +646,21 @@ div.ltx_keywords:empty:before {
   .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer,
   .ltx_personname .ltx_role_footnote > .ltx_note_mark:hover + .ltx_note_outer,
   .ltx_personname .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer,
-  .ltx_author_notes > .ltx_note  > .ltx_note_mark:hover + .ltx_note_outer,
-  .ltx_author_notes > span > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer {
+  .ltx_author_notes > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer,
+  .ltx_author_notes
+    > span
+    > .ltx_note
+    > .ltx_note_mark:hover
+    + .ltx_note_outer {
     display: block;
     opacity: 100;
     z-index: 100;
-    position:absolute;
+    position: absolute;
     left: 0;
   }
   /* also regular footnotes are hidden on author names, to avoid unfortunate collisions */
   .ltx_personname .ltx_role_footnote .ltx_note_outer {
-    display:none;
+    display: none;
     opacity: 0;
   }
   /* footnotemark + footnotetext combinations come from hand-crafted typesetting
@@ -629,13 +670,27 @@ div.ltx_keywords:empty:before {
     position: absolute;
     left: var(--main-width-margin);
   }
-  .ltx_note.ltx_role_footnotetext:nth-of-type(2) .ltx_note_outer { top: 8rem; }
-  .ltx_note.ltx_role_footnotetext:nth-of-type(3) .ltx_note_outer { top: 16rem; }
-  .ltx_note.ltx_role_footnotetext:nth-of-type(4) .ltx_note_outer { top: 24rem; }
-  .ltx_note.ltx_role_footnotetext:nth-of-type(5) .ltx_note_outer { top: 32rem; }
-  .ltx_note.ltx_role_footnotetext:nth-of-type(6) .ltx_note_outer { top: 40rem; }
-  .ltx_note.ltx_role_footnotetext:nth-of-type(7) .ltx_note_outer { top: 48rem; }
-  .ltx_note.ltx_role_footnotetext:nth-of-type(8) .ltx_note_outer { top: 56rem; }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(2) .ltx_note_outer {
+    top: 8rem;
+  }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(3) .ltx_note_outer {
+    top: 16rem;
+  }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(4) .ltx_note_outer {
+    top: 24rem;
+  }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(5) .ltx_note_outer {
+    top: 32rem;
+  }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(6) .ltx_note_outer {
+    top: 40rem;
+  }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(7) .ltx_note_outer {
+    top: 48rem;
+  }
+  .ltx_note.ltx_role_footnotetext:nth-of-type(8) .ltx_note_outer {
+    top: 56rem;
+  }
   /* notes directly in abstract, or document, don't benefit from
      having a mark on wide displays */
   .ltx_abstract > .ltx_note > .ltx_note_mark,
@@ -667,12 +722,12 @@ div.ltx_keywords:empty:before {
 
 /* footnotetext are low-level notes without a type description */
 .ltx_note.ltx_role_footnotetext .ltx_note_type {
-  display:none;
+  display: none;
   opacity: 0;
 }
 /* margin notes do not need the type description visualized */
 .ltx_note.ltx_role_margin .ltx_note_type {
-  display:none;
+  display: none;
   opacity: 0;
 }
 /* some notes were only provided a verbatim mark, deactivate them */
@@ -686,7 +741,9 @@ div.ltx_keywords:empty:before {
   opacity: 0 !important;
 }
 
-.ltx_note.ltx_marginpar_left { display:none; }
+.ltx_note.ltx_marginpar_left {
+  display: none;
+}
 
 /*======================================================================
   Document Structure; Titles & Frontmatter */
@@ -709,7 +766,9 @@ div.ltx_keywords:empty:before {
 /* TODO: Can we get a better handle on the ToC title?
    Update: we now have a "ltx_title_contents" class, consider
            deprecating the h6 selector soon. */
-.ltx_title_abstract,.ltx_TOC > h6, .ltx_title_contents {
+.ltx_title_abstract,
+.ltx_TOC > h6,
+.ltx_title_contents {
   margin-top: 0;
   margin-bottom: 1.5rem;
   padding-top: 0;
@@ -725,10 +784,16 @@ div.ltx_keywords:empty:before {
 }
 .ltx_abstract p:first-of-type {
   /* TODO: this is debatable */
-  text-indent:0rem; }
+  text-indent: 0rem;
+}
 
 /* TODO: not yet tested */
-.ltx_role_dedicatory { font-size:100%; font-style:italic; text-align:center; margin:1em;}
+.ltx_role_dedicatory {
+  font-size: 100%;
+  font-style: italic;
+  text-align: center;
+  margin: 1em;
+}
 
 /* ensure emails are presented on a standalone line */
 .ltx_role_email {
@@ -742,8 +807,8 @@ div.ltx_keywords:empty:before {
 
 /* Table of Contents, main page display */
 .ltx_TOC {
-  margin-top:2rem;
-  margin-bottom:2rem;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
 }
 ul.ltx_toclist {
   padding-left: 2.5rem;
@@ -756,11 +821,11 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   padding-left: 0rem;
 }
 .ltx_TOC > .ltx_toclist > .ltx_tocentry {
-  list-style-type:none;
+  list-style-type: none;
   margin-bottom: 1.3rem;
 }
-.ltx_tocentry  {
-  list-style-type:none;
+.ltx_tocentry {
+  list-style-type: none;
   margin-bottom: 0.5rem;
 }
 .ltx_TOC > .ltx_toclist > .ltx_tocentry > a.ltx_ref {
@@ -778,7 +843,13 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 }
 /* chapter tags under part can be a little narrower,
    see 2105.04227 */
-.ltx_toclist_part > .ltx_tocentry_chapter > .ltx_ref > .ltx_ref_title > .ltx_tag { min-width: 0.5rem; }
+.ltx_toclist_part
+  > .ltx_tocentry_chapter
+  > .ltx_ref
+  > .ltx_ref_title
+  > .ltx_tag {
+  min-width: 0.5rem;
+}
 
 .ltx_tocentry_part .ltx_tocentry_chapter > .ltx_ref,
 .ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref > .ltx_ref_title,
@@ -792,8 +863,16 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   border-bottom: none;
 }
 
-.ltx_tocentry_part .ltx_tocentry_chapter > .ltx_ref > .ltx_ref_title > .ltx_tag_ref,
-.ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag_ref,
+.ltx_tocentry_part
+  .ltx_tocentry_chapter
+  > .ltx_ref
+  > .ltx_ref_title
+  > .ltx_tag_ref,
+.ltx_tocentry_chapter
+  .ltx_tocentry_section
+  > .ltx_ref
+  > .ltx_ref_title
+  > .ltx_tag_ref,
 .ltx_tocentry_subsection > .ltx_ref > .ltx_ref_title > .ltx_tag_ref,
 .ltx_tocentry_subsubsection > .ltx_ref > .ltx_ref_title > .ltx_tag_ref {
   border-bottom: 0.063rem dotted var(--link-text-color);
@@ -812,18 +891,20 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_tag_subsubsection {
   display: inline-block;
   padding-right: 1rem;
-  min-width: 1.33em; }
+  min-width: 1.33em;
+}
 .ltx_tag_table,
 .ltx_tag_figure {
   display: inline-block;
   padding-right: 0.2rem;
-  min-width: 1.33em; }
+  min-width: 1.33em;
+}
 /* Various kinds of titles */
 .ltx_title_part,
-.ltx_title_chapter  {
-  font-size:1.6rem;
-  font-weight:bold;
-  margin-bottom:1.5rem;
+.ltx_title_chapter {
+  font-size: 1.6rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
 }
 .ltx_title_section,
 .ltx_title_acknowledgements,
@@ -833,40 +914,39 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 /* semantic heuristic (part 1)
    bold spans with trailing breaks are headings
    see math/0002050 for example */
-span.ltx_font_bold > .ltx_break:last-child
-  {
-  font-size:1.4rem;
-  font-weight:bold;
-  margin-bottom:1.5rem;
+span.ltx_font_bold > .ltx_break:last-child {
+  font-size: 1.4rem;
+  font-weight: bold;
+  margin-bottom: 1.5rem;
 }
 /* semantic heuristic (part 2)
    bold spans with trailing breaks are section headings
    so they were preceded by a section.
    add to top would have been the .ltx_subsection bottom margin */
 span.ltx_font_bold > .ltx_break:last-child {
-  margin-top:2rem;
+  margin-top: 2rem;
 }
-.ltx_title_subsection    {
-  font-size:1.2rem;
-  font-weight:bold;
-  margin-bottom:1rem;
+.ltx_title_subsection {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 .ltx_title_subsubsection {
-  font-size:1rem;
-  font-weight:bold;
-  margin-bottom:1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-bottom: 1rem;
 }
 .ltx_title_paragraph {
-  font-size:1rem;
-  font-weight:bold;
-  margin-right:1rem;
+  font-size: 1rem;
+  font-weight: bold;
+  margin-right: 1rem;
   margin-bottom: 0.5rem;
 }
 .ltx_title_subparagraph {
-  font-size:1rem;
-  font-weight:bold;
-  display:inline;
-  margin:0rem 1rem 0rem 2rem;
+  font-size: 1rem;
+  font-weight: bold;
+  display: inline;
+  margin: 0rem 1rem 0rem 2rem;
 }
 
 /* indent the first subparagraph content p for visual effect (maybe?) */
@@ -875,59 +955,88 @@ span.ltx_font_bold > .ltx_break:last-child {
 }
 /* Hack to simulate run-in! put class="ltx_runin" on a title or tag
    for it to run-into the following text. */
-.ltx_runin { display:inline; }
-.ltx_runin:after { content:" "; }
+.ltx_runin {
+  display: inline;
+}
+.ltx_runin:after {
+  content: " ";
+}
 .ltx_runin + .ltx_para,
 .ltx_runin + .ltx_para p:first-child,
-.ltx_runin + p:first-child { display:inline; }
+.ltx_runin + p:first-child {
+  display: inline;
+}
 
-.ltx_outdent { margin-left: -2em; }
+.ltx_outdent {
+  margin-left: -2em;
+}
 
-.ltx_part, .ltx_chapter { margin-bottom: 5rem;}
-.ltx_section, .ltx_bibliography { margin-bottom: 2.5rem;}
-.ltx_subsection { margin-bottom: 2rem;}
-.ltx_subsubsection { margin-bottom: .5rem;}
+.ltx_part,
+.ltx_chapter {
+  margin-bottom: 5rem;
+}
+.ltx_section,
+.ltx_bibliography {
+  margin-bottom: 2.5rem;
+}
+.ltx_subsection {
+  margin-bottom: 2rem;
+}
+.ltx_subsubsection {
+  margin-bottom: 0.5rem;
+}
 .ltx_section .ltx_para:first-of-type .ltx_p:first-of-type {
   /* TODO: this is debatable */
   text-indent: 0rem;
 }
 
 /* Theorems and other statements */
-.ltx_theorem, .ltx_proof  { 
-  margin:2rem 0rem 1rem 0rem; 
+.ltx_theorem,
+.ltx_proof {
+  margin: 2rem 0rem 1rem 0rem;
   text-align: justify;
   text-justify: inter-word;
   hyphens: auto;
 }
 
 /* TODO: this approach to .ltx_item is still not satisfying, especially for nested lists */
-.ltx_item > .ltx_theorem { margin-left: 1em; }
+.ltx_item > .ltx_theorem {
+  margin-left: 1em;
+}
 
 /* reduce bottom margin for logical paragraphs in theorem envs */
-.ltx_theorem > .ltx_para { margin-bottom: .5rem; }
+.ltx_theorem > .ltx_para {
+  margin-bottom: 0.5rem;
+}
 
-.ltx_title_theorem, .ltx_title_proof {
+.ltx_title_theorem,
+.ltx_title_proof {
   font-family: var(--headings-font-family);
-  font-size:1rem;
+  font-size: 1rem;
   font-weight: bold;
   display: inline;
   padding-right: 0.25em;
 }
 
 /* Bibliographies */
-.ltx_bibliography dt { margin-right:0.5em; float:left; }
-.ltx_bibliography dd { margin-left: clamp(1em, 4.5%, 3em); }
+.ltx_bibliography dt {
+  margin-right: 0.5em;
+  float: left;
+}
+.ltx_bibliography dd {
+  margin-left: clamp(1em, 4.5%, 3em);
+}
 
 .ltx_bibitem {
-  display:table;
+  display: table;
   table-layout: fixed;
-  list-style-type:none;
+  list-style-type: none;
   width: 100%;
   padding-bottom: 0.75em;
   font-family: var(--text-font-family);
 }
 .ltx_bibitem .ltx_tag {
-  display:table-cell;
+  display: table-cell;
   position: relative;
   left: -2.5rem;
   top: 0.24rem;
@@ -961,7 +1070,7 @@ span.ltx_font_bold > .ltx_break:last-child {
   }
 }
 .ltx_bibitem .ltx_bibblock {
-  display:inline-block;
+  display: inline-block;
   text-align: left;
   padding-left: 0.5em;
   max-width: 40rem;
@@ -969,10 +1078,18 @@ span.ltx_font_bold > .ltx_break:last-child {
   vertical-align: text-top;
 }
 /*.bibitem-tag + div { display:inline; }*/
-.ltx_bib_title { font-style:italic; }
-.ltx_bib_article .bib-title { font-style:normal !important; }
-.ltx_bib_journal  { font-style:italic; }
-.ltx_bib_volume { font-weight:bold; }
+.ltx_bib_title {
+  font-style: italic;
+}
+.ltx_bib_article .bib-title {
+  font-style: normal !important;
+}
+.ltx_bib_journal {
+  font-style: italic;
+}
+.ltx_bib_volume {
+  font-weight: bold;
+}
 
 /* highlight feature for bibitem-tag */
 .ltx_tag_bibitem ~ *:active,
@@ -988,7 +1105,7 @@ span.ltx_font_bold > .ltx_break:last-child {
   columns: 2;
   -webkit-columns: 2;
   -moz-columns: 2;
-  list-style-type:none;
+  list-style-type: none;
   padding-left: 0rem;
 }
 /* nested index sub-entries */
@@ -1014,7 +1131,7 @@ section.ltx_conversion_report > .ltx_para {
   width: var(--main-width);
   padding: 0.1rem 1rem 0.1rem 1rem;
   border-radius: 0.8rem;
-  line-height:  1rem;
+  line-height: 1rem;
   font-family: var(--code-font-family);
   font-size: 0.8rem;
   word-break: break-word;
@@ -1040,27 +1157,27 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   z-index: 0;
 }
 :not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph):before {
-    content: "";
-    position: absolute;
-    top: 50%;
-    left: -0.25rem;
-    height: 2rem;
-    background-color: var(--background-color);
-    width: 0.25rem;
-    margin-top: -1rem;
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: -0.25rem;
+  height: 2rem;
+  background-color: var(--background-color);
+  width: 0.25rem;
+  margin-top: -1rem;
 }
 :not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph):after {
-    content: "“";
-    position: absolute;
-    top: 50%;
-    left: -0.6rem;
-    color: var(--border-color);
-    font-style: normal;
-    font-size: 1.5rem;
-    line-height: 2rem;
-    text-align: center;
-    width: 1rem;
-    margin-top: -0.7rem;
+  content: "“";
+  position: absolute;
+  top: 50%;
+  left: -0.6rem;
+  color: var(--border-color);
+  font-style: normal;
+  font-size: 1.5rem;
+  line-height: 2rem;
+  text-align: center;
+  width: 1rem;
+  margin-top: -0.7rem;
 }
 
 /* suppress bottom margins */
@@ -1087,8 +1204,8 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 /* we use important for now, as latexml adds
    per-element "style" attributes */
 blockquote.ltx_epigraph {
-  width: calc(0.5*var(--main-width)) !important;
-  margin-left: calc(0.45*var(--main-width)) !important;
+  width: calc(0.5 * var(--main-width)) !important;
+  margin-left: calc(0.45 * var(--main-width)) !important;
 }
 
 /* Exception: some articles carelessly use {quote} instead of abstract */
@@ -1096,15 +1213,15 @@ blockquote.ltx_epigraph {
 .ltx_authors + .ltx_para:has(+ .ltx_section) > blockquote.ltx_quote:only-child,
 .ltx_titlepage:not(:has(.ltx_abstract)) > blockquote.ltx_quote:last-child,
 .ltx_abstract > .ltx_title_abstract + blockquote.ltx_quote:last-child {
-    max-width: 90%;
-    margin: auto;
-    border-left: initial;
-    font-size: initial;
-    font-style: initial;
-    line-height: initial;
-    padding: initial;
-    position: initial;
-    z-index: initial;
+  max-width: 90%;
+  margin: auto;
+  border-left: initial;
+  font-size: initial;
+  font-style: initial;
+  line-height: initial;
+  padding: initial;
+  position: initial;
+  z-index: initial;
 }
 
 /* ================================= */
@@ -1117,48 +1234,85 @@ blockquote.ltx_epigraph {
 .ltx_block,
 .ltx_logical-block,
 .ltx_para {
-    display: block; }
+  display: block;
+}
 .ltx_inline-quote,
-.ltx_quote.ltx_outerquote, .ltx_quote.ltx_innerquote {
+.ltx_quote.ltx_outerquote,
+.ltx_quote.ltx_innerquote {
   display: inline;
 }
 /* alignment within blocks */
-.ltx_align_left     { text-align:left; }
-.ltx_align_right    { text-align:right; }
-.ltx_align_center   { text-align:center; }
-.ltx_align_justify  { text-align:justify; text-justify: inter-word; hyphens: auto;}
-.ltx_align_top      { vertical-align:top; }
-.ltx_align_bottom   { vertical-align:bottom; }
-.ltx_align_middle   { vertical-align:middle; }
-.ltx_align_baseline { vertical-align:baseline; }
+.ltx_align_left {
+  text-align: left;
+}
+.ltx_align_right {
+  text-align: right;
+}
+.ltx_align_center {
+  text-align: center;
+}
+.ltx_align_justify {
+  text-align: justify;
+  text-justify: inter-word;
+  hyphens: auto;
+}
+.ltx_align_top {
+  vertical-align: top;
+}
+.ltx_align_bottom {
+  vertical-align: bottom;
+}
+.ltx_align_middle {
+  vertical-align: middle;
+}
+.ltx_align_baseline {
+  vertical-align: baseline;
+}
 
-.ltx_align_floatleft  { float:left; }
-.ltx_align_floatright { float:right; }
+.ltx_align_floatleft {
+  float: left;
+}
+.ltx_align_floatright {
+  float: right;
+}
 
-.ltx_td.ltx_align_left,   .ltx_th.ltx_align_left,
-.ltx_td.ltx_align_right,  .ltx_th.ltx_align_right,
-.ltx_td.ltx_align_center, .ltx_th.ltx_align_center { white-space:nowrap; }
-.ltx_td.ltx_align_left.ltx_wrap,   .ltx_th.ltx_align_left.ltx_wrap,
-.ltx_td.ltx_align_right.ltx_wrap,  .ltx_th.ltx_align_right.ltx_wrap,
-.ltx_td.ltx_align_center.ltx_wrap, .ltx_th.ltx_align_center.ltx_wrap,
-.ltx_td.ltx_align_justify,  .ltx_th.ltx_align_justify { white-space:normal; }
+.ltx_td.ltx_align_left,
+.ltx_th.ltx_align_left,
+.ltx_td.ltx_align_right,
+.ltx_th.ltx_align_right,
+.ltx_td.ltx_align_center,
+.ltx_th.ltx_align_center {
+  white-space: nowrap;
+}
+.ltx_td.ltx_align_left.ltx_wrap,
+.ltx_th.ltx_align_left.ltx_wrap,
+.ltx_td.ltx_align_right.ltx_wrap,
+.ltx_th.ltx_align_right.ltx_wrap,
+.ltx_td.ltx_align_center.ltx_wrap,
+.ltx_th.ltx_align_center.ltx_wrap,
+.ltx_td.ltx_align_justify,
+.ltx_th.ltx_align_justify {
+  white-space: normal;
+}
 
 /* graphics, subfigures */
 
 /* Single central figure image */
 /* Sizing here is a bit biased towards landscape images */
 /* ideally this is mediated through the zoom-on-click CSS feature */
-.ltx_graphics { display: block; }
+.ltx_graphics {
+  display: block;
+}
 /* let us avoid overflowing the screen width with images
    when we're viewing at less than --main-width */
 @media only screen and (max-width: 52rem) {
   .ltx_graphics {
-    max-width:95%;
+    max-width: 95%;
   }
 }
 @media only screen and (min-width: 52.01rem) {
   .ltx_graphics {
-    max-width:var(--main-width);
+    max-width: var(--main-width);
   }
 }
 /* mini images in captions, personnames are used inline */
@@ -1171,25 +1325,38 @@ blockquote.ltx_epigraph {
 /* Note 1: The common use of negations is likely a sign we need more work in the data model
    for subfigures and images in general... but it's a start. */
 /* Note 2: what is a reasonable "tallest" figure? All ratios subject to further tweaking. */
-:not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_landscape {
-  max-width:100%;
-  max-height: calc(var(--main-width)/1.66);
+:not(mtext):not(.ltx_flex_cell)
+  > :not(mtext):not(.ltx_flex_cell)
+  > .ltx_img_landscape {
+  max-width: 100%;
+  max-height: calc(var(--main-width) / 1.66);
   width: auto;
-  height:auto; }
-:not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_portrait {
+  height: auto;
+}
+:not(mtext):not(.ltx_flex_cell)
+  > :not(mtext):not(.ltx_flex_cell)
+  > .ltx_img_portrait {
   max-height: var(--main-width);
-  max-width: calc(var(--main-width)/1.33);
-  width: auto; }
-:not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_square {
-  max-height: calc(var(--main-width)/1.33);
-  width: auto; }
+  max-width: calc(var(--main-width) / 1.33);
+  width: auto;
+}
+:not(mtext):not(.ltx_flex_cell)
+  > :not(mtext):not(.ltx_flex_cell)
+  > .ltx_img_square {
+  max-height: calc(var(--main-width) / 1.33);
+  width: auto;
+}
 
 /* intention: downsize keeping the aspect ratio, when on a viewport smaller than main-width */
 @media only screen and (max-width: 52rem) {
-  :not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_portrait {
+  :not(mtext):not(.ltx_flex_cell)
+    > :not(mtext):not(.ltx_flex_cell)
+    > .ltx_img_portrait {
     height: auto;
   }
-  :not(mtext):not(.ltx_flex_cell) > :not(mtext):not(.ltx_flex_cell) > .ltx_img_square {
+  :not(mtext):not(.ltx_flex_cell)
+    > :not(mtext):not(.ltx_flex_cell)
+    > .ltx_img_square {
     height: auto;
   }
 }
@@ -1225,14 +1392,15 @@ mtext > .ltx_graphics,
 .ltx_markedasmath.ltx_graphics {
   display: inline;
   /* see 1502.04633 at (3.3) for a width overflow example */
-  max-width: calc(0.9*var(--main-width)) !important;
+  max-width: calc(0.9 * var(--main-width)) !important;
 }
 .ltx_flex_cell .ltx_img_landscape,
 .ltx_flex_cell .ltx_img_portrait,
 .ltx_flex_cell .ltx_img_square {
   width: 100%;
   height: auto;
-  max-height: var(--main-width); }
+  max-height: var(--main-width);
+}
 
 /* footnote graphics need to be contained to small sizes */
 .ltx_note_content .ltx_graphics {
@@ -1287,16 +1455,15 @@ mtext > .ltx_graphics,
   min-width: 7rem;
 }
 
-
 .ltx_flex_cell.ltx_flex_size_1,
 .ltx_flex_cell.ltx_flex_size_1 .ltx_tabular,
 .ltx_lstlisting.ltx_flex_size_1,
 .ltx_table.ltx_flex_size_1 .ltx_caption,
 .ltx_minipage.ltx_flex_size_1 .ltx_float .ltx_caption {
-  max-width:var(--main-width);
+  max-width: var(--main-width);
 }
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_2 {
-  max-width: calc(0.5*var(--main-width));
+  max-width: calc(0.5 * var(--main-width));
 }
 .ltx_flex_cell.ltx_flex_size_2,
 .ltx_flex_size_2.ltx_tabular,
@@ -1304,10 +1471,10 @@ mtext > .ltx_graphics,
 .ltx_lstlisting.ltx_flex_size_2,
 .ltx_table.ltx_flex_size_2 .ltx_caption,
 .ltx_minipage.ltx_flex_size_2 .ltx_float .ltx_caption {
-  max-width: calc(0.5*var(--main-width));
+  max-width: calc(0.5 * var(--main-width));
 }
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_3 {
-  max-width: calc(0.33*var(--main-width));
+  max-width: calc(0.33 * var(--main-width));
 }
 
 .ltx_flex_cell.ltx_flex_size_3,
@@ -1316,12 +1483,12 @@ mtext > .ltx_graphics,
 .ltx_lstlisting.ltx_flex_size_3,
 .ltx_table.ltx_flex_size_3 .ltx_caption,
 .ltx_minipage.ltx_flex_size_3 .ltx_float .ltx_caption {
-  max-width: calc(0.33*var(--main-width));
+  max-width: calc(0.33 * var(--main-width));
 }
 
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_4,
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_many {
-  max-width: calc(0.25*var(--main-width));
+  max-width: calc(0.25 * var(--main-width));
 }
 
 .ltx_flex_cell.ltx_flex_size_4,
@@ -1330,13 +1497,13 @@ mtext > .ltx_graphics,
 .ltx_lstlisting.ltx_flex_size_4,
 .ltx_table.ltx_flex_size_4 .ltx_caption,
 .ltx_minipage.ltx_flex_size_4 .ltx_float .ltx_caption {
-  max-width: calc(0.25*var(--main-width));
+  max-width: calc(0.25 * var(--main-width));
 }
 /*Default: More than 4 items, tricky.
   quite often intended to auto-reflow... */
 
 .ltx_flex_figure.ltx_flex_table .ltx_flex_size_many {
-  max-width: calc(0.28*var(--main-width));
+  max-width: calc(0.28 * var(--main-width));
 }
 
 .ltx_flex_cell.ltx_flex_size_many,
@@ -1345,9 +1512,8 @@ mtext > .ltx_graphics,
 .ltx_lstlisting.ltx_flex_size_many,
 .ltx_table.ltx_flex_size_many .ltx_caption,
 .ltx_minipage.ltx_flex_size_many .ltx_float .ltx_caption {
-  max-width: calc(0.25*var(--main-width));
+  max-width: calc(0.25 * var(--main-width));
 }
-
 
 .ltx_flex_figure .ltx_flex_cell {
   flex: 1 1 0px;
@@ -1363,26 +1529,26 @@ mtext > .ltx_graphics,
 }
 .ltx_flex_figure .ltx_tabular .ltx_td,
 .ltx_flex_figure .ltx_tabular .ltx_th {
-  padding:0.1rem 0.2rem;
+  padding: 0.1rem 0.2rem;
 }
 /* Feature: zoom figure image on hover */
 .ltx_figure img {
   color: var(--image-color);
   background-color: var(--image-background-color);
-  -webkit-transition: all .2s ease;
-  -moz-transition: all .2s ease;
-  -ms-transition: all .2s ease;
-  -o-transition: all .2s ease;
-  transition: all .2s ease;
+  -webkit-transition: all 0.2s ease;
+  -moz-transition: all 0.2s ease;
+  -ms-transition: all 0.2s ease;
+  -o-transition: all 0.2s ease;
+  transition: all 0.2s ease;
 }
 .ltx_figure img:active,
 .ltx_p > img.ltx_graphics:active,
 .ltx_text > img.ltx_graphics:active {
-  -webkit-transform:scale(1.8); /* Safari and Chrome */
-  -moz-transform:scale(1.8); /* Firefox */
-  -ms-transform:scale(1.8); /* IE 9 */
-  -o-transform:scale(1.8); /* Opera */
-  transform:scale(1.8);
+  -webkit-transform: scale(1.8); /* Safari and Chrome */
+  -moz-transform: scale(1.8); /* Firefox */
+  -ms-transform: scale(1.8); /* IE 9 */
+  -o-transform: scale(1.8); /* Opera */
+  transform: scale(1.8);
   overflow: visible;
   /* white zoom even in dark mode */
   background-color: white;
@@ -1411,36 +1577,37 @@ svg {
 
 /*SVG (pgf/tikz & xy) basics */
 foreignObject {
-  translate: 0 0.1em;
+  /* translate: 0 0.1em; */
   --fo_width: 100%;
 }
 /* Use flex to vertically center foreignObject,
    to accommodate potentially tall line-box */
 svg foreignObject > .ltx_foreignobject_container {
-  display:flex;
-  align-items:center;
-  width: clamp(calc(0.3*var(--main-width)),var(--fo_width),100%);
-  height:100%;
-
+  display: flex;
+  align-items: end; /* see examples from latexml PR #2541 */
+  width: clamp(calc(0.1 * var(--main-width)), var(--fo_width), 100%);
+  height: 100%;
+}
+svg foreignObject > .ltx_foreignobject_container {
   /* Also horizontally for single math, since Chrome adds a lot of left/right spacing. */
+
   /* Note: this doesn't work in *all* cases, see Fig. 1 in arXiv:2501.11021 */
   /* &:has( > .ltx_foreignobject_content > math:only-child) {
     justify-content:center;
   } */
-
   /* If multiple children, give more space to avoid unexpected line breaks
    due to font differences. */
-  &:has( > .ltx_foreignobject_content > :not(:only-child)) {
-    width:calc(1.1 * var(--fo_width));
+  &:has(> .ltx_foreignobject_content > :not(:only-child)) {
+    width: calc(1.1 * var(--fo_width));
   }
   & > .ltx_foreignobject_content {
-    display:block;
+    display: block;
     line-height: 1rem;
     font-family: var(--text-font-family);
     /* This adjustment is specific for Noto Sans, and is generally quite fragile.
        Changing the text font will likely damage the positioning in SVG, which is very sensitive
        to font metrics. This will likely be a subject of future improvements in LaTeXML. */
-    font-size: 0.8em;
+    font-size: 0.82em;
     text-align: left;
     & * {
       width: inherit !important;
@@ -1460,14 +1627,20 @@ svg foreignObject > .ltx_foreignobject_container {
     & span.ltx_p:not(:last-child) {
       margin-bottom: 0.3em;
     }
-
   }
 }
 
-
 /* Stuff appearing in svg:foreignObject */
-.ltx_svg_fog foreignObject  { margin:0; padding:0; overflow:visible; }
-.ltx_svg_fog foreignObject > p { margin:0; padding:0; display:block; }
+.ltx_svg_fog foreignObject {
+  margin: 0;
+  padding: 0;
+  overflow: visible;
+}
+.ltx_svg_fog foreignObject > p {
+  margin: 0;
+  padding: 0;
+  display: block;
+}
 /*.ltx_svg_fog foreignObject > p { margin:0; padding:0; display:block; white-space:nowrap; }*/
 
 /* tables in logical paragraphs get spaced out
@@ -1478,32 +1651,45 @@ svg foreignObject > .ltx_foreignobject_container {
 
 /* TODO: test! subtables */
 .ltx_tabular .ltx_tabular {
-  width:100%;
+  width: 100%;
 }
 .ltx_tabular.ltx_tabbing {
-  display: table; }
+  display: table;
+}
 .ltx_inline-logical-block,
-.ltx_inline-logical-block .ltx_para  { display:inline; text-indent: 0px;}
+.ltx_inline-logical-block .ltx_para {
+  display: inline;
+  text-indent: 0px;
+}
 .ltx_inline-block,
-.ltx_inline-block .ltx_para { display:inline-block; }
-.ltx_nodisplay { display: none; }
+.ltx_inline-block .ltx_para {
+  display: inline-block;
+}
+.ltx_nodisplay {
+  display: none;
+}
 
 /* TODO: it appears our width estimations for the individual rows of an inline block
          are not always accurate? Revert ot auto for now,
          see 2105.00613 for examples */
-.ltx_inline-block > .ltx_p { width: auto !important; }
+.ltx_inline-block > .ltx_p {
+  width: auto !important;
+}
 /* also some parbox sizing goes wrong in the title of hep-th/0001161, avoid for now. */
 .ltx_title_document > .ltx_parbox,
-.ltx_title_document > .ltx_inline-block { width: auto !important; }
+.ltx_title_document > .ltx_inline-block {
+  width: auto !important;
+}
 
 /* experimental: flex model, to center short captions, justify long ones */
 :not(.ltx_flex_cell) > .ltx_table,
 :not(.ltx_flex_cell) > .ltx_figure {
-  display:flex;
-  flex-direction:column;
-  align-items:center;
-  text-align:center;
-  margin:4rem auto 4rem; }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin: 4rem auto 4rem;
+}
 .ltx_caption {
   font-family: var(--text-font-family);
 }
@@ -1511,8 +1697,8 @@ svg foreignObject > .ltx_foreignobject_container {
 .ltx_figure .ltx_caption {
   text-align: justify;
   line-height: 1.5rem;
-  margin-top:1.5rem;
-  margin-bottom:1.5rem;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 .ltx_flex_figure .ltx_figure .ltx_caption {
   text-align: center;
@@ -1523,8 +1709,9 @@ svg foreignObject > .ltx_foreignobject_container {
   text-align: justify;
 }
 .ltx_parbox {
-    text-indent:0rem;
-    display: inline-block; }
+  text-indent: 0rem;
+  display: inline-block;
+}
 /* floats, such as Algorithm listings */
 .ltx_minipage {
   align-self: normal;
@@ -1539,7 +1726,7 @@ svg foreignObject > .ltx_foreignobject_container {
 /* inline-block or bliock display for captions in listings in minipage?
   see listings in arXiv:1712.01103 */
 .ltx_minipage .ltx_float .ltx_caption {
-    display: block;
+  display: block;
 }
 /* often minipages are inline-blocks, for which "vertical-align" is inactive */
 /* so we also default to an auto margin in order to center */
@@ -1548,7 +1735,7 @@ svg foreignObject > .ltx_foreignobject_container {
   width: auto !important;
 }
 .ltx_minipage > .ltx_graphics {
-  max-width:100%;
+  max-width: 100%;
 }
 /* minipages need some dedicated work (ar5iv#83),
    but for now we can accommodate with a bit of special-case padding; */
@@ -1562,8 +1749,13 @@ svg foreignObject > .ltx_foreignobject_container {
   margin: 0.5rem;
 }
 
-.ltx_overlay {position:relative; }
-.ltx_overlay > span:nth-child(2) {position:absolute; left:0; }
+.ltx_overlay {
+  position: relative;
+}
+.ltx_overlay > span:nth-child(2) {
+  position: absolute;
+  left: 0;
+}
 
 .ltx_listing {
   display: block;
@@ -1571,7 +1763,7 @@ svg foreignObject > .ltx_foreignobject_container {
   margin-bottom: 1rem;
 }
 .ltx_framed > .ltx_listing {
-    margin-bottom: 0rem;
+  margin-bottom: 0rem;
 }
 .ltx_listing > .ltx_framed_rectangle {
   /* download arrow has a glitchy border, disable it. */
@@ -1589,12 +1781,12 @@ svg foreignObject > .ltx_foreignobject_container {
   font-size: 0.7rem;
 }
 .ltx_listing .ltx_tag_listingline {
-  padding-right:0.3rem;
+  padding-right: 0.3rem;
   border-right: solid;
   border-width: thin;
   margin-right: 0.3rem;
   text-align: right;
-  width:1.3rem;
+  width: 1.3rem;
   display: inline-block;
   & > .ltx_text {
     /* see algorithm 2 in 2406.04076, for an example of the numbering tags getting wide. */
@@ -1605,28 +1797,38 @@ svg foreignObject > .ltx_foreignobject_container {
     font-size: 0.7rem !important;
   }
 }
-.ltx_lst_space { white-space: pre; }
+.ltx_lst_space {
+  white-space: pre;
+}
 /* for now hide the download button for listings,
    needs some styling thought and also ensuring it works. */
-.ltx_listing_data { display: none; }
+.ltx_listing_data {
+  display: none;
+}
 /* keep listings spaced as-is in justified paragraphs
    example: 2111.08099, end of Intro */
-.ltx_lstlisting.ltx_text { white-space: break-spaces; }
+.ltx_lstlisting.ltx_text {
+  white-space: break-spaces;
+}
 /* also, keep listings left-aligned,
    even if the author wanted them centered in TeX.
    The authors of 2006.16852 made the request. */
-.ltx_lstlisting.ltx_align_center { text-align: left; }
+.ltx_lstlisting.ltx_align_center {
+  text-align: left;
+}
 
 .ltx_float {
-  margin: 3.5rem auto 3.5rem; }
+  margin: 3.5rem auto 3.5rem;
+}
 .ltx_minipage > .ltx_float {
-  margin:0.2rem auto 0.2rem; }
+  margin: 0.2rem auto 0.2rem;
+}
 .ltx_float .ltx_caption {
   text-align: justify;
   text-justify: inter-word;
   hyphens: auto;
-  border-top:solid var(--border-color);
-  border-bottom:solid var(--border-color);
+  border-top: solid var(--border-color);
+  border-bottom: solid var(--border-color);
   border-width: 0.1rem;
   margin-top: 0.2rem;
   margin-bottom: 0.2rem;
@@ -1672,10 +1874,9 @@ svg foreignObject > .ltx_foreignobject_container {
 /* sometimes the inline block is *wrapping* the table, see
 /* https://ar5iv.labs.arxiv.org/html/2110.07681#A1.p6.10
    a :has(table) selector could be made more precise, when browser support is available. */
-.ltx_para > .ltx_inline-block:only-child.ltx_transformed_outer > .ltx_transformed_inner
-{
-   transform: none !important;
-   width: initial !important;
+.ltx_para > .ltx_inline-block:only-child.ltx_transformed_outer > .ltx_transformed_inner {
+  transform: none !important;
+  width: initial !important;
 }
 
 span.ltx_transformed_inner {
@@ -1697,7 +1898,9 @@ span.ltx_transformed_inner {
 }
 
 /* \phantom - hide content but still allocate stand-in space */
-.ltx_phantom { visibility: hidden; }
+.ltx_phantom {
+  visibility: hidden;
+}
 
 /*======================================================================
  Inline Basics
@@ -1705,65 +1908,114 @@ span.ltx_transformed_inner {
  Note that LaTeX(ML)'s font model doesn't map quite exactly to CSS's
  Font Families => font-family
 */
-.ltx_font_serif      { font-family: var(--text-font-family); }
-.ltx_font_sansserif  { font-family: var(--headings-font-family); }
-.ltx_font_typewriter { font-family: var(--code-font-family); }
+.ltx_font_serif {
+  font-family: var(--text-font-family);
+}
+.ltx_font_sansserif {
+  font-family: var(--headings-font-family);
+}
+.ltx_font_typewriter {
+  font-family: var(--code-font-family);
+}
 /* dingbats should be converted to unicode? */
 /* Math font families handled within math: script, symbol, fraktur, blackboard ? */
 /* Font Series => font-weight */
-.ltx_font_bold       { font-weight: bold; }
-.ltx_font_medium     { font-weight: normal; }
+.ltx_font_bold {
+  font-weight: bold;
+}
+.ltx_font_medium {
+  font-weight: normal;
+}
 /* Font Shapes => font-style or font-variant */
-.ltx_font_italic     {
-  font-style: italic; }
-.ltx_font_upright    {
+.ltx_font_italic {
+  font-style: italic;
+}
+.ltx_font_upright {
   font-style: normal;
-  font-variant:normal; }
-.ltx_font_slanted    {
-  font-style: oblique; }
-.ltx_font_smallcaps  {
+  font-variant: normal;
+}
+.ltx_font_slanted {
+  font-style: oblique;
+}
+.ltx_font_smallcaps {
   font-variant: small-caps;
-  font-style:normal; }
+  font-style: normal;
+}
 .ltx_font_mathcaligraphic {
-  font-family: var(--math-caligraphic-font-family); }
+  font-family: var(--math-caligraphic-font-family);
+}
 
 /* Fallbacks for when content+mathvariant cannot be mapped to Unicode */
-.ltx_mathvariant_italic        { font-style: italic; }
-.ltx_mathvariant_bold          { font-weight: bold; }
-.ltx_mathvariant_bold-italic   { font-style: italic; font-weight: bold; }
-.ltx_mathvariant_sans-serif             { font-family: sans-serif; }
-.ltx_mathvariant-bold-sans-serif        { font-family: sans-serif; font-weight: bold; }
-.ltx_mathvariant-sans-serif-italic      { font-family: sans-serif; font-style: italic; }
+.ltx_mathvariant_italic {
+  font-style: italic;
+}
+.ltx_mathvariant_bold {
+  font-weight: bold;
+}
+.ltx_mathvariant_bold-italic {
+  font-style: italic;
+  font-weight: bold;
+}
+.ltx_mathvariant_sans-serif {
+  font-family: sans-serif;
+}
+.ltx_mathvariant-bold-sans-serif {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+.ltx_mathvariant-sans-serif-italic {
+  font-family: sans-serif;
+  font-style: italic;
+}
 .ltx_mathvariant-bold-sans-serif-italic {
-  font-family: sans-serif; font-style: italic; font-weight: bold; }
-.ltx_mathvariant_monospace     { font-family: monospace; }
+  font-family: sans-serif;
+  font-style: italic;
+  font-weight: bold;
+}
+.ltx_mathvariant_monospace {
+  font-family: monospace;
+}
 /* Can we say anything generic about double-struck, script or fraktur ? */
-.ltx_mathvariant_double-struck { font-weight: bold; }
-.ltx_mathvariant_script        { font-family: var(--math-caligraphic-font-family), cursive; }
-.ltx_mathvariant_bold-script   {
-  font-family: var(--math-caligraphic-font-family), cursive; font-weight: bold; }
-.ltx_mathvariant_bold-fraktur  { font-weight: bold; }
+.ltx_mathvariant_double-struck {
+  font-weight: bold;
+}
+.ltx_mathvariant_script {
+  font-family: var(--math-caligraphic-font-family), cursive;
+}
+.ltx_mathvariant_bold-script {
+  font-family: var(--math-caligraphic-font-family), cursive;
+  font-weight: bold;
+}
+.ltx_mathvariant_bold-fraktur {
+  font-weight: bold;
+}
 
 /* equations in non-aligned mode (not normally used) */
-.ltx_eqn_div { display:block; width:95%; text-align:center; }
+.ltx_eqn_div {
+  display: block;
+  width: 95%;
+  text-align: center;
+}
 
 /* equations in aligned mode (aligning tags, etc as well as equations) */
 .ltx_eqn_table {
-    display:table;
-    width:100%;
-    border-collapse:collapse;
-    margin: 0.65rem auto 0.65rem;
+  display: table;
+  width: 100%;
+  border-collapse: collapse;
+  margin: 0.65rem auto 0.65rem;
 }
-.ltx_eqn_row   { display:table-row; }
-.ltx_eqn_cell  {
-  display:table-cell;
-  width:auto;
-  padding-top:0.3rem;
-  padding-bottom:0.3rem;
+.ltx_eqn_row {
+  display: table-row;
+}
+.ltx_eqn_cell {
+  display: table-cell;
+  width: auto;
+  padding-top: 0.3rem;
+  padding-bottom: 0.3rem;
   padding-right: 0.2rem;
   padding-left: 0.2rem;
 }
-.ltx_eqn_cell.ltx_eqn_eqno  {
+.ltx_eqn_cell.ltx_eqn_eqno {
   width: 3em;
   /* avoid line-breaking complex eqn labels */
   /* see eqn. A_2 at 0708.2787 for an example */
@@ -1778,23 +2030,37 @@ span.ltx_transformed_inner {
 table.ltx_eqn_align tr.ltx_equation td.ltx_align_left + td.ltx_align_right,
 table.ltx_eqn_align tr.ltx_equation td.ltx_align_left + td.ltx_align_center,
 table.ltx_eqn_align tr.ltx_equation td.ltx_align_center + td.ltx_align_right,
-table.ltx_eqn_align tr.ltx_equation td.ltx_align_center + td.ltx_align_center  { padding-left:3em; }
-table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right { min-width:2em; }
+table.ltx_eqn_align tr.ltx_equation td.ltx_align_center + td.ltx_align_center {
+  padding-left: 3em;
+}
+table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
+  min-width: 2em;
+}
 
-.ltx_eqn_eqno.ltx_align_right .ltx_tag { float:right; }
+.ltx_eqn_eqno.ltx_align_right .ltx_tag {
+  float: right;
+}
 
 .ltx_eqn_center_padleft,
-.ltx_eqn_center_padright { width:50%; min-width:2em;}
+.ltx_eqn_center_padright {
+  width: 50%;
+  min-width: 2em;
+}
 .ltx_eqn_left_padleft,
-.ltx_eqn_right_padright { min-width:2em; }
+.ltx_eqn_right_padright {
+  min-width: 2em;
+}
 .ltx_eqn_left_padright,
-.ltx_eqn_right_padleft  { width:100%; }
+.ltx_eqn_right_padleft {
+  width: 100%;
+}
 
 /* Various lists */
 .ltx_itemize,
 .ltx_enumerate,
 .ltx_description {
-    display:block; }
+  display: block;
+}
 .ltx_item > .ltx_para > .ltx_description,
 .ltx_item > .ltx_para > .ltx_itemize,
 .ltx_item > .ltx_para > .ltx_enumerate {
@@ -1804,7 +2070,8 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right { min-width:2e
 .ltx_description .ltx_item,
 .ltx_itemize .ltx_item,
 .ltx_enumerate .ltx_item {
-  display: list-item; }
+  display: list-item;
+}
 /* Position the tag to look like a normal item bullet. */
 /* TODO: This needs extra work, particularly for nested lists,
          and is made difficult between the padding needs (typical to "block")
@@ -1812,25 +2079,30 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right { min-width:2e
   Can't figure out a better approach at the moment,
         so I'm instead documenting the need here for now. */
 li.ltx_item > .ltx_tag {
-  display:inline;
+  display: inline;
   margin-left: -2.5rem;
   padding-right: 0.5rem;
-  text-align:right; }
+  text-align: right;
+}
 .ltx_item .ltx_tag + .ltx_para {
-  vertical-align:top;
-  display:inline-block;
+  vertical-align: top;
+  display: inline-block;
   width: calc(100% - 0.5rem);
-  & .ltx_p  {
-    display:inline;
+  & .ltx_p {
+    display: inline;
   }
 }
 span.ltx_item .ltx_tag + span.ltx_para {
-  display:inline;
+  display: inline;
 }
 
 .ltx_item > .ltx_para > .ltx_p:first-child {
-  text-indent:0rem; }
-.ltx_item > .ltx_para > .ltx_p { margin-top:0rem; margin-bottom:0rem; }
+  text-indent: 0rem;
+}
+.ltx_item > .ltx_para > .ltx_p {
+  margin-top: 0rem;
+  margin-bottom: 0rem;
+}
 
 .ltx_item .ltx_para {
   margin-bottom: 0rem;
@@ -1851,17 +2123,17 @@ dl.ltx_description {
   list-style-type: none;
 }
 dl.ltx_description dt {
-  margin-right:0.5em;
-  float:left;
-  font-weight:bold;
-  font-size:95%;
+  margin-right: 0.5em;
+  float: left;
+  font-weight: bold;
+  font-size: 95%;
 }
 dl.ltx_description dd.ltx_item {
-  margin-left:3em;
+  margin-left: 3em;
   text-indent: 0rem;
 }
 dl.ltx_description dl.ltx_description dd {
-  margin-left:3em;
+  margin-left: 3em;
   margin-bottom: 0.75em;
 }
 
@@ -1880,11 +2152,15 @@ dl.ltx_description dl.ltx_description dd {
 
 /*======================================================================
  Borders and such */
-.ltx_tabular { display:inline-table; border-collapse:collapse; }
+.ltx_tabular {
+  display: inline-table;
+  border-collapse: collapse;
+}
 .ltx_tabular.ltx_centering {
-  display:table;
+  display: table;
   margin-left: auto;
-  margin-right: auto; }
+  margin-right: auto;
+}
 .ltx_graphics.ltx_centering,
 .ltx_picture.ltx_centering {
   margin-left: auto;
@@ -1898,26 +2174,41 @@ dl.ltx_description dl.ltx_description dd {
 
 .ltx_thead,
 .ltx_tfoot,
-.ltx_tbody   { display:table-row-group; }
-.ltx_tr      { display:table-row; }
+.ltx_tbody {
+  display: table-row-group;
+}
+.ltx_tr {
+  display: table-row;
+}
 .ltx_td,
-.ltx_th      { display:table-cell; }
+.ltx_th {
+  display: table-cell;
+}
 
-.ltx_framed  { border:0.063rem solid var(--border-color);}
+.ltx_framed {
+  border: 0.063rem solid var(--border-color);
+}
 /* avoid padding/margin collapse */
-span.ltx_framed       { display:inline-block; text-indent:0; }
+span.ltx_framed {
+  display: inline-block;
+  text-indent: 0;
+}
 
 .ltx_tabular .ltx_td,
 .ltx_tabular .ltx_th {
-  padding:0.1em 0.5em;
+  padding: 0.1em 0.5em;
   max-width: var(--main-width);
   word-wrap: break-word;
   white-space: normal;
 }
 .ltx_tabular .ltx_td.ltx_nopad_l,
-.ltx_tabular .ltx_th.ltx_nopad_l { padding-left:0; }
+.ltx_tabular .ltx_th.ltx_nopad_l {
+  padding-left: 0;
+}
 .ltx_tabular .ltx_td.ltx_nopad_r,
-.ltx_tabular .ltx_th.ltx_nopad_r { padding-right:0; }
+.ltx_tabular .ltx_th.ltx_nopad_r {
+  padding-right: 0;
+}
 
 /* min-height does NOT apply to tr! */
 .ltx_tabular .ltx_tr td:first-child::after,
@@ -1937,23 +2228,51 @@ span.ltx_framed       { display:inline-block; text-indent:0; }
   white-space: nowrap;
 }
 /* regular lines */
-.ltx_border_t  { border-top:0.063rem solid var(--border-color); }
-.ltx_border_r  { border-right:0.063rem solid var(--border-color); }
-.ltx_border_b  { border-bottom:0.063rem solid var(--border-color); }
-.ltx_border_l  { border-left:0.063rem solid var(--border-color); }
+.ltx_border_t {
+  border-top: 0.063rem solid var(--border-color);
+}
+.ltx_border_r {
+  border-right: 0.063rem solid var(--border-color);
+}
+.ltx_border_b {
+  border-bottom: 0.063rem solid var(--border-color);
+}
+.ltx_border_l {
+  border-left: 0.063rem solid var(--border-color);
+}
 /* double lines */
-.ltx_border_tt { border-top:0.188rem double var(--border-color); }
-.ltx_border_rr { border-right:0.188rem double var(--border-color); }
-.ltx_border_bb { border-bottom:0.188rem double var(--border-color); }
-.ltx_border_ll { border-left:0.188rem double var(--border-color); }
+.ltx_border_tt {
+  border-top: 0.188rem double var(--border-color);
+}
+.ltx_border_rr {
+  border-right: 0.188rem double var(--border-color);
+}
+.ltx_border_bb {
+  border-bottom: 0.188rem double var(--border-color);
+}
+.ltx_border_ll {
+  border-left: 0.188rem double var(--border-color);
+}
 /* Light lines */
-.ltx_border_T  { border-top:0.063rem solid var(--border-light-color); }
-.ltx_border_R  { border-right:0.063rem solid var(--border-light-color); }
-.ltx_border_B  { border-bottom:0.063rem solid var(--border-light-color); }
-.ltx_border_L  { border-left:0.063rem solid var(--border-light-color); }
+.ltx_border_T {
+  border-top: 0.063rem solid var(--border-light-color);
+}
+.ltx_border_R {
+  border-right: 0.063rem solid var(--border-light-color);
+}
+.ltx_border_B {
+  border-bottom: 0.063rem solid var(--border-light-color);
+}
+.ltx_border_L {
+  border-left: 0.063rem solid var(--border-light-color);
+}
 /* arydshln.sty */
-.ltx_border_r_dashed    { border-right:0.063rem dashed var(--border-color); }
-.ltx_border_b_dashed    { border-bottom:0.063rem dashed var(--border-color); }
+.ltx_border_r_dashed {
+  border-right: 0.063rem dashed var(--border-color);
+}
+.ltx_border_b_dashed {
+  border-bottom: 0.063rem dashed var(--border-color);
+}
 /* Framing */
 /* common setup, but what is the right selector?
    they need to be inline inside ltx_p (see 1703.08608),
@@ -1968,41 +2287,91 @@ span.ltx_framed       { display:inline-block; text-indent:0; }
 .ltx_framed_right:not(:empty),
 .ltx_framed_bottom:not(:empty),
 .ltx_framed_underline:not(:empty),
-.ltx_framed_topbottom:not(:empty)
- { display: inline-block; }
+.ltx_framed_topbottom:not(:empty) {
+  display: inline-block;
+}
 /* specific features */
-.ltx_framed_rectangle { border-style:solid; border-width:0.063rem; padding-left:0.3rem; padding-right: 0.3rem; }
-.ltx_framed_top       { border-top-style:solid; border-top-width:0.063rem; }
-.ltx_framed_left      { border-left-style:solid; border-left-width:0.063rem; }
-.ltx_framed_right     { border-right-style:solid; border-right-width:0.063rem; }
+.ltx_framed_rectangle {
+  border-style: solid;
+  border-width: 0.063rem;
+  padding-left: 0.3rem;
+  padding-right: 0.3rem;
+}
+.ltx_framed_top {
+  border-top-style: solid;
+  border-top-width: 0.063rem;
+}
+.ltx_framed_left {
+  border-left-style: solid;
+  border-left-width: 0.063rem;
+}
+.ltx_framed_right {
+  border-right-style: solid;
+  border-right-width: 0.063rem;
+}
 .ltx_framed_bottom,
-.ltx_framed_underline { border-bottom-style:solid; border-bottom-width:0.063rem; }
-.ltx_framed_topbottom { border-top-style:solid; border-top-width:0.063rem;
-                        border-bottom-style:solid; border-bottom-width:0.063rem; }
-.ltx_framed_leftright { border-left-style:solid; border-left-width:0.063rem;
-                        border-right-style:solid; border-right-width:0.063rem; }
+.ltx_framed_underline {
+  border-bottom-style: solid;
+  border-bottom-width: 0.063rem;
+}
+.ltx_framed_topbottom {
+  border-top-style: solid;
+  border-top-width: 0.063rem;
+  border-bottom-style: solid;
+  border-bottom-width: 0.063rem;
+}
+.ltx_framed_leftright {
+  border-left-style: solid;
+  border-left-width: 0.063rem;
+  border-right-style: solid;
+  border-right-width: 0.063rem;
+}
 
 /*======================================================================
  Misc */
 .ltx_verbatim {
-  text-align:left;
+  text-align: left;
   font-size: 90%;
 }
 /*======================================================================
  Meta stuff */
-.ltx_tag_note { display: none; }
-.ltx_INFO, .ltx_WARNING, .ltx_ERROR, .ltx_FATAL {
-  text-align: left;
-  display:inline;
+.ltx_tag_note {
+  display: none;
 }
-.ltx_INFO        { color:var(--info-text-color); }
-.ltx_WARNING     { color:var(--warning-text-color); }
-.ltx_ERROR       { font-weight: normal; color:var(--error-text-color); }
-.ltx_FATAL       { font-weight: normal; color:var(--fatal-text-color); }
-.ltx_rdf          { display:none; }
-.ltx_missing, .ltx_nounicode { color:var(--error-text-color);}
-.ltx_nodisplay    { display:none; }
-.ltx_missing_label { color: var(--warning-text-color); }
+.ltx_INFO,
+.ltx_WARNING,
+.ltx_ERROR,
+.ltx_FATAL {
+  text-align: left;
+  display: inline;
+}
+.ltx_INFO {
+  color: var(--info-text-color);
+}
+.ltx_WARNING {
+  color: var(--warning-text-color);
+}
+.ltx_ERROR {
+  font-weight: normal;
+  color: var(--error-text-color);
+}
+.ltx_FATAL {
+  font-weight: normal;
+  color: var(--fatal-text-color);
+}
+.ltx_rdf {
+  display: none;
+}
+.ltx_missing,
+.ltx_nounicode {
+  color: var(--error-text-color);
+}
+.ltx_nodisplay {
+  display: none;
+}
+.ltx_missing_label {
+  color: var(--warning-text-color);
+}
 
 /* math specific */
 merror.ltx_ERROR {
@@ -2054,7 +2423,8 @@ mfrac > * {
 } */
 
 /* B3. ltx_parbox having too narrow widths in tables (see ar5iv#191) */
-.ltx_th .ltx_parbox, .ltx_tr .ltx_parbox {
+.ltx_th .ltx_parbox,
+.ltx_tr .ltx_parbox {
   width: initial !important;
 }
 
