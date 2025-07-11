@@ -1531,9 +1531,13 @@ svg foreignObject > .ltx_foreignobject_container {
 .ltx_minipage.ltx_align_center {
   align-self: center;
 }
-.ltx_minipage .ltx_float,
-.ltx_minipage .ltx_float .ltx_caption {
+.ltx_minipage .ltx_float {
   display: inline-block;
+}
+/* inline-block or bliock display for captions in listings in minipage?
+  see listings in arXiv:1712.01103 */
+.ltx_minipage .ltx_float .ltx_caption {
+    display: block;
 }
 /* often minipages are inline-blocks, for which "vertical-align" is inactive */
 /* so we also default to an auto margin in order to center */
