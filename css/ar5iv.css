@@ -412,12 +412,9 @@ div.ltx_keywords:empty:before {
 .ltx_author_notes {
   display: block;
   opacity: 100;
-  /* the min-width here is trying to force affiliation information
-     on its own dedicated full-width line in the flex author block
-     maybe we should evolve latexml to offer a flex_size_* attribute
-     also on .ltx_creator elements? then this can be made cleaner. */
-  /* min-width: 20rem; */
-  min-width: max-content;
+  /* The flex experiment here is trying to contain the width to the current flex block,
+     but allow the note to expand to the full page width if it is standalone/single author */
+  width: fit-content;
   margin-top: 0.5rem;
   margin-bottom: 2rem;
   font-family: var(--text-font-family);
