@@ -1681,8 +1681,7 @@ svg foreignObject > .ltx_foreignobject_container {
   width: auto !important;
 }
 
-/* experimental: flex model, to center short captions, justify long ones */
-:not(.ltx_flex_cell) > .ltx_table,
+/* experimental, only for figures: flex model, to center short captions, justify long ones */
 :not(.ltx_flex_cell) > .ltx_figure {
   display: flex;
   flex-direction: column;
@@ -1690,6 +1689,20 @@ svg foreignObject > .ltx_foreignobject_container {
   text-align: center;
   margin: 4rem auto 4rem;
 }
+/* tables use their usual block display with automatic overflow-x;
+   but we can make an allowance to grow an extra 20% in the margins.
+*/
+.ltx_table{
+  overflow-x: auto;
+  text-align: center;
+  margin: 4rem auto 4rem;
+}
+.ltx_table .ltx_caption {
+  margin-left: auto;
+  margin-right: auto;
+  max-width: max-content;
+}
+
 .ltx_caption {
   font-family: var(--text-font-family);
 }
@@ -1704,7 +1717,6 @@ svg foreignObject > .ltx_foreignobject_container {
   text-align: center;
 }
 /* other notes, for example, the ones in deluxetable */
-.ltx_table,
 .ltx_figure .ltx_parbox {
   text-align: justify;
 }
