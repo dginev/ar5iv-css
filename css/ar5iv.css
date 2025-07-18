@@ -1690,7 +1690,8 @@ svg foreignObject > .ltx_foreignobject_container {
   margin: 4rem auto 4rem;
 }
 /* tables use their usual block display with automatic overflow-x;
-   but we can make an allowance to grow an extra 20% in the margins.
+   unsolved: should we allow growth into the margins for very wide tables?
+             or introduce a separate pop-out display mode?
 */
 .ltx_table{
   overflow-x: auto;
