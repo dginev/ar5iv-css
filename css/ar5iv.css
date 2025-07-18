@@ -1590,11 +1590,12 @@ svg foreignObject > .ltx_foreignobject_container {
 }
 svg foreignObject > .ltx_foreignobject_container {
   /* Also horizontally for single math, since Chrome adds a lot of left/right spacing. */
-
-  /* Note: this doesn't work in *all* cases, see Fig. 1 in arXiv:2501.11021 */
-  /* &:has( > .ltx_foreignobject_content > math:only-child) {
-    justify-content:center;
-  } */
+  /* Note: there is a diversity of arrangement, see arXiv:2501.11021, arXiv:1604.02256 */
+  /* One limitation is that the flex use on foreignObject does not recognize the flex-direction
+     which was _implied_ by the diagram's source, so we are always centering horizontally. */
+  &:has( > .ltx_foreignobject_content > math:only-child) {
+    align-items: center;
+  }
   /* If multiple children, give more space to avoid unexpected line breaks
    due to font differences. */
   &:has(> .ltx_foreignobject_content > :not(:only-child)) {
