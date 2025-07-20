@@ -350,6 +350,23 @@ span.ltx_personname > .ltx_break + .ltx_break {
   white-space: nowrap;
 }
 
+/* Sometimes current latexml will deposit a single address that applies to all author names
+   as a child inside the last author's .ltx_creator element.
+   We detect this case and break out the address to full width, makign it more suggestive that
+   it applies to all of the authors. Ideally latexml's schema should evolve to handle this
+   via differently organized markup. 
+
+   Tested with 2201.00244   
+*/
+.ltx_authors:not(:has(> *:not(:last-child) .ltx_role_address)) .ltx_role_address {
+    position: absolute;
+    display: block;
+    margin: 2rem auto;
+    text-align: center;
+    width: var(--main-width);
+    left: calc((100vw - var(--main-width)) / 2);
+}
+
 /* in multi-affiliation markup, e.g. produced by authblk.sty,
    we can do a vertical stack for each author */
 /* Detail: avoid vertical breaks for the case in which affiliations are notes */
