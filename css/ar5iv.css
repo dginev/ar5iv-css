@@ -81,6 +81,11 @@ svg {
   background-color: var(--image-background-color);
   color: var(--image-color);
 }
+/* add a bit of padding due to keeping the original background color,
+   otherwise we get a sharp transition at the SVG edges in dark mode. */
+[data-theme="dark"] svg.ltx_picture {
+  padding: 0.33rem;
+}
 
 /* We define a color-map set of functions for author-specified custom colors.
   Anchored at the 5 CSS custom properties introduced with LaTeXML v0.9.0
@@ -1962,6 +1967,7 @@ svg foreignObject > .ltx_foreignobject_container {
 .ltx_transformed_outer {
   width: auto !important;
   height: auto !important;
+  vertical-align: initial !important;
 }
 
 /* For now, disable transformed_inner over figures and tables as well */
