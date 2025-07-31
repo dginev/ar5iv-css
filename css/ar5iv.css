@@ -1729,6 +1729,10 @@ svg foreignObject > .ltx_foreignobject_container {
     & span.ltx_p:not(:last-child) {
       margin-bottom: 0.3em;
     }
+    & .ltx_para {
+      /* see arXiv:2407.16893v1 */
+      margin-bottom: 0.2rem;
+    }
   }
 }
 
