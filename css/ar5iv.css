@@ -1800,9 +1800,13 @@ svg foreignObject > .ltx_foreignobject_container {
              or introduce a separate pop-out display mode?
 */
 .ltx_table{
-  overflow-x: auto;
   text-align: center;
   margin: 4rem auto 4rem;
+}
+/* don't use the auto overflow rule in subfigure cases
+   see https://arxiv.org/html/2503.09799v1#S2.T2   */
+.ltx_table:not(:has(> .ltx_flex_table)) {
+  overflow-x: auto;
 }
 .ltx_table .ltx_caption {
   margin-left: auto;
