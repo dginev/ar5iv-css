@@ -18,12 +18,14 @@ body {
   color: var(--fg);
   transition: background 0.3s, color 0.3s;
 }
-/* background-color: oklch(from var(--light-color) calc(0.8237 - l*0.4) c h); 
-   background-color: oklch(from var(--light-color) clamp(0, calc(1 - l*l*0.8), 1) c h);
-*/
+
+/* The HSL way: */
+/* background-color: hsl(from var(--light-color) h s calc(100 - l)); */
+
+/* Empirical experiments with OKLCH */
 /* assumes a dark mode global background of #0d1117 hence l 0.82 */
 body.dark li {
-  background-color: oklch(from var(--light-color) clamp(0,calc(0.17 + 0.825*(1 - l*l)),1) c h);
+  background-color: oklch(from var(--light-color) clamp(0.24, calc(1.25 - L + (0.25 * min(0, sign(L - 0.25)))), 1) c h);
 }
 button {
   margin-bottom: 1em;
@@ -93,7 +95,7 @@ function renderColors(colors, listName) {
 
 // Sorting
 function blendRgbaWithWhite(rgba) {
-  const color = colorutil.colorUtil.color(rgba);
+  const color = colorUtil.color(rgba);
   const a = color.rgb.a / 255;
   const r = Math.floor(color.rgb.r * a + 0xff * (1 - a));
   const g = Math.floor(color.rgb.g * a + 0xff * (1 - a));
@@ -183,6 +185,14 @@ const sortedColors = sortedClusters.reduce((acc, curr) => {
 }, []);
 renderColors(sortedColors, '#sorted');
 
+let lightness_map = {};
+hexColors.forEach((c) => {
+  let cobj = colorUtil.color(c);
+  let lightness = cobj.hsl.l.toFixed(2);
+  let v = lightness_map[lightness] || 0;
+  lightness_map[lightness] = v + 1;
+});
+console.log(lightness_map);
 </script>
 </body>
 </html>
