@@ -23,9 +23,10 @@ body {
 /* background-color: hsl(from var(--light-color) h s calc(100 - l)); */
 
 /* Empirical experiments with OKLCH */
-/* assumes a dark mode global background of #0d1117 hence l 0.82 */
+/* Background map: oklch(from var(--light-color) calc(1 - 0.82 * L) c h); */
+/* Foreground map: oklch(from var(--light-color) calc(0.9 * (1 - L)) c h); */
 body.dark li {
-  background-color: oklch(from var(--light-color) clamp(0.24, calc(1.25 - L + (0.25 * min(0, sign(L - 0.25)))), 1) c h);
+  background-color: oklch(from var(--light-color) calc(1 - 0.82 * L) c h);
 }
 button {
   margin-bottom: 1em;
