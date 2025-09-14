@@ -10,6 +10,7 @@
      e.g. "Lucida Calligraphy","Zapf Chancery","URW Chancery L", TeX Gyre Termes...*/
   --math-caligraphic-font-family: "latin modern math", "Cambria Math", math;
   --code-font-family: "Noto Sans Mono", "Noto Sans Mono Fallback", monospace;
+  --svg-text-size: 0.82em;
   /* default color theme is light */
   --background-color: white;
   --text-color: #292929;
@@ -1677,6 +1678,15 @@ svg {
 }
 
 /*SVG (pgf/tikz & xy) basics */
+svg text,
+svg .ltx_foreignobject_content {
+  line-height: 1rem;
+  font-family: var(--text-font-family);
+  /* This adjustment is specific for Noto Sans, and is generally quite fragile.
+       Changing the text font will likely damage the positioning in SVG, which is very sensitive
+       to font metrics. This will likely be a subject of future improvements in LaTeXML. */
+  font-size: var(--svg-text-size);
+  text-align: left; }
 foreignObject {
   /* translate: 0 0.1em; */
   --fo_width: 100%;
@@ -1704,13 +1714,6 @@ svg foreignObject > .ltx_foreignobject_container {
   }
   & > .ltx_foreignobject_content {
     display: block;
-    line-height: 1rem;
-    font-family: var(--text-font-family);
-    /* This adjustment is specific for Noto Sans, and is generally quite fragile.
-       Changing the text font will likely damage the positioning in SVG, which is very sensitive
-       to font metrics. This will likely be a subject of future improvements in LaTeXML. */
-    font-size: 0.82em;
-    text-align: left;
     & * {
       width: inherit !important;
       line-height: 1;
