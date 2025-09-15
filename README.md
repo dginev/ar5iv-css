@@ -1,2 +1,7 @@
 # ar5iv-css
-Some CSS experiments for arXiv HTML documents converted via latexml
+
+The "ar5iv theme" for arXiv HTML documents converted via latexml
+
+# Structured Notes
+
+- [CSS custom properties for LaTeX authored colors](./docs/rfc_latexml_custom_properties.md)
