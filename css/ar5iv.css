@@ -2307,15 +2307,6 @@ dl.ltx_description dl.ltx_description dd {
   display: table-cell;
 }
 
-.ltx_framed {
-  border: 0.063rem solid var(--border-color);
-}
-/* avoid padding/margin collapse */
-span.ltx_framed {
-  display: inline-block;
-  text-indent: 0;
-}
-
 .ltx_tabular .ltx_td,
 .ltx_tabular .ltx_th {
   padding: 0.1em 0.5em;
@@ -2396,6 +2387,15 @@ span.ltx_framed {
   border-bottom: 0.063rem dashed var(--border-color);
 }
 /* Framing */
+/* set theme's frame color for all variants */
+.ltx_framed {
+  border-color: var(--border-color);
+}
+/* avoid padding/margin collapse */
+span.ltx_framed {
+  display: inline-block;
+  text-indent: 0;
+}
 /* common setup, but what is the right selector?
    they need to be inline inside ltx_p (see 1703.08608),
    and inline-block when used on images...
