@@ -537,6 +537,7 @@ div.ltx_keywords:empty:before {
   margin: 0.6rem;
   font-family: var(--text-font-family);
   line-height: 1.5rem;
+  white-space: normal;
   overflow-wrap: break-word;
   /* getting some rather unpleasant horizontal scroll on Chrome on large screens,
    likely due to the way footnotes get laid out? Upgrade ideas welcome.
