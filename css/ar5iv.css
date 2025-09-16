@@ -144,6 +144,13 @@ img {
 [data-theme="dark"] .ltx_foreignobject_content {
   color: var(--text-color);
 }
+/* Special hand-crafted case: \color{black} is the most common use, so hand-curate to match
+   the main foreground color in dark mode.
+   TODO: This color should be a design token name eventually */
+[data-theme="dark"] [style*="--ltx-fg-color:#000000;"] {
+  --text-color: #c9d1d9;
+  color: var(--text-color);
+}
 
 /* Main content */
 body {
