@@ -1818,6 +1818,7 @@ svg foreignObject > .ltx_foreignobject_container {
    see https://arxiv.org/html/2503.09799v1#S2.T2   */
 .ltx_table:not(:has(> .ltx_flex_table)) {
   overflow-x: auto;
+  overflow-y: hidden;
 }
 .ltx_table .ltx_caption {
   margin-left: auto;
