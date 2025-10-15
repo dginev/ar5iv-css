@@ -446,7 +446,7 @@ span.ltx_personname > .ltx_break + .ltx_break {
    it applies to all of the authors. Ideally latexml's schema should evolve to handle this
    via differently organized markup. 
 
-   Tested with 2201.00244, 1109.5581
+   Tested with 2201.00244, 1109.5581, 2510.11037
 */
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_address)) :last-child.ltx_role_address,
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_affiliation)) :last-child.ltx_role_affiliation {
