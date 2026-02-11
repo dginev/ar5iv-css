@@ -949,7 +949,8 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 }
 .ltx_tocentry_part > .ltx_ref > .ltx_ref_title > .ltx_tag,
 .ltx_tocentry_chapter > .ltx_ref > .ltx_ref_title > .ltx_tag,
-.ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag {
+.ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag,
+.ltx_tocentry_appendix > .ltx_ref > .ltx_ref_title > .ltx_tag {
   margin-right: 1rem;
   display: inline-block;
   min-width: 1.5rem;
@@ -966,13 +967,15 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 
 .ltx_tocentry_part .ltx_tocentry_chapter > .ltx_ref,
 .ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref > .ltx_ref_title,
-.ltx_tocentry_subsection > .ltx_ref > .ltx_ref_title {
+.ltx_tocentry_subsection > .ltx_ref > .ltx_ref_title,
+.ltx_tocentry_appendix > .ltx_ref > .ltx_ref_title {
   font-family: var(--text-font-family);
 }
 .ltx_tocentry_part .ltx_tocentry_chapter > .ltx_ref,
 .ltx_tocentry_chapter .ltx_tocentry_section > .ltx_ref,
 .ltx_tocentry_subsection > .ltx_ref,
-.ltx_tocentry_subsubsection > .ltx_ref {
+.ltx_tocentry_subsubsection > .ltx_ref,
+.ltx_tocentry_appendix > .ltx_ref > .ltx_ref_title {
   border-bottom: none;
 }
 
