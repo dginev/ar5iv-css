@@ -998,9 +998,10 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   margin-right: 0.3rem;
 }
 
-/* A (topl evel) tocentry without tags should still have an equivalent padding to align well */
+/* A (top level) tocentry without tags should still have an equivalent padding to align well */
 .ltx_toclist > .ltx_tocentry_abstract, 
 .ltx_toclist > .ltx_tocentry_acknowledgements, 
+.ltx_toclist > .ltx_tocentry_paragraph, 
 .ltx_toclist > .ltx_tocentry_bibliography {
   margin-left: 2.5rem;
 }
