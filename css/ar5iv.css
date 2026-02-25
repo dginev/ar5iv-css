@@ -1695,6 +1695,15 @@ svg {
     For now: require svg content is underneath the main page. */
   z-index: -1;
 }
+@media only screen and (max-width: 79.99rem) {
+  /* contain to screen width on narrow viewports,
+     as the horizontal overflow can have cascading effects that
+     are quite disorienting for navigation.
+     Note that this was motivated by a foreignObject containing an <img> */
+  svg.ltx_picture {
+    max-width: min(var(--main-width), 100%);
+  }
+}
 
 /*SVG (pgf/tikz & xy) basics */
 svg text,
