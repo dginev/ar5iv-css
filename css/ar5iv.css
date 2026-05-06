@@ -1723,7 +1723,7 @@ foreignObject {
    to accommodate potentially tall line-box */
 svg foreignObject > .ltx_foreignobject_container {
   display: flex;
-  align-items: end; /* see examples from latexml PR #2541 */
+  align-items: center; /* test with examples from latexml PR #2541 */
   width: clamp(calc(0.1 * var(--main-width)), var(--ltx-fo-width, var(--fo_width)), 100%);
   height: 100%;
 }
@@ -1744,7 +1744,7 @@ svg foreignObject > .ltx_foreignobject_container {
     display: block;
     & * {
       width: inherit !important;
-      line-height: 1;
+      line-height: 1.2;
     }
     & .ltx_description,
     & .ltx_itemize,
@@ -1883,11 +1883,10 @@ svg foreignObject > .ltx_foreignobject_container {
 .ltx_minipage .ltx_float .ltx_caption {
   display: block;
 }
-/* often minipages are inline-blocks, for which "vertical-align" is inactive */
-/* so we also default to an auto margin in order to center */
+/* vattach="middle" on inline-block minipages: use vertical-align for alignment.
+   Do NOT override width — side-by-side minipages need their explicit widths. */
 .ltx_minipage.ltx_align_middle {
-  margin: auto;
-  width: auto !important;
+  vertical-align: middle;
 }
 .ltx_minipage > .ltx_graphics {
   max-width: 100%;
