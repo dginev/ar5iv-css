@@ -70,7 +70,7 @@ matter for a scholarly-document CSS theme:
 | Typography token system (spacing / type / line-height scales) | ⚠️ spacing scale + prose line-height tokenised; font-size scale deferred (mostly singletons) |
 | Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ⚠️ four structural fixes landed; full DevTools walk still pending |
 | i18n / RTL via logical properties | ✅ ~60 sites converted; LaTeXML-internal `.ltx_border_*` / `.ltx_framed_*` / `.ltx_nopad_*` / `.ltx_align_*` stay physical (LaTeXML emits physical-side semantics) |
-| Container-aware layout for embedded / side-by-side readers | ❌ viewport-only |
+| Container-aware layout for embedded / side-by-side readers | ✅ verified not-needed: iframe embedding picks correctly via own-viewport media query; no other consumer in scope |
 | Override-friendly cascade for downstream themes (`@layer`) | ✅ bulk in `components`; B1/B3 in `fixes`; transformed-wrappers stays un-layered for !important priority |
 | Demonstrated extensibility (at least one alt theme) | ❌ no consumer yet |
 | Repeatable visual-regression check | ❌ human eye only |
@@ -78,7 +78,7 @@ matter for a scholarly-document CSS theme:
 | Code-quality enforcement (stylelint or equivalent) | ✅ `npm run lint` with tuned ruleset; allowlisted `!important` as warning |
 | Theming cookbook (recipes beyond the RFC's worked example) | ✅ `docs/THEMING.md` with four recipes |
 
-Three ❌ rows and two ⚠️ rows on a sixteen-row checklist. Eleven ✅.
+Two ❌ rows and two ⚠️ rows on a sixteen-row checklist. Twelve ✅.
 Honest verdict: production-ready, not best-in-class — but the gap is
 shrinking.
 
@@ -197,30 +197,27 @@ sub-divisions and as override slots for downstream themes.
 Verified via the lightningcss build: 11/11 transformed-rule
 occurrences un-layered; B1 fix correctly in `@layer fixes`.
 
-### 6. Container-query pilot on the sidenote ladder (hypothesis)
+### ~~6. Container-query pilot~~ — ✅ closed 2026-05-14 (hypothesis falsified)
 
-The sidenote layout currently switches on viewport width. *Hypothesis*
-(not empirically verified): in a narrow embedding iframe with a wide
-host viewport, the sidenote ladder picks the wrong band — needs an
-actual test page before this becomes a justified item. Side effect to
-verify: `.ltx_document { container-type: inline-size }` re-anchors
-absolute/fixed descendants (today's absolute author block uses
-`100dvw`, so the side effect may bite).
+Hypothesis-driven step from the iteration-3 plan: build a
+synthetic iframe-in-wide-host page, verify whether the sidenote
+ladder picks the wrong band. Test page at
+`examples/embedded-iframe.html` (a 600 CSS-px iframe inside a
+wide host page, both `ar5iv-1910.06709.html` and the
+embedded-arxiv variant load fine).
 
-**Next move.** First, *verify the hypothesis* before any CSS edit:
-build a synthetic `examples/embedded-iframe.html` with
-`<iframe src="arxiv-2501.11021.html" width="600">` inside a wide
-viewport. If the sidenote ladder picks viewport-1280 layout
-despite the iframe being 600 px, the gap is real. **If
-hypothesis is wrong** (sidenote picks correctly via some other
-mechanism), close as no-action. **If confirmed**: add
-`container-type: inline-size` to `.ltx_document`, mirror the
-seven `@media` rules in `ar5iv.css:575-668` as `@container`
-rules behind `@supports (container-type: inline-size)`, keep
-viewport fallback for one release. **Critical verification**:
-the absolutely-positioned author block at `ar5iv.css:457-466`
-must still anchor correctly to viewport center, not to
-`.ltx_document`'s left edge.
+**Result:** the hypothesis is wrong. Inside an iframe with
+`<meta name="viewport" content="width=device-width">`, the
+`width` media feature evaluates against the iframe's own
+viewport (600 CSS-px) and the `@media (width >= 96rem)` query
+correctly fails — the narrow-screen sidenote band applies.
+
+Container queries would still be useful for scenarios that
+don't exist today (ar5iv embedded directly in a CMS sidebar
+without iframe isolation; side-by-side dual-article reader
+view). Per YAGNI: defer until a real consumer surfaces. Closed
+as no-action with the test page retained for future
+re-verification.
 
 ### ~~7. Build pipeline + minified bundle~~ — ✅ landed 2026-05-14
 
@@ -384,6 +381,16 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Item #6 closed: hypothesis falsified. The
+  iframe-in-wide-host test (`examples/embedded-iframe.html`)
+  confirmed that the sidenote-ladder media query evaluates
+  against the iframe's own viewport when
+  `width=device-width` is declared in the iframe's HTML — which
+  every LaTeXML output declares. So the predicted misclassification
+  doesn't happen. Container queries deferred per YAGNI until a
+  real consumer surfaces (e.g. ar5iv embedded in a CMS sidebar
+  without iframe isolation). Status table: 3 ❌ / 2 ⚠️ / 11 ✅ →
+  2 ❌ / 2 ⚠️ / 12 ✅.
 - **2026-05-14** — Item #2 landed (partial — ⚠️): five structural
   reflow bugs identified by code audit and fixed (author-block
   fly-out width/offset clamps, conversion-report panel
