@@ -1,0 +1,151 @@
+/*
+  Accessibility & UX additions for the ar5iv theme.
+
+  All rules in this file are *additive*: they either introduce new
+  selectors (focus state, :target, ::selection) or augment an existing
+  trigger (footnote popovers also open on :focus-within). No existing
+  rule is replaced.
+
+  Imported into the `base` cascade layer from ar5iv.css.
+*/
+
+/* ----- Focus state -------------------------------------------------- */
+
+/* A single, tokenised focus ring. Browsers continue to set a UA default
+   on elements we don't style, so the cost of a heavy-handed `outline:
+   none` is avoided. `:focus-visible` ensures pointer users don't see
+   rings on mouse click. */
+:focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+}
+
+/* Inside math, focus rings on individual operators are distracting and
+   rarely meaningful (mo/mi typically aren't focus targets). Suppress
+   the visible ring there, but keep `outline` non-zero so screen-reader
+   focus order is unaffected. */
+math :focus-visible,
+mjx-container :focus-visible {
+  outline-color: transparent;
+}
+
+/* ----- Footnote popovers: keyboard path ----------------------------- */
+
+/*
+  The existing rules (in ar5iv.css) open the sidenote popover on
+  `:hover` and `:active`. These selectors extend that behaviour to
+  `:focus-within`, so tabbing onto a footnote mark (or any focusable
+  descendant) reveals the popover and keeps it open.
+
+  IMPORTANT: this only works if LaTeXML emits a focusable element at
+  the mark site (e.g. <sup><a>…</a></sup>). If the mark is rendered
+  as a non-interactive span, the precondition is missing and the
+  upstream markup must be updated. Tracked as Phase 2.2a in
+  GLOWUP_PROGRESS.md.
+*/
+
+/* Small-screen path: mirrors the @media (max-width: 95.99rem) hover/active rule. */
+@media only screen and (max-width: 95.99rem) {
+  .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):not(.ltx_role_footnotemark):focus-within > .ltx_note_outer {
+    display: block;
+    opacity: 1;
+    z-index: var(--z-popover);
+    position: absolute;
+    top: 0;
+    margin: auto;
+    padding: 2rem;
+    background-color: var(--background-color);
+    border-width: 0.1rem 0;
+    border-bottom: double;
+    border-top: double;
+  }
+}
+
+/* Large-screen path: mirrors the highlight-on-hover/active rule. */
+@media only screen and (min-width: 96rem) {
+  .ltx_note > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content,
+  .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content,
+  .ltx_author_notes > .ltx_note > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content,
+  .ltx_author_notes > span > .ltx_note > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content {
+    background-color: var(--note-highlight-color);
+    z-index: var(--z-popover);
+  }
+}
+
+/* ----- prefers-reduced-motion --------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Disable the tap-to-zoom magnifier on figure images. The trigger is
+     :active, so users opting out of motion will simply see the image
+     remain at 1× when pressed. */
+  .ltx_figure img,
+  .ltx_p > img.ltx_graphics,
+  .ltx_text > img.ltx_graphics {
+    transition: none;
+  }
+  .ltx_figure img:active,
+  .ltx_p > img.ltx_graphics:active,
+  .ltx_text > img.ltx_graphics:active {
+    transform: none;
+  }
+}
+
+/* ----- :target highlight -------------------------------------------- */
+
+/*
+  When the user lands on an in-page anchor (equation, theorem,
+  bibliography entry, section), give a brief visual confirmation.
+  Falls back to a static highlight under reduced-motion.
+*/
+:target {
+  background-color: var(--note-highlight-color);
+  box-shadow: 0 0 0 var(--focus-ring-offset) var(--note-highlight-color);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  :target {
+    animation: ar5iv-target-pulse 1.2s var(--ease-out) 1;
+  }
+  @keyframes ar5iv-target-pulse {
+    0%   { background-color: var(--note-highlight-color); }
+    100% { background-color: transparent; }
+  }
+}
+
+/* ----- ::selection -------------------------------------------------- */
+
+/* Tokenised so dark theme inherits via the theme overrides. */
+::selection {
+  background-color: var(--note-highlight-color);
+  /* keep the underlying text colour — selecting should not change the
+     foreground, otherwise readers lose the context they were
+     scanning. */
+  color: inherit;
+}
+
+/* ----- forced-colors mode ------------------------------------------- */
+
+/*
+  Windows High Contrast and similar modes ignore most author colours
+  and substitute system tokens. We don't fight that, but we do declare
+  the semantic mapping so links read as LinkText, the note highlight
+  reads as Mark, and our focus ring uses the system Highlight colour.
+*/
+@media (forced-colors: active) {
+  :focus-visible {
+    outline-color: Highlight;
+  }
+  .ltx_ref,
+  .ltx_role_email > a,
+  .ltx_page_logo > a {
+    color: LinkText;
+  }
+  .ltx_ref:visited {
+    color: VisitedText;
+  }
+  ::selection,
+  :target {
+    background-color: Mark;
+    color: MarkText;
+  }
+}

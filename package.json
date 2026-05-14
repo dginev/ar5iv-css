@@ -1,9 +1,31 @@
 {
   "name": "ar5iv-css",
   "version": "0.8.4",
-  "description": "Experimental CSS to style arXiv articles converted with LaTeXML",
-  "main": "ar5iv.css",
-  "repository": "git@github.com:dginev/ar5iv-css.git",
-  "author": "Deyan Gienv <deyan.ginev@gmail.com>",
+  "description": "CSS theme for arXiv articles converted with LaTeXML",
+  "main": "css/ar5iv.css",
+  "style": "css/ar5iv.css",
+  "sideEffects": [
+    "css/ar5iv.css",
+    "css/ar5iv-fonts.css",
+    "css/ar5iv/*.css"
+  ],
+  "exports": {
+    ".": "./css/ar5iv.css",
+    "./fonts": "./css/ar5iv-fonts.css",
+    "./tokens": "./css/ar5iv/tokens.css",
+    "./a11y": "./css/ar5iv/a11y.css",
+    "./print": "./css/ar5iv/print.css"
+  },
+  "files": [
+    "css",
+    "docs",
+    "LICENSE",
+    "README.md"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/dginev/ar5iv-css.git"
+  },
+  "author": "Deyan Ginev <deyan.ginev@gmail.com>",
   "license": "MIT"
 }

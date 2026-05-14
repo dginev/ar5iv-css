@@ -1,0 +1,120 @@
+/*
+  Design tokens for the ar5iv theme.
+
+  This file is imported into the `tokens` cascade layer from ar5iv.css.
+  Token reference: see docs/TOKENS.md (planned) and the RFC at
+  docs/rfc_latexml_custom_properties.md for the --ltx-* public surface
+  exposed by LaTeXML.
+
+  Theme switching:
+    - Default: `color-scheme: light dark`. `light-dark()` resolves to
+      the OS-preferred branch automatically.
+    - Forced light: `<html data-theme="light">`.
+    - Forced dark:  `<html data-theme="dark">`.
+  See docs/rfc_latexml_custom_properties.md for the OKLCH inversion
+  strategy used for author-supplied colours (those still need
+  [data-theme="dark"] as their behavioural gate; light-dark() can
+  express token values but not arbitrary transforms).
+*/
+
+:root {
+  color-scheme: light dark;
+
+  /* ----- Layout ----- */
+  --main-width: 52rem;
+  --main-width-margin: 54rem;
+
+  /* ----- Borders & rules ----- */
+  /* Hairline used by hundreds of single-pixel separators across the theme.
+     Matches LaTeXML's default \rule width within a percent. */
+  --border-hairline: 0.063rem;
+  /* Double-line variant for table headers and decorative rules. */
+  --border-double: 0.188rem;
+
+  /* ----- Motion ----- */
+  /* Used by the figure-zoom magnifier (and any future hover/active
+     transition). Tap-and-hold timing should stay short. */
+  --duration-fast: 0.2s;
+  --ease-out: ease;
+
+  /* ----- Stacking ----- */
+  --z-below: -1;
+  --z-page: 0;
+  --z-popover: 100;
+
+  /* ----- Typography ----- */
+  --headings-font-family: "Noto Sans", "Noto Sans Fallback", sans-serif;
+  --text-font-family: "Noto Serif", "Noto Serif Fallback", serif;
+  --math-font-family: "latin modern math", "Cambria Math", math;
+  /* Should we do anything special for caligraphic?
+     e.g. "Lucida Calligraphy","Zapf Chancery","URW Chancery L", TeX Gyre Termes...*/
+  --math-caligraphic-font-family: "latin modern math", "Cambria Math", math;
+  --code-font-family: "Noto Sans Mono", "Noto Sans Mono Fallback", monospace;
+  /* SVG text rendered at this size compensates for Noto Sans metrics
+     versus the LaTeXML SVG generator's assumptions. Fragile against
+     a font-family change. */
+  --svg-text-size: 0.82em;
+
+  /* ----- Colours: theme-aware via light-dark() -----
+     Each entry is light-dark(<light>, <dark>). The dark side is
+     applied when the resolved color-scheme is dark — driven by OS
+     preference, by `[data-theme="dark"]`, or by an explicit
+     `color-scheme: dark` cascading from an ancestor.
+  */
+  --background-color: light-dark(white, #0d1117);
+  --text-color:       light-dark(#292929, #c9d1d9);
+  --border-color:     light-dark(#292929, #c9d1d9);
+  --border-light-color: light-dark(grey, #d4d4d4);
+  /* Images keep their light-theme rendering in dark mode (transparent
+     PNGs from LaTeXML expect a light backdrop); the brightness/contrast
+     compensation is applied separately in ar5iv.css under [data-theme="dark"]. */
+  --image-color: light-dark(black, #292929);
+  --image-background-color: white;
+  --link-text-color:  light-dark(#212121, #c9d1d9);
+  --email-link-color: light-dark(#026ecb, darkcyan);
+  --note-mark-color:  light-dark(#026ecb, #daa002);
+  --note-highlight-color: light-dark(#ffffd4, #231d02);
+  --info-text-color:  #01719d;
+  /* Light: was #d09e05 (~2.46:1 on white, fails WCAG AA Large).
+     #8a6800 is the darkest goldenrod that still reads as "warning yellow"
+     and gives ≈4.8:1 on white. Dark: the original #d09e05 is fine on the
+     dark background. */
+  --warning-text-color: light-dark(#8a6800, #d09e05);
+  --error-text-color:   light-dark(#d8000c, #d52f36);
+  --fatal-text-color: var(--error-text-color);
+  --index-ref-color:  var(--email-link-color);
+
+  /* The "stuck on dark" rescue colour for author-supplied black text
+     in dark mode. Same value as --text-color in dark, captured as its
+     own name so the rescue rule in ar5iv.css doesn't hard-code the
+     hex. */
+  --text-color-author-black-dark: #c9d1d9;
+
+  /* Subtle surface tint — used by the conversion-report panel and
+     any future inline-notice. Slightly off-canvas in both themes. */
+  --surface-subtle: light-dark(whitesmoke, #1a1f29);
+
+  /* ----- Focus & feedback ----- */
+  /* Focus ring sits two visual notches from currentColor so it's
+     visible on both light and dark backgrounds.
+     `color-mix` is used here because it is supported wherever
+     `:focus-visible` is supported. */
+  --focus-ring: color-mix(in oklch, currentColor 65%, var(--background-color));
+  --focus-ring-offset: 0.125rem;
+  --focus-ring-width: 0.125rem;
+}
+
+/* Explicit user choice overrides the OS preference. */
+:root[data-theme="light"] { color-scheme: only light; }
+:root[data-theme="dark"]  { color-scheme: only dark; }
+
+/* Bumped contrast for users who request it. */
+@media (prefers-contrast: more) {
+  :root {
+    --text-color:       light-dark(#000000, #ffffff);
+    --link-text-color:  light-dark(#000000, #ffffff);
+    --border-color:     light-dark(#000000, #ffffff);
+    --note-mark-color:  light-dark(#01497a, #ffd17a);
+    --warning-text-color: light-dark(#5a4400, #ffd17a);
+  }
+}
