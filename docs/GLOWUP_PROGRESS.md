@@ -229,7 +229,9 @@ future spec change broke the assumption, the test would diverge.
 Container queries would still be useful for scenarios that don't
 exist today (ar5iv embedded directly in a CMS sidebar without
 iframe isolation; side-by-side dual-article reader view). Per
-YAGNI: defer until a real consumer surfaces.
+YAGNI: defer until a real consumer surfaces. Confirmed
+2026-05-14 by the project owner: no embedding plans, so the
+YAGNI close is durable rather than speculative-revisit.
 
 ### ~~7. Build pipeline + minified bundle~~ — ✅ landed 2026-05-14
 
