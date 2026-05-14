@@ -527,3 +527,346 @@ or a build pipeline).
 | Commented-out B2 rule | replaced with one-line "removed in favour of …" |
 | Cross-link to RFC at top of `ar5iv.css` | added (15-line orientation comment) |
 | `text-align: justify` on `.ltx_listingline` (`white-space: nowrap`) | removed |
+
+---
+
+## After-the-fact correction: `flow-root` was not "zero behaviour cost"
+
+The §M / §N cleanup section above claims the clearfix → `display: flow-root`
+swap on `.ltx_page_content` was "zero behaviour cost". That was wrong, and
+it took a careful reader to spot it: the document title sat ~2rem (≈ 32 px)
+lower after the swap than before.
+
+### Why the title moved
+
+The pre-glowup clearfix had `:after` only on `.ltx_page_content` — **no
+`:before`**. So `.ltx_document` was still the first in-flow child of
+`.ltx_page_content`, and the parent-first-child margin-collapse rule
+applied:
+
+- `.ltx_page_content { margin: 4rem 1rem }` — top margin 4rem.
+- `.ltx_document { margin-top: 2rem }` — collapsed into the parent's 4rem.
+- Effective gap: `max(4rem, 2rem) = 4rem`.
+
+`display: flow-root` establishes a new block-formatting context, and a BFC
+**suppresses** parent-first-child margin-collapse. Post-swap:
+
+- `.ltx_document`'s 2rem stands on its own *inside* `.ltx_page_content`.
+- Effective gap: `4rem + 2rem = 6rem`.
+
+The clearfix and the BFC accomplish the **same** float-containment job,
+but only the BFC blocks the margin collapse. The two are interchangeable
+*as float containers*; they are NOT interchangeable *as
+margin-collapse barriers*. The original glow-up did not check for the
+second property, so the title-position shift slipped through.
+
+### The fix (Option 1 of four considered)
+
+Dropped `margin-top: 2rem` from `.ltx_document`. Spacing now lives in one
+place (`.ltx_page_content`'s outer margin) instead of being split across
+two rules that only coincidentally summed via margin-collapse. Same
+visual result as before the glow-up.
+
+### The deeper lesson
+
+Two CSS rules can have the **same primary effect** and **different
+side effects**. "Replacing the clearfix" with `flow-root` was a *partial*
+modernisation: the modern form was strictly stronger (BFC + float
+containment) than the old form (clearfix only). When swapping a legacy
+pattern for a modern equivalent, ask: *what else did the old pattern not
+do that the new one does?* For BFC-establishing replacements, the
+parent-first-child margin-collapse question is the most common one
+worth checking.
+
+### What to do about regression-source patterns like this
+
+Phase 6 (the render-corpus harness in GLOWUP_PROGRESS.md) would have
+caught this immediately — the title would have moved 32 px and the diff
+would have flagged it. This is exactly the class of regression that
+mechanical pixel-diff exists to catch and that human review reliably
+misses, because the layout still "looks fine" — just slightly different.
+
+---
+
+## YAGNI tripped me up on `.ltx_sr_only`
+
+While landing the iteration-2 a11y batch I added a `.ltx_sr_only`
+utility — the standard "visually hidden, still announced to AT"
+pattern. The justification I gave: "cheap, ~10 lines, unblocks
+future use".
+
+The user immediately asked: *if LaTeXML never emits it, why ship it?*
+Correct critique. Neither LaTeXML's emission nor our own CSS uses
+`.ltx_sr_only`. Without a consumer, it's literal dead code that future
+contributors would copy/refactor without understanding what calls it.
+
+Removed.
+
+The `[hidden]` reset that landed in the same patch is *not* the same
+case: `hidden` is a universal HTML attribute that any external actor
+(JS theme toggle, browser extension, assistive overlay) might land on
+a `.ltx_*` element, where our `display:` rules would otherwise defeat
+the UA default. That's defensive against a real-world possibility, not
+a speculative future consumer.
+
+### The distinction worth keeping
+
+| Pattern | Triggering source | Verdict |
+|---|---|---|
+| `.ltx_sr_only` | Only ever emitted by *us* writing CSS that consumes it | Ship when there's a consumer, not before |
+| `[hidden]` reset | A universal HTML attribute, set by anyone | Defensive shipping is justified |
+
+CSS utilities for hypothetical future contributors are speculation.
+CSS defenses against universal mechanisms are precaution. Different
+things. The system prompt's rule "don't add abstractions beyond what
+the task requires" applies even when the abstraction is cheap.
+
+---
+
+## `--fn-*` API landed, with a `light-dark(var(), var())` near-miss
+
+The iteration-2 implementation of the RFC's `--fn-*` author-colour
+override surface (`css/ar5iv/dark-mode.css`) almost shipped using
+`light-dark(var(--ltx-fg-color), var(--fn-fg-color-to-dark-mode))` as
+the application rule. The pattern would have eliminated the
+`data-theme="dark"` + `@media (prefers-color-scheme: dark)` duplication
+in a single elegant line.
+
+The user flagged it: *"browsers do not support var functions for color
+mixing if I remember correctly. We were waiting on a new CSS feature
+for that — CSS @function definitions"*.
+
+What the spec says: `light-dark()` accepts any `<color>` for either
+argument, including `var()` references that resolve to a `<color>`.
+Per spec, the pattern should work.
+
+What the codebase ships: `oklch(from var(--ltx-fg-color) ...)` —
+i.e. `var()` inside *relative-color syntax*. That works in production
+(it's the existing dark-mode rule). But `light-dark(var(), var())` is
+a *different* untested pattern, and the codebase has no other instance
+of `light-dark()` taking variable arguments — the existing uses in
+`tokens.css` are all `light-dark(LITERAL, LITERAL)`.
+
+The CSS WG's `@function` proposal — what the user was remembering — is
+about *user-defined* CSS functions. We can't write
+`--invert(--input) { result: oklch(from var(--input) ...); }` and call
+it like a function. That's separate from variable substitution into
+`light-dark()`.
+
+### What we shipped
+
+Kept the proven pattern: `--fn-*` is defined unconditionally per
+matching element (using the existing-and-shipping
+`oklch(from var(...) ...)`), and the application is two explicit
+gated blocks (`[data-theme="dark"]` plus `@media (prefers-color-scheme:
+dark) { :root:not([data-theme="light"]) ... }`). Some duplication of
+the application rules, but every part of the path is something the
+existing code already exercises.
+
+### General lesson
+
+When you're tempted by a clever spec-allowed pattern that the rest of
+your codebase doesn't currently exercise, weigh: how much cleanup does
+it save? how confident are you it works in your target browsers? if
+those aren't very confident, the safer pattern with mild duplication
+is the right call. The clever pattern can land later if its
+correctness is established by separate work.
+
+---
+
+## Iteration 2 — final tally
+
+After three audit passes, three critique cycles, a YAGNI re-check that
+deferred most of the originally-planned items, and a methodical walk
+through the surviving work, iteration 2 closed with these shipped:
+
+**Theming / dark mode (`css/ar5iv/dark-mode.css`, extracted as its own
+sub-file):**
+
+- `--fn-{fg,bg,border,fill,stroke}-color-to-dark-mode` public override
+  surface. Closes the RFC/code drift documented in iteration 1.
+  Downstream themes redefine any of the five tokens on the matching
+  `[style*="--ltx-*-color:"]` selector; no fork needed.
+- OS-preference dark mirror for the OKLCH inversion. Inversion now
+  fires under both explicit `data-theme="dark"` and OS-preference
+  dark. Older browsers without `@supports (color: oklch(from white l c
+  h))` fall through to the HSL branch (already the iteration-1
+  pattern).
+- `.ltx_no_dark_filter` opt-out for the global `<img>`
+  brightness/contrast filter — for figures that already match the
+  theme.
+
+**Accessibility:**
+
+- Dark-mode contrast audit: every token-defined foreground/background
+  pair measured per WCAG, three failures fixed token-side.
+  `--email-link-color` `darkcyan` → `#009999`, `--info-text-color`
+  split light/dark, `--error-text-color` dark side `#d52f36` →
+  `#e85a60`.
+- Touch-target inflation on `.ltx_note_mark` to ≥24×24 px (WCAG 2.5.8)
+  via a transparent `::before` pseudo-element. Visible glyph
+  unchanged.
+- `[hidden]` defensive reset against our own `display:` rules.
+- MathML focus-ring rule narrowed to keep the ring on interactive
+  descendants (`a`, `button`, `[tabindex]`).
+
+**Layout:**
+
+- `a11y.css` breakpoint pair aligned with `ar5iv.css`'s
+  `< 96rem` / `>= 96rem` discipline (no more `95.99rem` outlier).
+
+**Selector hygiene:**
+
+- 5-deep `:not()` chain rewritten as `:not(:is(…))` — same semantics,
+  one set of negations, comment-acknowledged ugliness resolved.
+
+**Documentation contracts:**
+
+- RFC selector example corrected from `[style*="color:"]` (too broad)
+  to per-property gates.
+- RFC extended to document the foreground / border `0.7` scale and
+  the HSL fallback's `100`/`107` asymmetry.
+
+**Code-smell residue:**
+
+- 4 stale "untested" / "this is debatable" TODOs deleted; 10
+  substantive TODOs retained.
+- `--fo_width` legacy fallback dropped (verified absent from current
+  upstream `ar5iv-site.css`).
+
+**Iteration-1 regression caught and fixed:**
+
+- The `flow-root` swap on `.ltx_page_content` had pushed the document
+  title ~2 rem lower than before — a real ~32 px regression that
+  three prior careful passes had not caught. Resolved by dropping
+  `margin-top: 2rem` from `.ltx_document`. See the
+  "After-the-fact correction" section above for the full mechanism.
+
+**Deferred per YAGNI** (these survived the audit framing but failed
+the "obey YAGNI" pass — no current consumer or evidence):
+
+- Spacing / type / line-height / radius / shadow token scales.
+- Cascade-maturation walk to fill the `@layer` order.
+- Alternative theme (sepia or high-contrast as a third `data-theme`).
+- Container-query pilot on the sidenote ladder.
+- Reflow audit at 320 CSS-px and 400 % zoom.
+- Logical-property walk for i18n / RTL.
+- `@import` chain collapse, `unicode-range`, build pipeline,
+  `content-visibility: auto` pilot.
+- Render-corpus harness and stylelint configuration.
+- Theming cookbook and `TOKENS.md` auto-generation.
+- `.ltx_full_width` wide-content escape utility.
+
+**Upstream-blocked** (need LaTeXML changes):
+
+- Focusable footnote mark for keyboard popovers.
+- Positive `.ltx_long` class on long equations.
+- Positive layout-managed class for the inline-image-sizing chain
+  and for `.ltx_overlay`.
+- LaTeXML `\scalebox` / `\resizebox` handling — when fixed, the
+  ~50-line transformed-wrappers feature flag deletes cleanly.
+
+### Numbers
+
+| Measure | Start of iter 2 | End of iter 2 |
+|---|---|---|
+| `ar5iv.css` LoC | 2,611 | 2,509 |
+| Sub-files (under `css/ar5iv/`) | 3 (tokens, a11y, print) | 4 (+ dark-mode) |
+| TODOs in production CSS | 14 | 10 |
+| `!important` declarations | 27 | 28 (one added for `[hidden]` reset) |
+| Dark-mode tokens failing WCAG AA | 3 | 0 |
+| `GLOWUP_PROGRESS.md` LoC | 922 (pre-condensation) | a single `DONE.` line |
+
+### What I learned, beyond the per-finding entries above
+
+1. **Critique passes are non-monotonic in value.** First pass surfaces
+   factual errors; second pass surfaces internal inconsistencies;
+   third pass surfaces specific technical confusions surviving the
+   first two. Each pass found different things. The honest count of
+   passes needed before stability: probably four.
+2. **YAGNI re-check is a separate phase from audit.** An exhaustive
+   audit document generates an exhaustive plan; a YAGNI pass deletes
+   most of it as speculation. Both passes are valuable; the order
+   matters. Do the audit first.
+3. **Manual review reliably misses small geometric regressions.** The
+   `flow-root` title shift was ~32 px and three careful passes didn't
+   catch it. The case for mechanical pixel-diff is retroactive but
+   real.
+4. **"Cheap to add" is not enough.** `.ltx_sr_only` was 10 lines and
+   the standard pattern; it was still dead code without a consumer.
+
+---
+
+## SVG fill / stroke stayed on HSL even in the OKLCH branch
+
+Pre-iteration-1 code used OKLCH for fg/bg/border but HSL for
+fill/stroke, *inside* the `@supports (color: oklch(from white l c h))`
+branch. Both iteration-1 and the iteration-2 `--fn-*` refactor
+preserved the choice verbatim.
+
+A reader inspecting the colour-rich demo (arxiv-2501.11021) in
+DevTools noticed `hsl(...)` resolved values where `oklch(...)` was
+expected — the page rendered correctly, but the chosen function was
+inconsistent with the rest of the colour-map system. Fixed for
+consistency: fill now uses the background scale (0.8237) and stroke
+uses the foreground/border scale (0.7) in the supports-OKLCH branch.
+HSL fallback unchanged.
+
+### Small lesson
+
+A refactor that's labelled "structural with no behaviour change"
+honestly preserves both behaviours and oddities. The oddities only
+become visible when someone looks at them directly. Not every
+oddity is a bug — sometimes the rendered output was fine all along
+and only the *expressed intent* was inconsistent. Fix for consistency
+when it costs almost nothing, don't dramatise it as a regression
+catch.
+
+---
+
+## YAGNI re-check on the iteration-2 plan as a whole
+
+After the `.ltx_sr_only` retraction, the user's next message was simply
+"obey YAGNI". That prompted a re-read of GLOWUP_PROGRESS.md as a
+plan, not just as a backlog. A surprising number of items survive the
+audit-pass framing but fail YAGNI on closer inspection:
+
+- **Selector compression (§H).** The `.ltx_align_*` and `.ltx_border_*`
+  families look like compressible lists. They aren't — each rule has
+  a different property value. The actual compression opportunity is
+  small (the 5-deep `:not()` chain, and possibly the footnote popover
+  triggers). The framing "this is a real opportunity" was wishful.
+- **Token scales without migration (Phase 7).** Defining scale tokens
+  without immediately consuming them is the textbook case of
+  premature abstraction. Migration needs visual verification (no
+  harness yet). Either land together with a harness, or wait.
+- **Cascade maturation (Phase 8).** Justified as "make consumers' lives
+  easier" — but we don't have downstream consumers using `@layer`
+  themselves. Speculation about a population we haven't met.
+- **Alt theme (Phase 10).** "Validates the token system" is also
+  speculation; the validation is hypothetical until a consumer asks
+  for a sepia or high-contrast variant.
+- **Build pipeline (Phase 12).** Works without it. Adds dev
+  dependencies and ongoing maintenance for a marginal win.
+
+What survives:
+
+- The 5-deep `:not()` rewrite (in-source comment acknowledges
+  unreadability).
+- `--fn-*` indirection (closes a real RFC/code drift — the RFC
+  contract IS the consumer).
+- `@import` chain collapse (real CSSOM staircase, real fix).
+- TODO triage (stale comments are real noise).
+- `--fo_width` investigation (undefined fallback is a real mystery).
+- `[hidden]` reset (defensive against universal mechanism — already
+  landed).
+- Container queries pilot — *real* benefit for embedded readers,
+  but needs the harness.
+
+### The general lesson
+
+An audit document of "everything we *could* improve" generates a plan
+that is exhaustive but not justified. A YAGNI re-pass turns that into
+a plan of "everything we *must* improve right now". The two passes are
+both valuable; the order matters. Do the exhaustive audit first, the
+YAGNI pass second.

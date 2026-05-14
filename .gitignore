@@ -274,3 +274,6 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+# Local examples directory — fetched arXiv pages for manual inspection
+examples/
