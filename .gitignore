@@ -276,7 +276,14 @@ TSWLatexianTemp*
 *.lpz
 
 # Local examples directory — fetched arXiv pages for manual inspection
-examples/
+# (gitignored), but the fetch driver scripts themselves are tracked.
+# (gitignore note: blanket-ignoring `examples/` prevents !exceptions
+# from working; use `examples/*` to ignore the contents but leave the
+# directory itself unignored, so the !exceptions for specific files
+# resolve correctly.)
+examples/*
+!examples/fetch.sh
+!examples/fetch-corpus.sh
 
 # Build artefacts — produced by `npm run build`, published to npm on
 # tagged releases and auto-served by jsDelivr / unpkg from there.
@@ -286,6 +293,11 @@ dist/
 # Node tooling
 node_modules/
 
-# Visual-regression harness scratch (fresh renders + diff PNGs).
-# The committed baseline lives in tools/baseline/.
+# Visual-regression harness scratch (fresh renders + diff PNGs)
+# and the developer-local baseline. fullPage rendering of the full
+# 47-paper corpus is ~400 MB; too large to commit. A shared baseline
+# for CI is planned via release-artifact tarball at
+# tools/snapshots-baseline.tar.zst (deferred). For now every dev
+# generates locally with `node tools/visual.mjs --update`.
 tools/.cache/
+tools/baseline/

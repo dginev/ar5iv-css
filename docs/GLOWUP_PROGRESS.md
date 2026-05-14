@@ -73,7 +73,7 @@ matter for a scholarly-document CSS theme:
 | Container-aware layout for embedded / side-by-side readers | ✅ verified not-needed: iframe embedding picks correctly via own-viewport media query; no other consumer in scope |
 | Override-friendly cascade for downstream themes (`@layer`) | ✅ bulk in `components`; B1/B3 in `fixes`; transformed-wrappers stays un-layered for !important priority |
 | Demonstrated extensibility (at least one alt theme) | ✅ first-party `data-theme="sepia"` + real-world arxiv-browse vendor theme cross-referenced in cookbook |
-| Repeatable visual-regression check | ✅ `npm test` runs Playwright + pixelmatch against `tools/baseline/` PNGs |
+| Repeatable visual-regression check | ✅ `npm test` runs Playwright + pixelmatch over the full 47-paper corpus at fullPage × {light, dark}; baselines gitignored, generated per-developer (~440 MB local) |
 | Build / distribution (`dist/`, minified, source-map) | ✅ `npm run build` → `dist/ar5iv.min.css` + map via lightningcss; jsDelivr/unpkg distribution recipe in README |
 | Code-quality enforcement (stylelint or equivalent) | ✅ `npm run lint` with tuned ruleset; allowlisted `!important` as warning |
 | Theming cookbook (recipes beyond the RFC's worked example) | ✅ `docs/THEMING.md` with four recipes |
@@ -95,37 +95,35 @@ the CSS-capabilities rows than for the others.
 
 ### ~~1. Visual-regression harness~~ — ✅ landed 2026-05-14
 
-`tools/visual.mjs` renders the three corpus demos at 1280 CSS-px ×
-{light, dark} using Playwright and diffs against PNG baselines in
-`tools/baseline/` using pixelmatch (per-pixel YIQ threshold 0.1,
-per-image pixel-count tolerance 400). `npm test` runs the diff;
-fresh renders and diff PNGs land in `tools/.cache/` (gitignored).
-`node tools/visual.mjs --update` refreshes the baseline after an
-intentional change.
+`tools/visual.mjs` renders every corpus paper at 1280 CSS-px ×
+{light, dark} in fullPage mode using Playwright and diffs against
+PNG baselines in `tools/baseline/` using pixelmatch (per-pixel YIQ
+threshold 0.1, per-image pixel-count tolerance 400). `npm test`
+runs the diff; fresh renders and diff PNGs land in `tools/.cache/`
+(gitignored). `node tools/visual.mjs --update` refreshes the
+baseline after an intentional change.
 
-Scope decisions deviating from the original next-move sketch:
+The corpus is the 47 distinct arXiv IDs cited in `ar5iv.css`
+comments, fetched into `examples/` via
+`./examples/fetch-corpus.sh ar5iv` (one-time setup).
+fullPage rendering means every paper is captured top-to-bottom —
+a regression in the bibliography or in a mid-paper figure still
+flags. The earlier first-viewport-only scope shipped 2026-05-14
+was correctly called out as misleading (captures only the
+frontmatter; misses most of the article); fullPage replaces it.
 
-- **First-viewport only, not fullPage.** Full-page rendering put
-  the committed baseline at 25 MB (the 2407.16893 paper alone was
-  8 MB). First-viewport keeps the whole baseline under 1.5 MB —
-  small enough to live in git history without churn. The
-  retrospective evidence for this harness (`flow-root` title
-  shifts, UA-default margin re-assertion) all manifests in the
-  first viewport. If a class of below-the-fold regression slips
-  through, the script flips to `fullPage: true` (one-line change)
-  and the baseline migrates out of git to a
-  `tools/snapshots-baseline.tar.zst` blob.
-- **One viewport (1280), not four.** The 320/768/1280/1920 matrix
-  would have been 4x the baseline size for marginal coverage —
-  the structural layout responds at 96rem and 52rem media
-  breakpoints, both visible from a single mid-range viewport.
-  Smaller-than-baseline regressions are covered by the reflow
-  audit (#2) and would benefit from an explicit reflow harness
-  rather than fork the visual-regression budget.
+**Storage trade-off.** fullPage × 46 papers × 2 themes is ~440 MB
+locally — too large for git history. Baselines are gitignored;
+each developer generates them via `--update`. The CI/shared-truth
+story is a release-artifact tarball at
+`tools/snapshots-baseline.tar.zst` (deferred until the first
+CI/PR pipeline lands).
 
-Both decisions are reversible. Both prefer "ship a working
-harness today" over "ship the theoretically maximal one some
-sprint later".
+**Why 1280 only.** Adding 320 fullPage doubles the baseline disk
+cost without proportional regression coverage. Narrow-viewport
+reflow regressions are covered by iteration-3 item #2 (a separate
+audit) and can be re-added to the matrix if the failure mode
+warrants the cost.
 
 ### 2. Reflow audit at 320 CSS-px and 400 % zoom (WCAG 1.4.10) — ⚠️ partial
 
@@ -393,13 +391,19 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
-- **2026-05-14** — Visual harness matrix extended: added 320
-  CSS-px (the WCAG 1.4.10 minimum) × {light, dark} for all three
-  corpus demos. Mechanically closes part of #2's pending
-  DevTools walk — any future reflow regression at the narrow
-  edge now fails `npm test`. Baseline grew from 1.4 MB to
-  1.6 MB (the 320 PNGs are tiny: ~30-40 KB each). 12 snapshots
-  total.
+- **2026-05-14** — Visual harness reworked from first-viewport to
+  fullPage rendering across the full 47-paper corpus cited in
+  `ar5iv.css` comments. The earlier 1.6 MB committed baseline
+  captured only frontmatter (correctly called out as misleading)
+  and missed everything past the first viewport — most of the
+  article. fullPage × 46 papers × 2 themes = 92 snapshots ~ 440 MB,
+  too large for git history; baselines are now gitignored and
+  generated per-developer via `node tools/visual.mjs --update`
+  (~3 min). 1280 only (not 320) — the cost/coverage trade for
+  narrow-viewport fullPage didn't justify itself. `npm test`
+  takes ~5 min over the full corpus. Companion script
+  `examples/fetch-corpus.sh` bulk-fetches the 47 papers (1
+  withdrawn — 2105.10386 — handled gracefully).
 - **2026-05-14** — Item #1 landed: visual-regression harness.
   `npm test` → `node tools/visual.mjs` → Playwright renders the
   three corpus demos at 1280 × {light, dark}, pixelmatch diffs

@@ -1028,36 +1028,64 @@ is enough.
 
 ---
 
-## Visual harness: ship working scope today, iterate scope later
+## Visual harness scope: the first-viewport mistake
 
 Iteration-3 item #1 specified 320/768/1280/1920 CSS-px × {light, dark}
-× fullPage for the visual-regression harness baseline. Shipped
-1280 × {light, dark} × first-viewport-only.
+× fullPage for the visual-regression harness baseline. First shipped
+1280 × {light, dark} × *first-viewport-only*, with two storage
+arguments:
 
-Why:
-- fullPage put the committed baseline at 25 MB — the 2407.16893 paper
-  alone was 8 MB. First-viewport keeps the whole set under 1.5 MB.
-- The retrospective evidence motivating the harness (the iteration-2
-  flow-root title shift, the post-flow-root UA-default margin
-  re-assertion) all manifests in the first viewport at any of the
-  responsive breakpoints. So 1280 catches the class of bug that
-  drove the harness's inclusion.
-- 320/768/1920 quadruples baseline size for marginal coverage of
-  *responsive* layout, which has its own audit item (#2) and would
-  benefit from a dedicated narrow-viewport harness — not a fork of
-  the visual-regression budget.
+1. fullPage put the committed baseline at 25 MB — the 2407.16893
+   paper alone was 8 MB.
+2. The retrospective evidence motivating the harness (the
+   iteration-2 flow-root title shift) manifests in the first
+   viewport.
 
-Both decisions are reversible (one-line script change for fullPage;
-add to matrix for more viewports). The baseline migrates out of
-git to a `tools/snapshots-baseline.tar.zst` if it grows.
+The user immediately pushed back: "your current screencaps capture
+only the frontmatter of an article, and in some situations include
+artifacts. I am asserting the tools/baseline/ images are not
+sufficiently expressive and are misleading." Correct call. The
+first-viewport scope had two bad properties:
+
+- **It captured only frontmatter** — title, authors, abstract,
+  maybe the first paragraph. Everything past that — body, math,
+  figures, bibliography — went uncovered. A regression in the
+  bibliography rules (which we touched in iter-2 and iter-3) had
+  *zero* test coverage.
+- **It justified the misleading scope by self-referencing the
+  evidence**. "The bugs we caught were in the frontmatter, so
+  let's only render the frontmatter" is selection bias — we
+  caught those bugs *because* they were in the part of the page
+  someone was looking at. Bugs below the fold survive
+  unnoticed; that's exactly the class a comprehensive harness
+  exists to surface.
+
+The fix: switched to fullPage across the entire 47-paper corpus
+cited in `ar5iv.css` comments. ~440 MB of baselines locally,
+gitignored (too large for git history; CI tarball is the planned
+shared-truth answer). Each developer generates with
+`--update`; `npm test` diffs against local. Render time ~5 min
+for the full corpus.
 
 ### The lesson
 
-A tooling spec like "render at the full matrix" is the *theoretical
-maximum* the tool can do. Shipping the theoretical maximum on day
-one is a YAGNI violation if a narrower scope catches the
-retrospective evidence motivating the tool. Ship working scope;
-expand the matrix when a *new* class of regression slips through.
+A test harness's coverage scope shouldn't be optimised against
+the same evidence the harness was *justified by*. "Catches the
+bugs we caught before" is the floor of acceptable scope, not the
+target. The target is "catches the bugs we don't know about
+yet" — which means rendering the parts of the page nobody is
+looking at. Where storage cost gets in the way of comprehensive
+coverage, make the storage cost local-per-developer rather than
+trimming coverage.
+
+### Related: don't argue from selection bias
+
+When defending a narrower scope ("the bugs we caught all
+manifest in the first viewport"), the unstated premise is
+"and the bugs we didn't catch don't matter". That premise has
+to be argued separately. The earlier wisdom entry on
+"ship-working-iterate-later" smuggled the premise in
+unexamined.
 
 ---
 

@@ -83,27 +83,41 @@ which is the earliest named layer).
 
 ## Regression corpus
 
-The CSS file's comments cite ~43 distinct arXiv IDs as live test cases
-(e.g. `1810.10704`, `astro-ph/0001001`, `2510.11037`). Treat these as
-the canonical visual-regression corpus. When changing a rule that
-references one of these IDs in a nearby comment, render that paper
-and confirm no visual diff.
+The CSS file's comments cite 47 distinct arXiv IDs as live test
+cases (e.g. `1810.10704`, `astro-ph/0001001`, `2510.11037`). They
+are the canonical visual-regression corpus. The full set is
+maintained in `examples/fetch-corpus.sh` and consumed by
+`tools/visual.mjs`. When you change a rule that cites one of
+these IDs in a nearby comment, the harness will render that paper
+as part of `npm test` — but it doesn't hurt to also open the
+paper locally and eyeball.
 
 ## Visual regression
 
 ```bash
-./examples/fetch.sh ar5iv-1910.06709          # populate corpus
-./examples/fetch.sh -s arxiv 2407.16893
-./examples/fetch.sh -s arxiv 2501.11021
-npm test                                       # diff against tools/baseline/
+./examples/fetch-corpus.sh ar5iv               # fetch all 47 corpus papers
+                                               # (~120 MB to examples/)
+node tools/visual.mjs --update                 # generate baseline
+                                               # (~440 MB to tools/baseline/, ~3 min)
+npm test                                       # diff against baseline
+                                               # (~5 min for the full corpus)
 ```
 
 `npm test` runs `node tools/visual.mjs`, which uses Playwright +
-pixelmatch to compare first-viewport renders of the three corpus
-demos at 1280 CSS-px × {light, dark} against PNG baselines
-committed under `tools/baseline/`. Differences above the per-image
-pixel-count tolerance (default 400) fail the run; diff PNGs land
-in `tools/.cache/diff/` (gitignored) for inspection.
+pixelmatch to compare **fullPage** renders of every corpus paper
+at 1280 CSS-px × {light, dark} against PNG baselines under
+`tools/baseline/`. fullPage means the entire article scroll height
+is captured, not just the frontmatter — a regression in the
+bibliography or in a mid-paper figure still flags. Differences
+above the per-image pixel-count tolerance (default 400) fail the
+run; diff PNGs land in `tools/.cache/diff/` for inspection.
+
+**Baselines are gitignored**, not committed. fullPage rendering of
+46 papers × 2 themes is ~440 MB — too large for git history. Each
+developer generates locally via `node tools/visual.mjs --update`.
+For shared CI verification, a release-artifact tarball at
+`tools/snapshots-baseline.tar.zst` is the planned approach
+(deferred until the first CI/PR pipeline lands).
 
 After an intentional visual change, refresh the baseline:
 
@@ -115,21 +129,11 @@ When `npm test` fails, three artefacts help diagnose:
 - `tools/.cache/snapshots/<name>.png` — the fresh render
 - `tools/.cache/diff/<name>.png` — pink overlay marking differing
   pixels against the baseline
-- `tools/baseline/<name>.png` — the committed baseline
+- `tools/baseline/<name>.png` — your local baseline
 
 Open all three side by side in an image viewer (or in the
 browser via `file://` URLs). The diff PNG points at *what
 moved*; the snapshot vs baseline shows *which direction*.
-
-The baseline is first-viewport-only (full-page rendering pushed
-the committed PNGs past 25 MB; first-viewport keeps the whole set
-under 1.5 MB). All iteration-2 visual regressions caught
-retrospectively (`flow-root` title shifts, UA-default margin
-re-assertion) manifest in the first viewport, so the coverage
-matches the failure mode that drove the harness's inclusion. If a
-class of below-the-fold regression starts slipping through, the
-script's commented-out branch flips to `fullPage: true` and the
-baseline migrates to an out-of-tree `tools/snapshots-baseline.tar.zst`.
 
 ## Linting
 
