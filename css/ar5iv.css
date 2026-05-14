@@ -234,7 +234,12 @@ mtd {
 .ltx_td .ltx_cite {
   white-space: pre-wrap;
 }
-/* paper over: disable italic that slipped into inline cites */
+/* LaTeXML still emits `<span class="ltx_font_italic">` inside
+   `<cite>` (e.g. journal-name shortforms from natbib). Cites are
+   conventionally typeset upright; normalise the inherited italics.
+   Verified still load-bearing 2026-05-14: corpus papers 2105.04227
+   and 2501.11021 carry italic cite-children, removing this rule
+   produces visible diff in both. */
 .ltx_cite .ltx_font_italic {
   font-style: normal;
 }
@@ -330,7 +335,12 @@ span.ltx_personname > .ltx_break + .ltx_break {
   font-size: inherit !important;
 }
 
-/* also avoid paragraphs that just contain a break, our CSS margins can be trusted. */
+/* Avoid empty paragraphs that contain only a `<br>` — LaTeXML
+   still emits these from TeX-source-level blank-line patterns,
+   and our paragraph margins already provide the vertical rhythm
+   so the extra break adds an unwanted line. Verified still
+   load-bearing 2026-05-14 across 4 corpus papers (1403.1525,
+   1708.02728, 2105.10386, 2109.04981). */
 .ltx_para > .ltx_break:first-child:last-child {
   display: none;
 }
@@ -835,11 +845,14 @@ div.ltx_keywords:empty::before {
   margin-bottom: var(--space-lg);
 }
 
-/* TODO: Can we get a better handle on the ToC title?
-   Update: we now have a "ltx_title_contents" class, consider
-           deprecating the h6 selector soon. */
+/* `.ltx_title_contents` is the positive class LaTeXML now emits for
+   ToC titles; the `.ltx_TOC > h6` selector that used to live in this
+   list was redundant. When LaTeXML emits `<h6>` inside `.ltx_TOC`
+   it carries `class="ltx_title ltx_title_abstract"`, so it already
+   matches the `.ltx_title_abstract` selector above. The h6 was
+   only ever a redundant alias. Disabled and tested 2026-05-14:
+   0 pixels of diff across the corpus. Removed. */
 .ltx_title_abstract,
-.ltx_TOC > h6,
 .ltx_title_contents {
   margin-top: 0;
   margin-bottom: var(--space-md);
@@ -1289,12 +1302,14 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 .ltx_quote > .ltx_break:last-child {
   display: none;
 }
-/* paper over:
-  see 1910.06706 for a quote with a child p
-  with many trailing breaks */
-.ltx_quote .ltx_break + .ltx_break + .ltx_break {
-  display: none;
-}
+/* The "trailing-break paper-over" rule that used to live here
+   (`.ltx_quote .ltx_break + .ltx_break + .ltx_break { display: none }`)
+   was a Q4-shaped defensive fix for arXiv:1910.06706, where a
+   quote contained a child <p> with many trailing <br>s. Disabled
+   and tested 2026-05-14 with 1910.06706 in the corpus: 0 pixels
+   of diff across the entire 47-paper corpus. LaTeXML's emission
+   no longer produces the long trailing-break runs the rule was
+   defending against. Deleted. */
 /* suppress top margins, e.g. via breaks */
 .ltx_quote > .ltx_break:first-child,
 .ltx_quote > .ltx_break:first-child + .ltx_break,
