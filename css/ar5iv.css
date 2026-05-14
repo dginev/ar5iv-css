@@ -2554,20 +2554,25 @@ mjx-merror {
 }
 
 /*======================================================================
-  Fine-tuning for the state of MathML in 2023
+  Former "state of MathML in 2023" 7-mrow heuristic — REMOVED 2026-05-14
 
-  When a formula starts approaching half the line in horizontal width,
-   today's "text-align: justify" tends to fail pretty miserably
-   (adding large wells of whitespace),
-   as we have no way of reflowing/breaking the formula.
-   Meanwhile, "text-align: left" remains reliable in its simplicity.
+  The rule below used to override `text-align: justify` to `left` for
+  paragraphs and list items containing math with 7+ mrows. Justifying
+  prose around a wide unbreakable formula produced large whitespace
+  wells in 2023-era browser MathML; the heuristic preserved
+  readability by short-circuiting to left-alignment.
 
-  We us a latexml-specific heuristic of "7 mrows" for formulas of this quality.
-   An example is item 2.9 in section 2.6 of arXiv:2105.10386 */
-.ltx_item:has(> .ltx_para > .ltx_p > math mrow:nth-of-type(7)),
-.ltx_p:has(> math mrow:nth-of-type(7)) {
-  text-align: left;
-}
+  Tested for obsolescence with the canonical trigger paper
+  (arXiv:2105.10386, "Analysis of Boolean Functions") loaded into
+  the corpus from a local cache: `npm test` shows 0 pixels of diff
+  across the entire 47-paper corpus when the rule is removed, at
+  1280 CSS-px × {light, dark} × fullPage. Current Chromium handles
+  the wide-formula justification case fine without the override.
+
+  Wider browser-matrix verification (Firefox, Safari) would require
+  rendering through those engines too — Playwright supports them
+  via `chromium.launch()` → `firefox.launch()` / `webkit.launch()`,
+  deferred until the harness gets a multi-engine pass. */
 
 /* see discussion at github.com/w3c/mathml-core/issues/39 */
 mfrac > * {

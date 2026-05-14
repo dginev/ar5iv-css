@@ -1251,3 +1251,65 @@ not necessarily wrong, but it's *different* from before and
 worth visual verification across the corpus in both Chrome and
 Firefox before landing — scrollbar visibility, position, and
 behaviour vary between browsers and platforms.
+
+---
+
+## Defensive rules earn their keep by failing the test, not by surviving fear
+
+ar5iv.css carried a ~6-year-old workaround at the bottom of the
+file: any `.ltx_p` or `.ltx_item` containing a math element with
+7+ `mrow` descendants got `text-align: left` instead of the
+default `text-align: justify`. The comment cited
+"state of MathML in 2023" — wide formulas inside justified prose
+produced visibly large whitespace wells in browsers of that era,
+and the workaround pinned to left to avoid the failure.
+
+Iteration-3 item Q4 (raised by the project owner): is the
+workaround still load-bearing now that MathML Core is Baseline?
+First attempt at the test ran the visual harness over the 46-paper
+corpus with the rule disabled. Result: 0 pixels of diff across
+all 92 snapshots — but the canonical trigger paper (the one
+specifically cited in the comment, arXiv:2105.10386) had failed
+to fetch from both ar5iv labs (503) and arxiv.org/html (404), and
+*no other corpus paper exercised the selector*. The test was
+inconclusive: "all 92 papers diff zero" tells you nothing about a
+rule that fires on none of them.
+
+The conservative move at that point was to restore the workaround
+with a "deferred — can't verify without the canonical trigger"
+note. That was the wrong move. Project owner had a local copy of
+the missing paper available; with the trigger paper added to the
+corpus, the harness now did have a real measurement to make. The
+re-run with the rule disabled showed 0 pixels of diff *on the
+trigger paper itself*. Current Chromium handles the wide-formula
+justification case cleanly without the override. Rule deleted.
+
+### The lesson
+
+A defensive rule's *justification* is the failure mode it
+prevents. When the failure mode no longer exists in the
+deployment target, the rule is dead weight — its presence
+neither helps the working case (no effect) nor protects against
+the broken case (which doesn't happen). The test that retires it
+isn't "does the rule still trigger" but "does removing it
+reintroduce the failure". When the canonical trigger is reachable,
+that test is single-snapshot.
+
+The conservative bias toward keeping defensive rules is
+reasonable when the test is infeasible. But "infeasible" deserves
+a hard look — in this case, the trigger paper *was* reachable
+via a local cache the project owner had. The initial "restore
+with deferred note" was correct only as long as the local cache
+was unknown; once it was on offer, "delete the dead rule" became
+the right call.
+
+### Practical mechanism
+
+The corpus is keyed on arXiv ID, fetched by `examples/fetch-corpus.sh`
+from either arxiv.org/html or ar5iv labs. When upstream is
+unavailable but a paper exists locally, dropping a copy of its
+LaTeXML output into `examples/ar5iv-<id>.html` (or arxiv-<id>.html)
+restores it to the corpus — `tools/visual.mjs` picks it up
+automatically. The fetch is best-effort; the corpus participates
+even if some IDs are 503/404 at fetch time, as long as they
+exist locally.
