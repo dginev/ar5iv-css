@@ -118,10 +118,15 @@ body {
   padding: 0.5rem;
 }
 .ltx_page_logo > a {
-  /* eLife-like links */
-  border-bottom: var(--border-hairline) dotted var(--link-text-color);
+  /* Dotted underline via text-decoration so the line skips descenders
+     (text-decoration-skip-ink is `auto` by default in current browsers)
+     and follows the font's underline metric (text-decoration-thickness:
+     from-font). Earlier `border-bottom: dotted` cargo from arxiv-browse's
+     downstream patches confirmed this idiom is the right upstream
+     replacement. */
   color: var(--link-text-color);
-  text-decoration: none;
+  text-decoration: underline dotted var(--link-text-color);
+  text-decoration-thickness: from-font;
   overflow-wrap: break-word;
 }
 
@@ -204,17 +209,20 @@ mtd {
   white-space: nowrap;
 }
 
-/* eLife-like links */
+/* Dotted underline via text-decoration (skip-ink: auto by default,
+   from-font thickness). See `.ltx_page_logo > a` above for the
+   migration rationale. */
 .ltx_ref {
-  border-bottom: var(--border-hairline) dotted var(--link-text-color);
   color: var(--link-text-color);
-  text-decoration: none;
+  text-decoration: underline dotted var(--link-text-color);
+  text-decoration-thickness: from-font;
   overflow-wrap: break-word;
 }
-/* can contain images, see orcid icons at arxiv:1707.04393 */
+/* Inline ORCID icons etc. inside a ref — suppress the underline that
+   would otherwise draw under the icon's line-box. See arxiv:1707.04393. */
 .ltx_ref > .ltx_graphics {
-  border-bottom: none;
-  display: inline;
+  text-decoration: none;
+  display: inline-block;
 }
 
 .ltx_cite {
@@ -890,7 +898,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 }
 .ltx_TOC > .ltx_toclist > .ltx_tocentry > a.ltx_ref {
   display: inline-block;
-  border-bottom: none;
+  text-decoration: none;
   font-weight: bold;
   margin-bottom: 0.5em;
 }
@@ -923,7 +931,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_tocentry_subsection > .ltx_ref,
 .ltx_tocentry_subsubsection > .ltx_ref,
 .ltx_tocentry_appendix > .ltx_ref > .ltx_ref_title {
-  border-bottom: none;
+  text-decoration: none;
 }
 
 .ltx_tocentry_part
@@ -938,7 +946,8 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   > .ltx_tag_ref,
 .ltx_tocentry_subsection > .ltx_ref > .ltx_ref_title > .ltx_tag_ref,
 .ltx_tocentry_subsubsection > .ltx_ref > .ltx_ref_title > .ltx_tag_ref {
-  border-bottom: var(--border-hairline) dotted var(--link-text-color);
+  text-decoration: underline dotted var(--link-text-color);
+  text-decoration-thickness: from-font;
   width: min-content;
   display: inline-block;
   line-height: 1.1rem;
