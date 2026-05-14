@@ -76,9 +76,9 @@ matter for a scholarly-document CSS theme:
 | Repeatable visual-regression check | ❌ human eye only |
 | Build / distribution (`dist/`, minified, source-map) | ✅ `npm run build` → `dist/ar5iv.min.css` + map via lightningcss; jsDelivr/unpkg distribution recipe in README |
 | Code-quality enforcement (stylelint or equivalent) | ❌ none |
-| Theming cookbook (recipes beyond the RFC's worked example) | ❌ |
+| Theming cookbook (recipes beyond the RFC's worked example) | ✅ `docs/THEMING.md` with four recipes |
 
-Seven ❌ rows and one ⚠️ row on a sixteen-row checklist. Eight ✅.
+Six ❌ rows and one ⚠️ row on a sixteen-row checklist. Nine ✅.
 Honest verdict: production-ready, not best-in-class — but the gap is
 shrinking.
 
@@ -275,34 +275,16 @@ override `--fn-*-color-to-dark-mode` to `var(--ltx-*-color)` (no
 inversion) if it's a light theme. Test via `data-theme="..."` in
 DevTools console on a demo.
 
-### 10. Theming cookbook (`docs/THEMING.md`)
+### ~~10. Theming cookbook (`docs/THEMING.md`)~~ — ✅ landed 2026-05-14
 
-The RFC's worked example covers the `--fn-*` override pattern;
-a cookbook adds recipes (override one colour; override the
-inversion; add a third theme; ship a downstream extension package
-cleanly).
-
-**Next move.** Create `docs/THEMING.md` with four recipes, each
-≤30 lines of CSS + a one-paragraph commentary:
-1. *Change one palette colour* — override `--link-text-color`
-   from a downstream stylesheet.
-2. *Change the dark-mode inversion strategy* — override
-   `--fn-fg-color-to-dark-mode` (worked example for "no
-   inversion in dark mode"; for "stronger inversion"; for "use
-   `color-mix()` instead of `oklch(from …)`").
-3. *Add a third `data-theme` value* — full sepia or
-   high-contrast walk-through (overlaps with #9-path-(a) if
-   that's what we ship).
-4. *Distribute via a downstream npm package* — set up
-   `@layer myTheme` after `fixes` so overrides win without
-   `!important`. Reference the jsDelivr CDN pattern.
-Link from README + CONTRIBUTING.
-
-**Pitfalls to call out.** `light-dark(var(--a), var(--b))` is
-spec-allowed but unverified in this codebase — see the
-iteration-2 wisdom entry. Setting `color-scheme` on `:root` for
-each `data-theme` is required for `light-dark()` to resolve
-correctly.
+`docs/THEMING.md` with four recipes: override one palette colour;
+change the dark-mode inversion strategy (three variants); add a
+third `data-theme` value (sepia + high-contrast); ship a downstream
+npm package with `@layer myTheme` ordering. Linked from README +
+CONTRIBUTING. Pitfalls section documents the `light-dark(var(),
+var())` caveat, `color-scheme` requirement per `data-theme`,
+`@layer` first-appearance ordering, and the `!important` inversion
+rule.
 
 ## Dependency summary
 
@@ -403,6 +385,15 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Item #10 landed: `docs/THEMING.md` shipped with
+  four cookbook recipes (single-token override; three
+  inversion-strategy variants including `color-mix()`; third
+  `data-theme` value with sepia + high-contrast walk-throughs;
+  downstream-npm-package distribution with `@layer myTheme`).
+  Linked from README + CONTRIBUTING. Status table
+  7❌/1⚠️/8✅ → 6❌/1⚠️/9✅. Path-(b) of item #9 is now covered
+  by the cookbook — path-(a) (a shipped alt theme) still
+  available if a user need surfaces.
 - **2026-05-14** — Doc-handoff pass: added a "How to pick this up"
   workflow section at the top (build verification, demo loop,
   commit conventions, YAGNI/!important/visual-change house rules);

@@ -56,6 +56,9 @@ override example.
 ## Docs
 
 - [Design tokens reference](./docs/TOKENS.md)
+- [Theming cookbook](./docs/THEMING.md) — four worked recipes
+  (override one colour, change the dark-mode inversion, add a
+  third `data-theme`, ship a downstream npm package).
 - [Contributor guide](./CONTRIBUTING.md)
 - [CSS custom properties for LaTeX-authored colours](./docs/rfc_latexml_custom_properties.md)
 - [Glow-up wisdom log](./docs/GLOWUP_WISDOM.md) — decisions & surprises

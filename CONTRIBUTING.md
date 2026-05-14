@@ -17,6 +17,7 @@ css/
 
 docs/
 ├── TOKENS.md            ← reference for every token defined in tokens.css
+├── THEMING.md           ← downstream-override cookbook (four worked recipes)
 ├── GLOWUP_WISDOM.md     ← decisions / surprises uncovered during the modernisation
 ├── GLOWUP_AUDIT_START.md← read-only snapshot of the initial audit
 ├── GLOWUP_PROGRESS.md   ← living document; what remains to do
