@@ -33,11 +33,17 @@ const corpus = [
   { file: 'arxiv-2501.11021.html', id: 'arxiv-2501.11021' },
 ];
 
-// Viewports × themes matrix. Kept minimal for the smoke baseline;
-// extend if a class of regression starts slipping through.
+// Viewports × themes matrix. 1280 catches the visible-margin class
+// of regression that motivated the harness (the iteration-2 flow-root
+// title shift). 320 catches reflow regressions at the WCAG 1.4.10
+// minimum viewport — added 2026-05-14 to mechanically close part of
+// iteration-3 item #2's pending in-browser walk. Two viewports × two
+// themes = 4 snapshots per demo, 12 total at three demos.
 const matrix = [
+  { width: 320,  height: 568,  theme: 'light' },
+  { width: 320,  height: 568,  theme: 'dark'  },
   { width: 1280, height: 1600, theme: 'light' },
-  { width: 1280, height: 1600, theme: 'dark' },
+  { width: 1280, height: 1600, theme: 'dark'  },
 ];
 
 // Pixel-count tolerance. Anti-aliasing variance and font hinting make

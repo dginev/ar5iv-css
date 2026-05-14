@@ -68,7 +68,7 @@ matter for a scholarly-document CSS theme:
 | Touch-target minimum (WCAG 2.5.8) | ✅ on `.ltx_note_mark` |
 | Print | ✅ in `print.css` |
 | Typography token system (spacing / type / line-height scales) | ⚠️ spacing scale + prose line-height tokenised; font-size scale deferred (mostly singletons) |
-| Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ⚠️ four structural fixes landed; full DevTools walk still pending |
+| Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ⚠️ five structural fixes landed; 320 viewport now in visual-regression matrix; 400 % zoom DevTools walk still pending |
 | i18n / RTL via logical properties | ✅ ~60 sites converted; LaTeXML-internal `.ltx_border_*` / `.ltx_framed_*` / `.ltx_nopad_*` / `.ltx_align_*` stay physical (LaTeXML emits physical-side semantics) |
 | Container-aware layout for embedded / side-by-side readers | ✅ verified not-needed: iframe embedding picks correctly via own-viewport media query; no other consumer in scope |
 | Override-friendly cascade for downstream themes (`@layer`) | ✅ bulk in `components`; B1/B3 in `fixes`; transformed-wrappers stays un-layered for !important priority |
@@ -151,16 +151,18 @@ Structural reflow bugs found by code audit and fixed
   same 50/45 ratio and the same rem cap so the geometry stays
   inside the column at any width.
 
-**Remaining for full WCAG 1.4.10 conformance.** A live
-DevTools walk at 320×568 and at 400 % zoom on 1280, scrolling
-top-to-bottom on each of the three corpus demos, marking
-horizontal-scroll triggers and clipped content. Code audit
-catches structural overflow; only an in-browser walk catches
-content-driven cases (a long URL in a footnote, a wide formula
-straining `.ltx_eqn_table`, a TikZ figure with embedded
-ginormous text). Per-site fixes per finding;
-`overflow-wrap: anywhere` for URL strings,
-`overflow-x: auto` on equation containers if needed.
+**Remaining for full WCAG 1.4.10 conformance.** 320 CSS-px is
+now in the visual-regression matrix (item #1), so any future
+reflow regression at the narrow edge gets caught mechanically.
+What still requires human attention: a 400 % zoom walk on
+viewport 1280 across each of the three corpus demos, and
+content-driven cases the harness wouldn't flag because they
+exist at baseline (a long URL in a footnote already wraps with
+`overflow-wrap: break-word`; a wide formula already wraps in
+`.ltx_eqn_table` if `overflow-x: auto` is missing). Per-site
+fixes per finding; this work is now small-scope and well-suited
+to delegate to an in-browser walk by a contributor with the
+demos open.
 
 ### ~~3. Logical-property walk for i18n / RTL~~ — ✅ landed 2026-05-14
 
@@ -391,6 +393,13 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Visual harness matrix extended: added 320
+  CSS-px (the WCAG 1.4.10 minimum) × {light, dark} for all three
+  corpus demos. Mechanically closes part of #2's pending
+  DevTools walk — any future reflow regression at the narrow
+  edge now fails `npm test`. Baseline grew from 1.4 MB to
+  1.6 MB (the 320 PNGs are tiny: ~30-40 KB each). 12 snapshots
+  total.
 - **2026-05-14** — Item #1 landed: visual-regression harness.
   `npm test` → `node tools/visual.mjs` → Playwright renders the
   three corpus demos at 1280 × {light, dark}, pixelmatch diffs
