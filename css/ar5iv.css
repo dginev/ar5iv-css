@@ -1108,55 +1108,76 @@ span.ltx_font_bold > .ltx_break:last-child {
   margin-inline-start: clamp(1em, 4.5%, 3em);
 }
 
+/* Bibliographies use a parent grid with subgrid for each entry so the
+   tag column has a single width across the whole list — the widest
+   key sets the column width, every entry lines up to it. Earlier
+   attempts ran each bibitem as its own `display: table`, which sized
+   columns per-row and produced a visibly jagged tag column
+   (short-content entries got a wider tag column than long-content
+   ones because table-auto distributes leftover width proportionally
+   to max-content). Subgrid is Baseline 2024 (Chrome 117, Firefox 71,
+   Safari 16).
+
+   A bibitem contains a single `.ltx_tag` and one *or more*
+   `.ltx_bibblock` children (LaTeXML emits one bibblock per logical
+   line of the entry — title, authors, journal, etc.). The tag is
+   placed at column 1 row 1; all bibblocks are placed in column 2
+   and auto-row, stacking vertically beside the tag. */
+.ltx_biblist {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 3em;
+  /* Drop the <ul> UA-default `padding-inline-start: 40px` so the
+     tag column ([1], [2], ...) starts at the same x as the
+     "References" section title above. The visual rhythm benefits
+     from the key being flush with the heading rather than indented
+     by an unrelated browser default. */
+  padding-inline-start: 0;
+}
 .ltx_bibitem {
-  display: table;
-  table-layout: fixed;
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
   list-style-type: none;
-  width: 100%;
   padding-bottom: 0.75em;
   font-family: var(--text-font-family);
 }
 .ltx_bibitem .ltx_tag {
-  display: table-cell;
-  position: relative;
-  inset-inline-start: -2.5rem;
-  top: 0.24rem;
+  grid-column: 1;
+  grid-row: 1;
   line-height: var(--line-height-prose);
   text-align: start;
-  /* alternative:
-     but what is the stable best practice here? */
-  /*
-    text-align: end;
-    inset-inline-start: -1.8rem;
-    top: 0.5rem;
-
-    .ltx_biblist {
-      margin-inline-start: -6rem;
-    }
-  */
-  vertical-align: text-top;
   word-break: normal;
   overflow-wrap: break-word;
 }
+.ltx_bibitem .ltx_bibblock {
+  grid-column: 2;
+  text-align: start;
+  line-height: var(--line-height-prose);
+}
 @media only screen and (width <= 52rem) {
+  /* On narrow viewports stack tag-then-blocks in a single column.
+     Reset grid-column/grid-row from the wide-viewport rules so the
+     auto-placement falls through to source order. */
+  .ltx_biblist {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ltx_bibitem {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .ltx_bibitem .ltx_tag,
+  .ltx_bibitem .ltx_bibblock {
+    grid-column: auto;
+    grid-row: auto;
+  }
   .ltx_bibitem .ltx_tag {
-    display: block;
     padding-bottom: 0.33em;
-    width: 36%;
   }
 }
 @media only screen and (width > 52rem) {
   .ltx_bibitem .ltx_tag {
-    width: 14%;
+    white-space: nowrap;
   }
-}
-.ltx_bibitem .ltx_bibblock {
-  display: inline-block;
-  text-align: start;
-  padding-inline-start: 0.5em;
-  max-width: 40rem;
-  line-height: var(--line-height-prose);
-  vertical-align: text-top;
 }
 /*.bibitem-tag + div { display:inline; }*/
 .ltx_bib_title {
