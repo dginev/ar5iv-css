@@ -69,7 +69,7 @@ matter for a scholarly-document CSS theme:
 | Print | ✅ in `print.css` |
 | Typography token system (spacing / type / line-height scales) | ❌ literals only |
 | Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ⚠️ spot fixes only |
-| i18n / RTL via logical properties | ❌ one site, the rest physical |
+| i18n / RTL via logical properties | ✅ ~60 sites converted; LaTeXML-internal `.ltx_border_*` / `.ltx_framed_*` / `.ltx_nopad_*` / `.ltx_align_*` stay physical (LaTeXML emits physical-side semantics) |
 | Container-aware layout for embedded / side-by-side readers | ❌ viewport-only |
 | Override-friendly cascade for downstream themes (`@layer`) | ✅ bulk in `components`; B1/B3 in `fixes`; transformed-wrappers stays un-layered for !important priority |
 | Demonstrated extensibility (at least one alt theme) | ❌ no consumer yet |
@@ -78,7 +78,7 @@ matter for a scholarly-document CSS theme:
 | Code-quality enforcement (stylelint or equivalent) | ❌ none |
 | Theming cookbook (recipes beyond the RFC's worked example) | ✅ `docs/THEMING.md` with four recipes |
 
-Six ❌ rows and one ⚠️ row on a sixteen-row checklist. Nine ✅.
+Five ❌ rows and one ⚠️ row on a sixteen-row checklist. Ten ✅.
 Honest verdict: production-ready, not best-in-class — but the gap is
 shrinking.
 
@@ -139,30 +139,20 @@ strategy. Verify each fix doesn't regress 768/1280 in the demo
 loop. **Anti-pattern**: blanket `min-width: 0` everywhere — it
 fixes the symptom but hides the structural issue.
 
-### 3. Logical-property walk for i18n / RTL
+### ~~3. Logical-property walk for i18n / RTL~~ — ✅ landed 2026-05-14
 
-LaTeXML can convert non-English and RTL papers; ar5iv-css doesn't
-currently render them correctly (one logical-property site in the
-file; the rest is physical). Case-by-case per section — numeric
-columns and blockquote decoration stay physical. #1 protects
-against accidental LTR regression but isn't strictly required:
-visual diff against the existing in-tree corpus catches most cases.
-
-**Next move.** Build a one-off synthetic RTL test page (arXiv has
-very few native-RTL papers in the corpus): take a demo's HTML,
-flip `<html dir="rtl" lang="ar">`, load in Chrome. Then:
-1. `grep -nE 'margin-(left|right)|padding-(left|right)|border-(left|right)|^\s*(left|right):\s|text-align:\s*(left|right)' css/ar5iv.css` — produces ~190 sites.
-2. Classify each: **mirror** (most cases — convert to
-   `margin-inline-start/end`, `padding-inline-*`, `inset-inline-*`,
-   `text-align: start/end`) vs **stays physical** (numeric-column
-   alignment, blockquote `:before/:after`, border-bottom underlines).
-3. Convert in batches by section banner; reload demos in LTR to
-   confirm no regression; reload synthetic RTL page to confirm
-   the mirror is right.
-
-**Conventions.** `start/end` not `left/right` for text-align. The
-`text-align: right` in numeric table columns is the canonical
-"don't mirror" case — that's the original audit's example.
+~60 sites converted to logical equivalents (`margin-inline-*`,
+`padding-inline-*`, `inset-inline-*`, `text-align: start/end`,
+`border-inline-*`, `float: inline-start/end`, `margin-inline: auto`).
+Stays-physical decisions documented in the borders section:
+LaTeXML-internal `.ltx_border_l/r/ll/rr/L/R/r_dashed`,
+`.ltx_framed_left/right/leftright`, `.ltx_nopad_l/r`, and
+`.ltx_align_left/right` keep `left/right` because LaTeXML emits
+physical-side semantics in its class names. Listing line-number
+gutter, SVG text, verbatim, conversion-report, math-overflow
+text-align, and `.ltx_INFO/WARNING/ERROR/FATAL` also stay
+physical (intrinsically LTR content streams). Synthetic RTL test
+page at `examples/ar5iv-1910.06709-rtl.html`.
 
 ### 4. Spacing / type / line-height scales as tokens
 
@@ -385,6 +375,20 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Item #3 landed: logical-property walk through
+  `ar5iv.css`. ~60 sites converted to inline-direction equivalents
+  (`margin-inline-*`, `padding-inline-*`, `inset-inline-*`,
+  `text-align: start/end`, `border-inline-*`, `float:
+  inline-start/end`, `margin-inline: auto`). LaTeXML-internal
+  classes with physical-side suffixes (`.ltx_border_l/r/...`,
+  `.ltx_framed_left/right/...`, `.ltx_nopad_l/r`,
+  `.ltx_align_left/right`) stay physical, with an explanatory
+  comment in the borders section. Intrinsically-LTR content
+  streams (listing line-number gutter, SVG text, verbatim,
+  conversion-report, math-overflow alignment,
+  `.ltx_INFO/WARNING/ERROR/FATAL`) also stay physical. Synthetic
+  RTL demo at `examples/ar5iv-1910.06709-rtl.html` (gitignored).
+  Status table: 6 ❌ / 1 ⚠️ / 9 ✅ → 5 ❌ / 1 ⚠️ / 10 ✅.
 - **2026-05-14** — Item #10 landed: `docs/THEMING.md` shipped with
   four cookbook recipes (single-token override; three
   inversion-strategy variants including `color-mix()`; third

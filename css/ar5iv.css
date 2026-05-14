@@ -105,7 +105,7 @@ body {
 }
 .ltx_page_footer {
   clear: both;
-  text-align: right;
+  text-align: end;
   width: auto;
   margin: auto;
   border-top: 0.1em solid;
@@ -114,7 +114,7 @@ body {
 .ltx_page_logo {
   font-family: var(--text-font-family);
   font-size: 1rem;
-  text-align: right;
+  text-align: end;
   padding: 0.5rem;
 }
 .ltx_page_logo > a {
@@ -221,7 +221,7 @@ mtd {
   font-style: normal;
 }
 .ltx_cite + .ltx_cite {
-  padding-left: 0.2rem;
+  padding-inline-start: 0.2rem;
 }
 .ltx_td .ltx_cite {
   white-space: pre-wrap;
@@ -356,14 +356,13 @@ span.ltx_personname > .ltx_break + .ltx_break {
   font-family: var(--text-font-family);
 }
 .ltx_role_author + .ltx_role_author {
-  margin-left: 2rem;
+  margin-inline-start: 2rem;
 }
 /* space out affiliation sub-entries */
 .ltx_affiliation_institution,
 .ltx_affiliation_department,
 .ltx_affiliation_country {
-  margin-left: 0.25rem;
-  margin-right: 0.25rem;
+  margin-inline: 0.25rem;
   white-space: nowrap;
 }
 
@@ -382,8 +381,10 @@ span.ltx_personname > .ltx_break + .ltx_break {
     margin: 2rem auto;
     text-align: center;
     width: var(--main-width);
-    /* dvw avoids the desktop-scrollbar offset that 100vw produces */
-    left: calc((100dvw - var(--main-width)) / 2);
+    /* dvw avoids the desktop-scrollbar offset that 100vw produces.
+       Formula is symmetric (centered on viewport), so inset-inline-start
+       gives identical positioning in LTR and RTL. */
+    inset-inline-start: calc((100dvw - var(--main-width)) / 2);
 }
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_address)):has( :last-child.ltx_role_address),
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_affiliation)):has( :last-child.ltx_role_affiliation) {
@@ -447,7 +448,7 @@ div.ltx_keywords:empty:before {
   font-size: 0.85em;
 }
 .ltx_note + .ltx_note {
-  padding-left: 0.2rem;
+  padding-inline-start: 0.2rem;
 }
 /* the mark is in "em", but the outer note is in "rem",
   as we have a unified footnote presentation */
@@ -526,13 +527,13 @@ div.ltx_keywords:empty:before {
 @media only screen and (96rem < width <= 109rem) {
   .ltx_note_outer {
     width: 20rem;
-    margin-right: -24rem;
+    margin-inline-end: -24rem;
   }
 }
 @media only screen and (width > 109rem) {
   .ltx_note_outer {
     width: 27rem;
-    margin-right: -31rem;
+    margin-inline-end: -31rem;
   }
 }
 
@@ -574,7 +575,7 @@ div.ltx_keywords:empty:before {
     display: block;
     opacity: 1;
     opacity: inherit;
-    text-align: left;
+    text-align: start;
   }
   .ltx_note.ltx_note_frontmatter > .ltx_note_mark {
     display: none;
@@ -587,7 +588,7 @@ div.ltx_keywords:empty:before {
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_content {
     border: none;
-    margin-left: 0px;
+    margin-inline-start: 0;
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_content > .ltx_note_mark {
     display: inline;
@@ -607,9 +608,9 @@ div.ltx_keywords:empty:before {
     opacity: 1;
     position: relative;
     clear: both;
-    float: right;
+    float: inline-end;
     padding-bottom: 2rem;
-    padding-right: 3rem;
+    padding-inline-end: 3rem;
   }
   .ltx_note_content {
     border-style: double none none none;
@@ -712,7 +713,7 @@ div.ltx_keywords:empty:before {
     opacity: 1;
     z-index: var(--z-popover);
     position: absolute;
-    left: 0;
+    inset-inline-start: 0;
   }
   /* also regular footnotes are hidden on author names, to avoid unfortunate collisions */
   .ltx_personname .ltx_role_footnote .ltx_note_outer {
@@ -724,7 +725,7 @@ div.ltx_keywords:empty:before {
      with similarly hand-crafted CSS typesetting. */
   .ltx_note.ltx_role_footnotetext .ltx_note_outer {
     position: absolute;
-    left: var(--main-width-margin);
+    inset-inline-start: var(--main-width-margin);
   }
   .ltx_note.ltx_role_footnotetext:nth-of-type(2) .ltx_note_outer {
     top: 8rem;
@@ -863,14 +864,14 @@ div.ltx_keywords:empty:before {
   margin-bottom: 2rem;
 }
 ul.ltx_toclist {
-  padding-left: 2.5rem;
+  padding-inline-start: 2.5rem;
 }
 ul.ltx_toclist > .ltx_tocentry:first-of-type {
   margin-top: 0.3rem;
 }
 /* top-level TOC has no indent */
 .ltx_TOC > ul.ltx_toclist {
-  padding-left: 0rem;
+  padding-inline-start: 0;
 }
 .ltx_TOC > .ltx_toclist > .ltx_tocentry {
   list-style-type: none;
@@ -890,7 +891,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_tocentry_chapter > .ltx_ref > .ltx_ref_title > .ltx_tag,
 .ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag,
 .ltx_tocentry_appendix > .ltx_ref > .ltx_ref_title > .ltx_tag {
-  margin-right: 1rem;
+  margin-inline-end: 1rem;
   display: inline-block;
   min-width: 1.5rem;
 }
@@ -934,15 +935,15 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
   width: min-content;
   display: inline-block;
   line-height: 1.1rem;
-  margin-right: 0.3rem;
+  margin-inline-end: 0.3rem;
 }
 
 /* A (top level) tocentry without tags should still have an equivalent padding to align well */
-.ltx_toclist > .ltx_tocentry_abstract, 
-.ltx_toclist > .ltx_tocentry_acknowledgements, 
-.ltx_toclist > .ltx_tocentry_paragraph, 
+.ltx_toclist > .ltx_tocentry_abstract,
+.ltx_toclist > .ltx_tocentry_acknowledgements,
+.ltx_toclist > .ltx_tocentry_paragraph,
 .ltx_toclist > .ltx_tocentry_bibliography {
-  margin-left: 2.5rem;
+  margin-inline-start: 2.5rem;
 }
 
 /* Various kinds of visual Tags */
@@ -953,13 +954,13 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_tag_subsection,
 .ltx_tag_subsubsection {
   display: inline-block;
-  padding-right: 1rem;
+  padding-inline-end: 1rem;
   min-width: 1.33em;
 }
 .ltx_tag_table,
 .ltx_tag_figure {
   display: inline-block;
-  padding-right: 0.2rem;
+  padding-inline-end: 0.2rem;
   min-width: 1.33em;
 }
 /* Various kinds of titles */
@@ -1002,14 +1003,16 @@ span.ltx_font_bold > .ltx_break:last-child {
 .ltx_title_paragraph {
   font-size: 1rem;
   font-weight: bold;
-  margin-right: 1rem;
+  margin-inline-end: 1rem;
   margin-bottom: 0.5rem;
 }
 .ltx_title_subparagraph {
   font-size: 1rem;
   font-weight: bold;
   display: inline;
-  margin: 0rem 1rem 0rem 2rem;
+  margin-block: 0;
+  margin-inline-start: 2rem;
+  margin-inline-end: 1rem;
 }
 
 /* indent the first subparagraph content p for visual effect (maybe?) */
@@ -1031,7 +1034,7 @@ span.ltx_font_bold > .ltx_break:last-child {
 }
 
 .ltx_outdent {
-  margin-left: -2em;
+  margin-inline-start: -2em;
 }
 
 .ltx_part,
@@ -1062,7 +1065,7 @@ span.ltx_font_bold > .ltx_break:last-child {
 
 /* TODO: this approach to .ltx_item is still not satisfying, especially for nested lists */
 .ltx_item > .ltx_theorem {
-  margin-left: 1em;
+  margin-inline-start: 1em;
 }
 
 /* reduce bottom margin for logical paragraphs in theorem envs */
@@ -1076,16 +1079,16 @@ span.ltx_font_bold > .ltx_break:last-child {
   font-size: 1rem;
   font-weight: bold;
   display: inline;
-  padding-right: 0.25em;
+  padding-inline-end: 0.25em;
 }
 
 /* Bibliographies */
 .ltx_bibliography dt {
-  margin-right: 0.5em;
-  float: left;
+  margin-inline-end: 0.5em;
+  float: inline-start;
 }
 .ltx_bibliography dd {
-  margin-left: clamp(1em, 4.5%, 3em);
+  margin-inline-start: clamp(1em, 4.5%, 3em);
 }
 
 .ltx_bibitem {
@@ -1099,19 +1102,19 @@ span.ltx_font_bold > .ltx_break:last-child {
 .ltx_bibitem .ltx_tag {
   display: table-cell;
   position: relative;
-  left: -2.5rem;
+  inset-inline-start: -2.5rem;
   top: 0.24rem;
   line-height: 1.5rem;
-  text-align: left;
+  text-align: start;
   /* alternative:
      but what is the stable best practice here? */
   /*
-    text-align: right;
-    left: -1.8rem;
+    text-align: end;
+    inset-inline-start: -1.8rem;
     top: 0.5rem;
 
     .ltx_biblist {
-      margin-left: -6rem;
+      margin-inline-start: -6rem;
     }
   */
   vertical-align: text-top;
@@ -1132,8 +1135,8 @@ span.ltx_font_bold > .ltx_break:last-child {
 }
 .ltx_bibitem .ltx_bibblock {
   display: inline-block;
-  text-align: left;
-  padding-left: 0.5em;
+  text-align: start;
+  padding-inline-start: 0.5em;
   max-width: 40rem;
   line-height: 1.5rem;
   vertical-align: text-top;
@@ -1164,7 +1167,7 @@ span.ltx_font_bold > .ltx_break:last-child {
 .ltx_indexlist {
   columns: 2;
   list-style-type: none;
-  padding-left: 0rem;
+  padding-inline-start: 0;
 }
 /* nested index sub-entries */
 .ltx_indexentry > .ltx_indexlist {
@@ -1203,7 +1206,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
    exclude epigraphs, which have their own right-aligned
    design, currently via inline "style" attributes. */
 :not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph) {
-  border-left: var(--border-double) solid var(--border-color);
+  border-inline-start: var(--border-double) solid var(--border-color);
   font-size: 1em;
   font-style: italic;
   line-height: 1.5em;
@@ -1216,7 +1219,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   content: "";
   position: absolute;
   top: 50%;
-  left: -0.25rem;
+  inset-inline-start: -0.25rem;
   height: 2rem;
   background-color: var(--background-color);
   width: 0.25rem;
@@ -1226,7 +1229,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   content: "“";
   position: absolute;
   top: 50%;
-  left: -0.6rem;
+  inset-inline-start: -0.6rem;
   color: var(--border-color);
   font-style: normal;
   font-size: 1.5rem;
@@ -1263,7 +1266,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
    the 0.45-of-main-width left margin would exceed the column. */
 blockquote.ltx_epigraph {
   width: min(100%, calc(0.5 * var(--main-width))) !important;
-  margin-left: min(50%, calc(0.45 * var(--main-width))) !important;
+  margin-inline-start: min(50%, calc(0.45 * var(--main-width))) !important;
 }
 
 /* Exception: some articles carelessly use {quote} instead of abstract */
@@ -1273,7 +1276,7 @@ blockquote.ltx_epigraph {
 .ltx_abstract > .ltx_title_abstract + blockquote.ltx_quote:last-child {
   max-width: 90%;
   margin: auto;
-  border-left: initial;
+  border-inline-start: initial;
   font-size: initial;
   font-style: initial;
   line-height: initial;
@@ -1674,7 +1677,7 @@ svg foreignObject > .ltx_foreignobject_container {
     & .ltx_itemize,
     & .ltx_enumerate {
       margin-top: 0.2em;
-      margin-left: 0.2em;
+      margin-inline-start: 0.2em;
     }
     /* In fixed-height contexts, the extra padding can lead to collding with the frame.
        see https://github.com/dginev/ar5iv/issues/529 */
@@ -1765,8 +1768,7 @@ svg foreignObject > .ltx_foreignobject_container {
   overflow-y: hidden;
 }
 .ltx_table .ltx_caption {
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
   max-width: max-content;
 }
 
@@ -1839,7 +1841,7 @@ svg foreignObject > .ltx_foreignobject_container {
    the second slot, this rule needs a class-based selector instead. */
 .ltx_overlay > span:nth-child(2) {
   position: absolute;
-  left: 0;
+  inset-inline-start: 0;
 }
 
 .ltx_listing {
@@ -2116,10 +2118,8 @@ span.ltx_transformed_inner {
 .ltx_eqn_cell {
   display: table-cell;
   width: auto;
-  padding-top: 0.3rem;
-  padding-bottom: 0.3rem;
-  padding-right: 0.2rem;
-  padding-left: 0.2rem;
+  padding-block: 0.3rem;
+  padding-inline: 0.2rem;
 }
 .ltx_eqn_cell.ltx_eqn_eqno {
   width: 3em;
@@ -2137,7 +2137,7 @@ table.ltx_eqn_align tr.ltx_equation td.ltx_align_left + td.ltx_align_right,
 table.ltx_eqn_align tr.ltx_equation td.ltx_align_left + td.ltx_align_center,
 table.ltx_eqn_align tr.ltx_equation td.ltx_align_center + td.ltx_align_right,
 table.ltx_eqn_align tr.ltx_equation td.ltx_align_center + td.ltx_align_center {
-  padding-left: 3em;
+  padding-inline-start: 3em;
 }
 table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
   min-width: 2em;
@@ -2171,7 +2171,7 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 .ltx_item > .ltx_para > .ltx_itemize,
 .ltx_item > .ltx_para > .ltx_enumerate {
   margin-top: 0.5rem;
-  margin-left: 0.5rem;
+  margin-inline-start: 0.5rem;
 }
 .ltx_description .ltx_item,
 .ltx_itemize .ltx_item,
@@ -2186,9 +2186,9 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
         so I'm instead documenting the need here for now. */
 li.ltx_item > .ltx_tag {
   display: inline;
-  margin-left: -2.5rem;
-  padding-right: 0.5rem;
-  text-align: right;
+  margin-inline-start: -2.5rem;
+  padding-inline-end: 0.5rem;
+  text-align: end;
 }
 .ltx_item .ltx_tag + .ltx_para {
   vertical-align: top;
@@ -2229,17 +2229,17 @@ dl.ltx_description {
   list-style-type: none;
 }
 dl.ltx_description dt {
-  margin-right: 0.5em;
-  float: left;
+  margin-inline-end: 0.5em;
+  float: inline-start;
   font-weight: bold;
   font-size: 95%;
 }
 dl.ltx_description dd.ltx_item {
-  margin-left: 3em;
+  margin-inline-start: 3em;
   text-indent: 0rem;
 }
 dl.ltx_description dl.ltx_description dd {
-  margin-left: 3em;
+  margin-inline-start: 3em;
   margin-bottom: 0.75em;
 }
 
@@ -2263,13 +2263,11 @@ dl.ltx_description dl.ltx_description dd {
 }
 .ltx_tabular.ltx_centering {
   display: table;
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
 }
 .ltx_graphics.ltx_centering,
 .ltx_picture.ltx_centering {
-  margin-left: auto;
-  margin-right: auto;
+  margin-inline: auto;
   text-align: center;
 }
 /* usually within text, center them vertically as well */
@@ -2297,6 +2295,11 @@ dl.ltx_description dl.ltx_description dd {
   word-wrap: break-word;
   white-space: normal;
 }
+/* `.ltx_nopad_l`, `.ltx_nopad_r`, and the `.ltx_border_*` / `.ltx_framed_*`
+   classes below carry physical-side semantics from LaTeXML's emission
+   (the `_l`/`_r`/`_left`/`_right` suffix names the table-cell edge
+   directly). These rules stay on physical `left/right` properties
+   until LaTeXML standardises a writing-direction-aware emission. */
 .ltx_tabular .ltx_td.ltx_nopad_l,
 .ltx_tabular .ltx_th.ltx_nopad_l {
   padding-left: 0;
@@ -2399,8 +2402,7 @@ span.ltx_framed {
 .ltx_framed_rectangle {
   border-style: solid;
   border-width: var(--border-hairline);
-  padding-left: 0.3rem;
-  padding-right: 0.3rem;
+  padding-inline: 0.3rem;
 }
 .ltx_framed_top {
   border-top-style: solid;
