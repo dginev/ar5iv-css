@@ -71,16 +71,25 @@
   --image-color: light-dark(black, #292929);
   --image-background-color: white;
   --link-text-color:  light-dark(#212121, #c9d1d9);
-  --email-link-color: light-dark(#026ecb, darkcyan);
+  /* Email link: light #026ecb is fine (~5.1:1 on white). Dark
+     mode was `darkcyan` (#008b8b) at ~4.48:1 on #0d1117 — just
+     below WCAG AA 4.5:1 — bumped to #009999 (~5.3:1). */
+  --email-link-color: light-dark(#026ecb, #009999);
   --note-mark-color:  light-dark(#026ecb, #daa002);
   --note-highlight-color: light-dark(#ffffd4, #231d02);
-  --info-text-color:  #01719d;
+  /* Info text: light #01719d is fine (~5.5:1 on white) but the
+     same value fails on the dark background (~3.4:1). Split into
+     a lighter dark-mode value (~5.9:1). */
+  --info-text-color:  light-dark(#01719d, #3a9bcc);
   /* Light: was #d09e05 (~2.46:1 on white, fails WCAG AA Large).
      #8a6800 is the darkest goldenrod that still reads as "warning yellow"
      and gives ≈4.8:1 on white. Dark: the original #d09e05 is fine on the
      dark background. */
   --warning-text-color: light-dark(#8a6800, #d09e05);
-  --error-text-color:   light-dark(#d8000c, #d52f36);
+  /* Error text: light #d8000c is fine (~5.4:1 on white). Dark was
+     #d52f36 at ~3.77:1 on #0d1117 — below AA 4.5:1 — lightened to
+     #e85a60 (~4.8:1). */
+  --error-text-color:   light-dark(#d8000c, #e85a60);
   --fatal-text-color: var(--error-text-color);
   --index-ref-color:  var(--email-link-color);
 

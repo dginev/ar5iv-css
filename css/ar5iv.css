@@ -27,6 +27,11 @@
    reduced-motion, forced-colors, keyboard-accessible footnotes). */
 @import url("./ar5iv/a11y.css") layer(base);
 
+/* Dark-mode theme-aware rules: image filter, OKLCH/HSL author-colour
+   inversion via the --fn-* override surface, author-black rescue,
+   foreignObject colour propagation. */
+@import url("./ar5iv/dark-mode.css");
+
 /* Print styles (only active under @media print). */
 @import url("./ar5iv/print.css");
 img {
@@ -56,116 +61,6 @@ img {
 }
 [style*="--ltx-stroke-color:"] {
   stroke: var(--ltx-stroke-color);
-}
-
-/* ===================================================================
-   Dark-mode behavioural rules.
-
-   Token-level colour overrides are handled by `light-dark()` inside
-   css/ar5iv/tokens.css and switch on resolved color-scheme. The rules
-   below are *behavioural*: they apply transforms or layout tweaks that
-   light-dark() cannot express. They fire when:
-     - the user explicitly chose dark: `<html data-theme="dark">`, or
-     - OS preference is dark and the user hasn't opted out
-       (`:root:not([data-theme="light"])` under
-       `@media (prefers-color-scheme: dark)`).
-   =================================================================== */
-
-/* Explicit `data-theme="dark"`: applies regardless of OS preference. */
-[data-theme="dark"] img {
-  filter: brightness(0.8) contrast(1.2);
-  background-color: var(--image-background-color);
-  color: var(--image-color);
-}
-[data-theme="dark"] svg.ltx_picture {
-  /* keep the original SVG background colour; pad to avoid hard edge */
-  padding: 0.33rem;
-}
-
-/* OS-preference fallback: when no explicit data-theme is set,
-   honour `prefers-color-scheme: dark`. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) img {
-    filter: brightness(0.8) contrast(1.2);
-    background-color: var(--image-background-color);
-    color: var(--image-color);
-  }
-  :root:not([data-theme="light"]) svg.ltx_picture {
-    padding: 0.33rem;
-  }
-}
-
-/* ===================================================================
-   Author-supplied colour inversion.
-
-   Maps inline `--ltx-*-color` author colours into the dark-mode
-   palette while preserving hue and chroma. The factor 0.8237 derives
-   from `1 − OKLCH(L)` of the dark-mode background #0d1117 — so an
-   author-supplied white background becomes the theme's dark
-   background, and other backgrounds interpolate between them.
-   See docs/rfc_latexml_custom_properties.md for the full strategy.
-
-   The @supports probe checks for relative-colour syntax (`oklch(from
-   …)`) — which is the feature actually being used. Older browsers
-   fall through to the HSL branch.
-   =================================================================== */
-
-@supports (color: oklch(from white l c h)) {
-  [data-theme="dark"] [style*="--ltx-fg-color:"] {
-    --text-color:  oklch(from var(--ltx-fg-color) calc(1 - 0.7 * l) c h);
-    color: var(--text-color);
-  }
-  [data-theme="dark"] [style*="--ltx-bg-color:"] {
-    --background-color: oklch(from var(--ltx-bg-color) calc(1 - 0.8237 * l) c h);
-    background-color: var(--background-color);
-  }
-  [data-theme="dark"] [style*="--ltx-border-color:"] {
-    --border-color: oklch(from var(--ltx-border-color) calc(1 - 0.7 * l) c h);
-    border-color: var(--border-color);
-  }
-  [data-theme="dark"] [style*="--ltx-fill-color:"] {
-    --fill-color: hsl(from var(--ltx-fill-color) h s calc(107 - l));
-    fill: var(--fill-color);
-  }
-  [data-theme="dark"] [style*="--ltx-stroke-color:"] {
-    --stroke-color: hsl(from var(--ltx-stroke-color) h s calc(100 - l));
-    stroke: var(--stroke-color);
-  }
-}
-@supports not (color: oklch(from white l c h)) {
-  [data-theme="dark"] [style*="--ltx-fg-color:"] {
-    --text-color: hsl(from var(--ltx-fg-color) h s calc(100 - l));
-    color: var(--text-color);
-  }
-  [data-theme="dark"] [style*="--ltx-bg-color:"] {
-    --background-color: hsl(from var(--ltx-bg-color) h s calc(107 - l));
-    background-color: var(--background-color);
-  }
-  [data-theme="dark"] [style*="--ltx-border-color:"] {
-    --border-color: hsl(from var(--ltx-border-color) h s calc(100 - l));
-    border-color: var(--border-color);
-  }
-  [data-theme="dark"] [style*="--ltx-fill-color:"] {
-    --fill-color: hsl(from var(--ltx-fill-color) h s calc(107 - l));
-    fill: var(--fill-color);
-  }
-  [data-theme="dark"] [style*="--ltx-stroke-color:"] {
-    --stroke-color: hsl(from var(--ltx-stroke-color) h s calc(100 - l));
-    stroke: var(--stroke-color);
-  }
-}
-/* The :root rule does not propagate `color:` into SVG foreignObject. */
-[data-theme="dark"] .ltx_foreignobject_content {
-  color: var(--text-color);
-}
-/* Special hand-crafted case: \color{black} is the most common author
-   colour by a wide margin, so we keep its dark-mode rendering pinned
-   to the theme's default text colour rather than running it through
-   the inversion (which would just be the formula's identity case
-   anyway). */
-[data-theme="dark"] [style*="--ltx-fg-color:#000000;"] {
-  --text-color: var(--text-color-author-black-dark);
-  color: var(--text-color);
 }
 
 /* Main content */
@@ -223,7 +118,6 @@ body {
 .ltx_document {
   margin: auto;
   max-width: var(--main-width);
-  margin-top: 2rem;
   text-rendering: optimizeLegibility;
 }
 
@@ -509,7 +403,6 @@ div.ltx_keywords:empty:before {
   display: none;
 }
 
-/* TODO: Untested */
 .ltx_date {
   font-family: var(--text-font-family);
   text-align: center;
@@ -540,6 +433,22 @@ div.ltx_keywords:empty:before {
   max-height: 2rem;
   font-size: 0.85em;
   color: var(--note-mark-color);
+}
+/* Touch target inflation (WCAG 2.5.8 AA, 24×24 px minimum). The
+   visible mark text renders below 24 px after the cascading 0.85em
+   shrinks. Add a transparent ::before pseudo-element sized to the
+   WCAG target so taps within ~12 px of the mark register, without
+   visually enlarging the glyph. Skipped under forced-colors, since
+   those environments draw their own focus/hit indicators. */
+@media not (forced-colors: active) {
+  .ltx_note > .ltx_note_mark::before {
+    content: "";
+    position: absolute;
+    inset: 50% 50%;
+    width: 1.5rem;
+    height: 1.5rem;
+    transform: translate(-50%, -50%);
+  }
 }
 
 .ltx_note_content {
@@ -901,11 +810,9 @@ div.ltx_keywords:empty:before {
   list-style: none;
 }
 .ltx_abstract p:first-of-type {
-  /* TODO: this is debatable */
   text-indent: 0rem;
 }
 
-/* TODO: not yet tested */
 .ltx_role_dedicatory {
   font-size: 100%;
   font-style: italic;
@@ -1115,7 +1022,6 @@ span.ltx_font_bold > .ltx_break:last-child {
   margin-bottom: 0.5rem;
 }
 .ltx_section .ltx_para:first-of-type .ltx_p:first-of-type {
-  /* TODO: this is debatable */
   text-indent: 0rem;
 }
 
@@ -1485,28 +1391,19 @@ blockquote.ltx_epigraph {
   }
 }
 
-/* images in the text/math flow are sometimes used when
-   e.g. unicode didn't have the appropriate symbol at the time.
-   We size them close to letters. See e.g. 2108.04810 */
-:not(.ltx_eqn_cell) > math mtext img.ltx_img_landscape,
-:not(.ltx_eqn_cell) > math mtext img.ltx_img_portrait,
-:not(.ltx_eqn_cell) > math mtext img.ltx_img_square,
-:not(.ltx_eqn_cell) > math mtext object.ltx_img_landscape,
-:not(.ltx_eqn_cell) > math mtext object.ltx_img_portrait,
-:not(.ltx_eqn_cell) > math mtext object.ltx_img_square,
-/* with all of these negations, starting to wonder if this should just be a rule only on .ltx_para > .ltx_p ? */
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) img.ltx_img_landscape,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) img.ltx_img_portrait,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) img.ltx_img_square,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) object.ltx_img_landscape,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) object.ltx_img_portrait,
-:not(.ltx_flex_cell):not(.ltx_figure):not(.ltx_transformed_inner):not(.ltx_td):not(.ltx_th) > .ltx_p:not(.ltx_align_center) object.ltx_img_square {
+/* Inline images in math mtext, or in paragraphs outside layout-managed
+   contexts, are sometimes used as missing-unicode-symbol fallbacks.
+   Size them close to letter-height. See 2108.04810 (math mtext case),
+   1502.04633 (height intentionally unset for inline-diagram cases),
+   and 1712.01103 (min-* needs !important against per-element style
+   attributes). */
+:is(
+  :not(.ltx_eqn_cell) > math mtext,
+  :not(:is(.ltx_flex_cell, .ltx_figure, .ltx_transformed_inner, .ltx_td, .ltx_th))
+    > .ltx_p:not(.ltx_align_center)
+) :is(img, object):is(.ltx_img_landscape, .ltx_img_portrait, .ltx_img_square) {
   width: 1rem;
-  /* setting height is not that reliable here, as we have cases genuinely used as inline diagrams
-     see 1502.04633, just above Observation 3.2 */
-  /* height: 1rem; */
-  /* also, these rules need to be !important or we get weird collisions,
-     see 1712.01103 */
+  /* height intentionally not set; see 1502.04633 above Observation 3.2 */
   min-width: 1rem !important;
   min-height: 1rem !important;
 }
@@ -1711,16 +1608,17 @@ foreignObject {
   /* translate: 0 0.1em; */
   --ltx-fo-width: 100%;
 }
-/* Use flex to vertically center foreignObject,
-   to accommodate potentially tall line-box.
-   --fo_width (underscore) is a legacy fallback that an upstream
-   stylesheet may set; --ltx-fo-width is the primary, set on
-   foreignObject above. Keep both for compatibility until LaTeXML's
-   contract is finalised. */
+/* Use flex to vertically center foreignObject, to accommodate
+   potentially tall line-box. `--ltx-fo-width` is set on
+   `foreignObject` (above) to 100% as the default; LaTeXML can
+   override per-element when it knows the rendered width. The
+   underscore-named `--fo_width` fallback that used to live in this
+   chain was an upstream legacy contract that no current consumer
+   sets — dropped in iteration 2. */
 svg foreignObject > .ltx_foreignobject_container {
   display: flex;
   align-items: end; /* see examples from latexml PR #2541 */
-  width: clamp(calc(0.1 * var(--main-width)), var(--ltx-fo-width, var(--fo_width)), 100%);
+  width: clamp(calc(0.1 * var(--main-width)), var(--ltx-fo-width), 100%);
   height: 100%;
 }
 svg foreignObject > .ltx_foreignobject_container {
@@ -1734,7 +1632,7 @@ svg foreignObject > .ltx_foreignobject_container {
   /* If multiple children, give more space to avoid unexpected line breaks
    due to font differences. */
   &:has(> .ltx_foreignobject_content > :not(:only-child)) {
-    width: calc(1.1 * var(--ltx-fo-width, var(--fo_width)));
+    width: calc(1.1 * var(--ltx-fo-width));
   }
   & > .ltx_foreignobject_content {
     display: block;

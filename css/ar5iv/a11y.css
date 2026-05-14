@@ -20,12 +20,15 @@
   outline-offset: var(--focus-ring-offset);
 }
 
-/* Inside math, focus rings on individual operators are distracting and
-   rarely meaningful (mo/mi typically aren't focus targets). Suppress
-   the visible ring there, but keep `outline` non-zero so screen-reader
-   focus order is unaffected. */
-math :focus-visible,
-mjx-container :focus-visible {
+/* Inside math, focus rings on individual MathML elements are
+   distracting and rarely meaningful (mo/mi/mn typically aren't
+   focus targets). Suppress the visible ring on non-interactive
+   math descendants, but preserve it on focusable descendants like
+   linked operators, MathJax actions, and `[tabindex]` annotations —
+   those are the things a sighted keyboard user would actually be
+   navigating to. */
+math :focus-visible:not(:is(a, button, [tabindex])),
+mjx-container :focus-visible:not(:is(a, button, [tabindex])) {
   outline-color: transparent;
 }
 
@@ -44,8 +47,11 @@ mjx-container :focus-visible {
   GLOWUP_PROGRESS.md.
 */
 
-/* Small-screen path: mirrors the @media (max-width: 95.99rem) hover/active rule. */
-@media only screen and (max-width: 95.99rem) {
+/* Small-screen path: mirrors the (width < 96rem) hover/active rule
+   in ar5iv.css. Same boundary direction as ar5iv.css's post-cleanup
+   discipline, so the small-screen and large-screen bands are
+   mutually exclusive at exactly 96rem. */
+@media only screen and (width < 96rem) {
   .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):not(.ltx_role_footnotemark):focus-within > .ltx_note_outer {
     display: block;
     opacity: 1;
@@ -62,7 +68,7 @@ mjx-container :focus-visible {
 }
 
 /* Large-screen path: mirrors the highlight-on-hover/active rule. */
-@media only screen and (min-width: 96rem) {
+@media only screen and (width >= 96rem) {
   .ltx_note > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content,
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content,
   .ltx_author_notes > .ltx_note > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content,
@@ -121,6 +127,18 @@ mjx-container :focus-visible {
      foreground, otherwise readers lose the context they were
      scanning. */
   color: inherit;
+}
+
+/* ----- [hidden] reset ----------------------------------------------- */
+
+/* The UA stylesheet sets `[hidden] { display: none }`, but several
+   `.ltx_*` rules in `ar5iv.css` set `display: block`/`inline`/`flex`
+   on the same element. If anything outside our CSS (JS theme
+   toggle, browser extension, assistive overlay) sets `hidden` on
+   a styled element, our `display:` would defeat the UA default.
+   This higher-specificity rule restores the intended behaviour. */
+[hidden] {
+  display: none !important;
 }
 
 /* ----- forced-colors mode ------------------------------------------- */
