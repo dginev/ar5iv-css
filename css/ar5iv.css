@@ -1875,6 +1875,18 @@ svg foreignObject > .ltx_foreignobject_container {
   display: block;
   max-width: var(--main-width);
   margin-bottom: var(--space-sm);
+  /* Code is intrinsically LTR and structurally aligned at the
+     leftmost column (line numbers, indentation). When a listing
+     sits inside a `.ltx_figure` (which sets `text-align: center`
+     for centred captions) or any other centring ancestor, that
+     inherited centring cascades down to the listing-line content,
+     producing a ragged middle-aligned look. `text-align: left`
+     pins each line to the start edge regardless of context.
+
+     Why physical `left` and not logical `start`: source code is
+     LTR even in an RTL document. Line numbers, indentation, and
+     monospace columns all assume left-to-right flow. */
+  text-align: left;
 }
 .ltx_framed > .ltx_listing {
   margin-bottom: 0rem;
