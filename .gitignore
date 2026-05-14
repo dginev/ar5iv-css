@@ -277,3 +277,11 @@ TSWLatexianTemp*
 
 # Local examples directory — fetched arXiv pages for manual inspection
 examples/
+
+# Build artefacts — produced by `npm run build`, published to npm on
+# tagged releases and auto-served by jsDelivr / unpkg from there.
+# Gitignored so commits don't churn on every build.
+dist/
+
+# Node tooling
+node_modules/

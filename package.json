@@ -1,27 +1,38 @@
 {
   "name": "ar5iv-css",
-  "version": "0.8.4",
+  "version": "0.9.0",
   "description": "CSS theme for arXiv articles converted with LaTeXML",
   "main": "css/ar5iv.css",
   "style": "css/ar5iv.css",
   "sideEffects": [
     "css/ar5iv.css",
     "css/ar5iv-fonts.css",
-    "css/ar5iv/*.css"
+    "css/ar5iv/*.css",
+    "dist/*.css"
   ],
   "exports": {
     ".": "./css/ar5iv.css",
+    "./min": "./dist/ar5iv.min.css",
     "./fonts": "./css/ar5iv-fonts.css",
     "./tokens": "./css/ar5iv/tokens.css",
     "./a11y": "./css/ar5iv/a11y.css",
+    "./dark-mode": "./css/ar5iv/dark-mode.css",
     "./print": "./css/ar5iv/print.css"
   },
   "files": [
     "css",
+    "dist",
     "docs",
     "LICENSE",
     "README.md"
   ],
+  "scripts": {
+    "build": "mkdir -p dist && lightningcss --bundle --minify --sourcemap css/ar5iv.css -o dist/ar5iv.min.css",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "lightningcss-cli": "^1.30.1"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/dginev/ar5iv-css.git"
