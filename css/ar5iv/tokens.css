@@ -24,6 +24,29 @@
   --main-width: 52rem;
   --main-width-margin: 54rem;
 
+  /* ----- Spacing scale -----
+     The dominant ladder in margin declarations: 0.5 / 1 / 1.5 / 2 / 4 rem
+     account for ~70 % of margin sites in ar5iv.css. Long-tail values
+     (0.1, 0.2, 0.25, 0.3, 0.66, 0.75 rem) stay as literals — each was
+     hand-tuned for a specific typographic context and shouldn't snap
+     to a scale step retroactively. Zero is also a literal: `margin: 0`
+     is clearer than `margin: var(--space-none)`.
+     Property-agnostic — same anchors apply to padding, gap, and inset
+     when the value matches. */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+
+  /* ----- Line-height -----
+     `1.5rem` dominates the line-height histogram (7 uses) at the body's
+     1rem font-size — a 1.5 ratio that comfortably accommodates
+     descenders and ascenders of Noto Serif. Other line-height values
+     in the file (`1rem` for compact contexts, `1.1rem`/`1.15rem`/`1.4rem`
+     for one-off cases) stay as literals. */
+  --line-height-prose: 1.5rem;
+
   /* ----- Borders & rules ----- */
   /* Hairline used by hundreds of single-pixel separators across the theme.
      Matches LaTeXML's default \rule width within a percent. */

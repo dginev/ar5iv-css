@@ -67,7 +67,7 @@ matter for a scholarly-document CSS theme:
 | Focus / target / selection / reduced-motion | ✅ in `a11y.css` |
 | Touch-target minimum (WCAG 2.5.8) | ✅ on `.ltx_note_mark` |
 | Print | ✅ in `print.css` |
-| Typography token system (spacing / type / line-height scales) | ❌ literals only |
+| Typography token system (spacing / type / line-height scales) | ⚠️ spacing scale + prose line-height tokenised; font-size scale deferred (mostly singletons) |
 | Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ⚠️ spot fixes only |
 | i18n / RTL via logical properties | ✅ ~60 sites converted; LaTeXML-internal `.ltx_border_*` / `.ltx_framed_*` / `.ltx_nopad_*` / `.ltx_align_*` stay physical (LaTeXML emits physical-side semantics) |
 | Container-aware layout for embedded / side-by-side readers | ❌ viewport-only |
@@ -78,7 +78,7 @@ matter for a scholarly-document CSS theme:
 | Code-quality enforcement (stylelint or equivalent) | ❌ none |
 | Theming cookbook (recipes beyond the RFC's worked example) | ✅ `docs/THEMING.md` with four recipes |
 
-Five ❌ rows and one ⚠️ row on a sixteen-row checklist. Ten ✅.
+Four ❌ rows and two ⚠️ rows on a sixteen-row checklist. Ten ✅.
 Honest verdict: production-ready, not best-in-class — but the gap is
 shrinking.
 
@@ -154,28 +154,23 @@ text-align, and `.ltx_INFO/WARNING/ERROR/FATAL` also stay
 physical (intrinsically LTR content streams). Synthetic RTL test
 page at `examples/ar5iv-1910.06709-rtl.html`.
 
-### 4. Spacing / type / line-height scales as tokens
+### 4. Spacing / type / line-height scales as tokens — ⚠️ partial
 
-The typographic grammar is expressed as ~60 distinct `rem` literals
-today. Tuning the design requires grep, not a single token edit.
-Scale anchors documented in the frozen `GLOWUP_PHASE2_AUDIT.md` §A.
-#1 makes cluster-by-cluster migration safer; without it, the
-`examples/` fetch-and-eye loop is the fallback (slower, but works).
+Landed 2026-05-14: `--space-xs/sm/md/lg/xl` (0.5/1/1.5/2/4 rem)
+and `--line-height-prose` (1.5rem) anchored on the audited
+histograms. 45 margin sites and 7 line-height sites migrated.
+Long-tail spacing literals (0.1, 0.2, 0.25, 0.3, 0.66, 0.75rem)
+stay as literals — each is hand-tuned. Font-size scale deferred:
+the histogram is mostly singletons (12 distinct values for ~24
+total sites), so a scale would either invent anchors or freeze
+hand-tuned values into a fake ladder. Pick up a font-size scale
+only if a second sweep finds genuine clusters.
 
-**Next move.** Pick anchors first (read PHASE2_AUDIT §A
-histograms), define them in `css/ar5iv/tokens.css`, document in
-TOKENS.md — but **don't migrate literals yet**. Defining the
-scales without consumers is YAGNI; we migrate in the same commit
-where we substitute the first cluster. Suggested first cluster:
-`margin` 0 / 0.5 / 1 / 1.5 / 2 / 4 rem (six anchors cover ~70 %).
-Verify each substitution by demo reload + diff. Leave hand-tuned
-non-scale values (e.g. `0.66rem` flex-grow interaction) as
-literals with a clarifying comment.
-
-**Conventions.** Scale anchors live in tokens.css. Outliers stay
-as literals (a scale step is for *repeated* values; one-off
-typography stays raw). The `:where()` wrap is for rules that
-consume tokens — *not* for the variable declarations themselves.
+**Remaining next move (font-size sweep).** Re-run the font-size
+histogram in a few releases. If anchors emerge for ≥3 consumers
+each (e.g. 1.4rem for headings, 0.85rem for notes), promote
+those to `--font-size-*`. Until then, the singleton-anchor
+overhead isn't worth it.
 
 ### ~~5. Cascade maturation — fill the `@layer` order~~ — ✅ landed 2026-05-14
 
@@ -375,6 +370,18 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Item #4 landed (partial — ⚠️): spacing scale and
+  prose line-height tokenised in `css/ar5iv/tokens.css`
+  (`--space-xs/sm/md/lg/xl` mapping to 0.5/1/1.5/2/4 rem and
+  `--line-height-prose: 1.5rem`). Migrated 45 margin literals and
+  7 `line-height: 1.5rem` sites to the tokens. Long-tail values
+  (0.1, 0.2, 0.25, 0.3, 0.66, 0.75 rem) stay as literals — each
+  is hand-tuned. Font-size scale deferred: histogram is mostly
+  singletons. Also fixed stale colour values in TOKENS.md (the
+  iteration-2 contrast bumps for `--email-link-color`,
+  `--info-text-color`, `--error-text-color`) and added their
+  computed-on-light/dark contrast ratios. Status table:
+  5 ❌ / 1 ⚠️ / 10 ✅ → 4 ❌ / 2 ⚠️ / 10 ✅.
 - **2026-05-14** — Item #3 landed: logical-property walk through
   `ar5iv.css`. ~60 sites converted to inline-direction equivalents
   (`margin-inline-*`, `padding-inline-*`, `inset-inline-*`,

@@ -32,6 +32,36 @@ overrides.
 | `--main-width` | `52rem` | Reading-column width for the document body. |
 | `--main-width-margin` | `54rem` | Slightly wider band used where a sidenote needs to sit just outside the column. |
 
+## Spacing scale
+
+The dominant ladder in margin declarations. Five anchors cover ~70 %
+of margin sites. The long tail (`0.1rem`, `0.2rem`, `0.25rem`,
+`0.3rem`, `0.66rem`, `0.75rem`) stays as literals — each was
+hand-tuned for a specific typographic context. Zero is also a
+literal: `margin: 0` is clearer than `margin: var(--space-none)`.
+
+Property-agnostic — the same anchors apply to `padding`, `gap`,
+and `inset-*` when the value matches.
+
+| Token | Default | Purpose |
+|---|---|---|
+| `--space-xs` | `0.5rem` | Tight intra-component spacing. |
+| `--space-sm` | `1rem` | Default body-level spacing. |
+| `--space-md` | `1.5rem` | Paragraph and frontmatter separation. |
+| `--space-lg` | `2rem` | Section-level separation. |
+| `--space-xl` | `4rem` | Major-block separation (abstract, figures, tables, document-level title). |
+
+## Line-height
+
+| Token | Default | Purpose |
+|---|---|---|
+| `--line-height-prose` | `1.5rem` | Default body line-height (7 consumers); paired with the body's 1rem font-size gives a 1.5 ratio that comfortably accommodates Noto Serif's descenders and ascenders. |
+
+Other line-height values (`1rem` for compact contexts, `1.1rem` /
+`1.15rem` / `1.4rem` for one-off cases) stay as literals; they are
+hand-tuned local decisions rather than scale steps. Font-size itself
+is not yet tokenised — the histogram is mostly singletons.
+
 ## Borders
 
 | Token | Default | Purpose |
@@ -81,12 +111,12 @@ based on resolved `color-scheme`.
 | `--image-color` | `black` | `#292929` |
 | `--image-background-color` | `white` | `white` (always — transparent PNGs assume light backdrop) |
 | `--link-text-color` | `#212121` | `#c9d1d9` |
-| `--email-link-color` | `#026ecb` | `darkcyan` |
+| `--email-link-color` | `#026ecb` (~5.1:1 on white) | `#009999` (~5.3:1 on #0d1117) |
 | `--note-mark-color` | `#026ecb` | `#daa002` |
 | `--note-highlight-color` | `#ffffd4` | `#231d02` |
-| `--info-text-color` | `#01719d` | `#01719d` (single value) |
-| `--warning-text-color` | `#8a6800` | `#d09e05` |
-| `--error-text-color` | `#d8000c` | `#d52f36` |
+| `--info-text-color` | `#01719d` (~5.5:1 on white) | `#3a9bcc` (~5.9:1 on #0d1117) |
+| `--warning-text-color` | `#8a6800` (~4.8:1 on white) | `#d09e05` |
+| `--error-text-color` | `#d8000c` (~5.4:1 on white) | `#e85a60` (~4.8:1 on #0d1117) |
 | `--fatal-text-color` | `var(--error-text-color)` | inherits |
 | `--index-ref-color` | `var(--email-link-color)` | inherits |
 | `--text-color-author-black-dark` | n/a | `#c9d1d9` (the dark-mode value `\color{black}` author text resolves to) |

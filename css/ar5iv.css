@@ -94,7 +94,7 @@ body {
   width: 100%;
 }
 .ltx_page_content {
-  margin: 4rem 1rem;
+  margin: var(--space-xl) var(--space-sm);
   font-size: 1rem;
   font-weight: 300;
   clear: both;
@@ -145,8 +145,8 @@ body {
   font-family: var(--text-font-family);
   text-align: justify;
   hyphens: auto;
-  line-height: 1.5rem;
-  margin-bottom: 1.5rem;
+  line-height: var(--line-height-prose);
+  margin-bottom: var(--space-md);
 }
 /* If a flex figure comes before the para, avoid collisions.
    (note: avoid doing clear:both; for all paragraphs, or it creates needless
@@ -157,7 +157,7 @@ body {
 }
 
 .ltx_p {
-  line-height: 1.5rem;
+  line-height: var(--line-height-prose);
   /* by default, p doesn't indent */
   text-indent: 0rem;
   white-space: normal;
@@ -183,7 +183,7 @@ section.ltx_indent_first > .ltx_title + .ltx_para > .ltx_p {
 
 .ltx_pagination.ltx_role_newpage {
   /* use margins to ensure newpage breaks, to avoid stacking heights in cases where it is used after logical blocks */
-  margin-top: 2rem;
+  margin-top: var(--space-lg);
   display: block;
 }
 
@@ -267,15 +267,15 @@ article > div:not(.ltx_minipage) > img:first-of-type {
      the 4rem outer margin, visibly pushing the title down.
      Zero it explicitly. */
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-md);
   text-align: center;
 }
 .ltx_subtitle {
   font-family: var(--headings-font-family);
   font-style: italic;
   font-size: 1.3rem;
-  margin-top: 1rem;
-  margin-bottom: 1.5rem;
+  margin-top: var(--space-sm);
+  margin-bottom: var(--space-md);
   text-align: center;
 }
 .ltx_subtitle .ltx_text {
@@ -351,12 +351,12 @@ span.ltx_personname > .ltx_break + .ltx_break {
 }
 .ltx_dates {
   margin-top: 0rem;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-sm);
   text-align: center;
   font-family: var(--text-font-family);
 }
 .ltx_role_author + .ltx_role_author {
-  margin-inline-start: 2rem;
+  margin-inline-start: var(--space-lg);
 }
 /* space out affiliation sub-entries */
 .ltx_affiliation_institution,
@@ -378,7 +378,7 @@ span.ltx_personname > .ltx_break + .ltx_break {
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_affiliation)) :last-child.ltx_role_affiliation {
     position: absolute;
     display: block;
-    margin: 2rem auto;
+    margin: var(--space-lg) auto;
     text-align: center;
     width: var(--main-width);
     /* dvw avoids the desktop-scrollbar offset that 100vw produces.
@@ -388,7 +388,7 @@ span.ltx_personname > .ltx_break + .ltx_break {
 }
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_address)):has( :last-child.ltx_role_address),
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_affiliation)):has( :last-child.ltx_role_affiliation) {
-  margin-bottom: 4rem;
+  margin-bottom: var(--space-xl);
 }
 
 /* in multi-affiliation markup, e.g. produced by authblk.sty,
@@ -397,7 +397,7 @@ span.ltx_personname > .ltx_break + .ltx_break {
 span.ltx_role_affiliation:not(.ltx_note)
   + span.ltx_role_affiliation:not(.ltx_note),
 span.ltx_role_orcid + span.ltx_role_affiliation:not(.ltx_note) {
-  margin-top: 0.5rem;
+  margin-top: var(--space-xs);
   display: block;
 }
 
@@ -410,7 +410,7 @@ div.ltx_keywords:empty:before {
 }
 .ltx_keywords,
 .ltx_classification {
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-md);
   font-size: 1rem;
   font-family: var(--text-font-family);
   font-weight: normal;
@@ -486,7 +486,7 @@ div.ltx_keywords:empty:before {
   padding-bottom: 0.5rem;
   margin: 0.6rem;
   font-family: var(--text-font-family);
-  line-height: 1.5rem;
+  line-height: var(--line-height-prose);
   white-space: normal;
   overflow-wrap: break-word;
   /* getting some rather unpleasant horizontal scroll on Chrome on large screens,
@@ -500,8 +500,8 @@ div.ltx_keywords:empty:before {
   /* The flex experiment here is trying to contain the width to the current flex block,
      but allow the note to expand to the full page width if it is standalone/single author */
   width: fit-content;
-  margin-top: 0.5rem;
-  margin-bottom: 2rem;
+  margin-top: var(--space-xs);
+  margin-bottom: var(--space-lg);
   font-family: var(--text-font-family);
   font-size: 0.9rem;
   padding: 0.2rem;
@@ -816,8 +816,8 @@ div.ltx_keywords:empty:before {
 }
 /* Abstract */
 .ltx_abstract {
-  margin-top: 4rem;
-  margin-bottom: 2rem;
+  margin-top: var(--space-xl);
+  margin-bottom: var(--space-lg);
 }
 
 /* TODO: Can we get a better handle on the ToC title?
@@ -827,7 +827,7 @@ div.ltx_keywords:empty:before {
 .ltx_TOC > h6,
 .ltx_title_contents {
   margin-top: 0;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-md);
   padding-top: 0;
   color: var(--text-color);
   text-decoration: none;
@@ -860,8 +860,8 @@ div.ltx_keywords:empty:before {
 
 /* Table of Contents, main page display */
 .ltx_TOC {
-  margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-top: var(--space-lg);
+  margin-bottom: var(--space-lg);
 }
 ul.ltx_toclist {
   padding-inline-start: 2.5rem;
@@ -879,7 +879,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 }
 .ltx_tocentry {
   list-style-type: none;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-xs);
 }
 .ltx_TOC > .ltx_toclist > .ltx_tocentry > a.ltx_ref {
   display: inline-block;
@@ -891,7 +891,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_tocentry_chapter > .ltx_ref > .ltx_ref_title > .ltx_tag,
 .ltx_tocentry_section > .ltx_ref > .ltx_ref_title > .ltx_tag,
 .ltx_tocentry_appendix > .ltx_ref > .ltx_ref_title > .ltx_tag {
-  margin-inline-end: 1rem;
+  margin-inline-end: var(--space-sm);
   display: inline-block;
   min-width: 1.5rem;
 }
@@ -968,7 +968,7 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 .ltx_title_chapter {
   font-size: 1.6rem;
   font-weight: bold;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-md);
 }
 .ltx_title_section,
 .ltx_title_acknowledgements,
@@ -981,38 +981,38 @@ ul.ltx_toclist > .ltx_tocentry:first-of-type {
 span.ltx_font_bold > .ltx_break:last-child {
   font-size: 1.4rem;
   font-weight: bold;
-  margin-bottom: 1.5rem;
+  margin-bottom: var(--space-md);
 }
 /* semantic heuristic (part 2)
    bold spans with trailing breaks are section headings
    so they were preceded by a section.
    add to top would have been the .ltx_subsection bottom margin */
 span.ltx_font_bold > .ltx_break:last-child {
-  margin-top: 2rem;
+  margin-top: var(--space-lg);
 }
 .ltx_title_subsection {
   font-size: 1.2rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-sm);
 }
 .ltx_title_subsubsection {
   font-size: 1rem;
   font-weight: bold;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-sm);
 }
 .ltx_title_paragraph {
   font-size: 1rem;
   font-weight: bold;
-  margin-inline-end: 1rem;
-  margin-bottom: 0.5rem;
+  margin-inline-end: var(--space-sm);
+  margin-bottom: var(--space-xs);
 }
 .ltx_title_subparagraph {
   font-size: 1rem;
   font-weight: bold;
   display: inline;
   margin-block: 0;
-  margin-inline-start: 2rem;
-  margin-inline-end: 1rem;
+  margin-inline-start: var(--space-lg);
+  margin-inline-end: var(--space-sm);
 }
 
 /* indent the first subparagraph content p for visual effect (maybe?) */
@@ -1046,10 +1046,10 @@ span.ltx_font_bold > .ltx_break:last-child {
   margin-bottom: 2.5rem;
 }
 .ltx_subsection {
-  margin-bottom: 2rem;
+  margin-bottom: var(--space-lg);
 }
 .ltx_subsubsection {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-xs);
 }
 .ltx_section .ltx_para:first-of-type .ltx_p:first-of-type {
   text-indent: 0rem;
@@ -1058,7 +1058,8 @@ span.ltx_font_bold > .ltx_break:last-child {
 /* Theorems and other statements */
 .ltx_theorem,
 .ltx_proof {
-  margin: 2rem 0rem 1rem 0rem;
+  margin-block: var(--space-lg) var(--space-sm);
+  margin-inline: 0;
   text-align: justify;
   hyphens: auto;
 }
@@ -1070,7 +1071,7 @@ span.ltx_font_bold > .ltx_break:last-child {
 
 /* reduce bottom margin for logical paragraphs in theorem envs */
 .ltx_theorem > .ltx_para {
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-xs);
 }
 
 .ltx_title_theorem,
@@ -1104,7 +1105,7 @@ span.ltx_font_bold > .ltx_break:last-child {
   position: relative;
   inset-inline-start: -2.5rem;
   top: 0.24rem;
-  line-height: 1.5rem;
+  line-height: var(--line-height-prose);
   text-align: start;
   /* alternative:
      but what is the stable best practice here? */
@@ -1138,7 +1139,7 @@ span.ltx_font_bold > .ltx_break:last-child {
   text-align: start;
   padding-inline-start: 0.5em;
   max-width: 40rem;
-  line-height: 1.5rem;
+  line-height: var(--line-height-prose);
   vertical-align: text-top;
 }
 /*.bibitem-tag + div { display:inline; }*/
@@ -1467,7 +1468,7 @@ mtext > .ltx_graphics,
   justify-content: center;
   align-items: flex-end;
   object-fit: contain;
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-sm);
 }
 .ltx_flex_figure > .ltx_flex_cell > .ltx_graphics,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_figure,
@@ -1710,7 +1711,7 @@ svg foreignObject > .ltx_foreignobject_container {
 /* tables in logical paragraphs get spaced out
    similar to a textual paragraph */
 .ltx_para > .ltx_tabular {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-sm);
 }
 
 /* TODO: test! subtables */
@@ -1751,7 +1752,7 @@ svg foreignObject > .ltx_foreignobject_container {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  margin: 4rem auto 4rem;
+  margin: var(--space-xl) auto;
 }
 /* tables use their usual block display with automatic overflow-x;
    unsolved: should we allow growth into the margins for very wide tables?
@@ -1759,7 +1760,7 @@ svg foreignObject > .ltx_foreignobject_container {
 */
 .ltx_table{
   text-align: center;
-  margin: 4rem auto 4rem;
+  margin: var(--space-xl) auto;
 }
 /* don't use the auto overflow rule in subfigure cases
    see https://arxiv.org/html/2503.09799v1#S2.T2   */
@@ -1778,9 +1779,9 @@ svg foreignObject > .ltx_foreignobject_container {
 .ltx_table .ltx_caption,
 .ltx_figure .ltx_caption {
   text-align: justify;
-  line-height: 1.5rem;
-  margin-top: 1.5rem;
-  margin-bottom: 1.5rem;
+  line-height: var(--line-height-prose);
+  margin-top: var(--space-md);
+  margin-bottom: var(--space-md);
 }
 .ltx_flex_figure .ltx_figure .ltx_caption {
   text-align: center;
@@ -1823,13 +1824,13 @@ svg foreignObject > .ltx_foreignobject_container {
 /* minipages need some dedicated work (ar5iv#83),
    but for now we can accommodate with a bit of special-case padding; */
 .ltx_flex_size_2 .ltx_tabular.ltx_minipage {
-  margin: 1rem;
+  margin: var(--space-sm);
 }
 .ltx_flex_size_3 .ltx_tabular.ltx_minipage {
   margin: 0.66rem;
 }
 .ltx_flex_size_4 .ltx_tabular.ltx_minipage {
-  margin: 0.5rem;
+  margin: var(--space-xs);
 }
 
 .ltx_overlay {
@@ -1847,7 +1848,7 @@ svg foreignObject > .ltx_foreignobject_container {
 .ltx_listing {
   display: block;
   max-width: var(--main-width);
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-sm);
 }
 .ltx_framed > .ltx_listing {
   margin-bottom: 0rem;
@@ -2170,8 +2171,8 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 .ltx_item > .ltx_para > .ltx_description,
 .ltx_item > .ltx_para > .ltx_itemize,
 .ltx_item > .ltx_para > .ltx_enumerate {
-  margin-top: 0.5rem;
-  margin-inline-start: 0.5rem;
+  margin-top: var(--space-xs);
+  margin-inline-start: var(--space-xs);
 }
 .ltx_description .ltx_item,
 .ltx_itemize .ltx_item,
@@ -2252,7 +2253,7 @@ dl.ltx_description dl.ltx_description dd {
   text-align: justify;
   hyphens: auto;
   font-family: var(--text-font-family);
-  line-height: 1.5rem;
+  line-height: var(--line-height-prose);
 }
 
 /*======================================================================
