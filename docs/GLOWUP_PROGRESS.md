@@ -30,12 +30,13 @@ matter for a scholarly-document CSS theme:
 | Override-friendly cascade for downstream themes (`@layer`) | ⚠️ order declared, bulk un-layered |
 | Demonstrated extensibility (at least one alt theme) | ❌ no consumer yet |
 | Repeatable visual-regression check | ❌ human eye only |
-| Build / distribution (`dist/`, minified, source-map) | ❌ raw source as-shipped |
+| Build / distribution (`dist/`, minified, source-map) | ✅ `npm run build` → `dist/ar5iv.min.css` + map via lightningcss; jsDelivr/unpkg distribution recipe in README |
 | Code-quality enforcement (stylelint or equivalent) | ❌ none |
 | Theming cookbook (recipes beyond the RFC's worked example) | ❌ |
 
-Eight ❌ rows and two ⚠️ rows on a sixteen-row checklist. Six ✅.
-Honest verdict: production-ready, not best-in-class.
+Seven ❌ rows and two ⚠️ rows on a sixteen-row checklist. Seven ✅.
+Honest verdict: production-ready, not best-in-class — but the gap is
+shrinking.
 
 A reader should note the rows mix four kinds of dimension:
 **CSS capabilities** (themes, contrast, scales, reflow, RTL,
@@ -110,14 +111,16 @@ verify: `.ltx_document { container-type: inline-size }` re-anchors
 absolute/fixed descendants (today's absolute author block uses
 `100dvw`, so the side effect may bite).
 
-### 7. Build pipeline + minified bundle
+### ~~7. Build pipeline + minified bundle~~ — ✅ landed 2026-05-14
 
-A consumer importing `ar5iv-css` should not need to manually unroll
-the `@import` chain. A small CSS build (tool choice — lightningcss,
-esbuild, postcss, csso etc. — defers to the implementation PR)
-emitting `dist/ar5iv.min.css` + source map; `dist/` gitignored;
-published-on-tag in CI. This implicitly closes the iteration-2
-"`@import` chain collapse" perf item via concatenation.
+`npm run build` → `lightningcss --bundle --minify --sourcemap` →
+`dist/ar5iv.min.css` (~46 KB, ~37 % smaller than source) + map.
+Inlines the four local `@import`s (tokens, a11y, dark-mode, print)
+into a single file; subsumes the iteration-2 `@import` chain collapse
+perf item. CDN integration recipe in `README.md`
+(jsDelivr/unpkg auto-mirror after `npm publish`). Manual publish for
+now; the GH-Actions tag-push variant is deferred until the manual
+flow is proven once.
 
 ### 8. stylelint with a tuned ruleset
 
@@ -158,7 +161,7 @@ cleanly).
 
 #5 cascade maturation        (independent)
 #6 container-query pilot     (independent, after verification)
-#7 build pipeline            (independent; subsumes @import chain collapse)
+#7 build pipeline            ✅ done
 #9 demonstrated extensibility (independent)
 #10 theming cookbook         (independent; #9(b) overlaps with it)
 ```
@@ -227,3 +230,11 @@ without retrospective impact evidence.
   chain collapse item; added a note that the dimension checklist
   mixes four kinds of dimension (CSS capabilities, tooling, docs,
   validation) that don't weigh equally.
+- **2026-05-14** — Iteration-2 work committed as three commits
+  (`6c54c29` CSS substance, `39cbcb8` docs sync, `fc43f10` build
+  pipeline). Item #7 of the iteration-3 punch list landed: `npm run
+  build` produces `dist/ar5iv.min.css` (~46 KB minified, source
+  inlined from the four `@import`s) via `lightningcss-cli`; CDN
+  integration recipe in `README.md` for `cdn.jsdelivr.net/npm` and
+  `unpkg.com`; `dist/` gitignored, shipped via `npm publish` (manual
+  for now). Status table updated 8❌/2⚠️/6✅ → 7❌/2⚠️/7✅.
