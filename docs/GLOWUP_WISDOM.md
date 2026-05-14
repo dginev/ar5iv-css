@@ -578,6 +578,46 @@ do that the new one does?* For BFC-establishing replacements, the
 parent-first-child margin-collapse question is the most common one
 worth checking.
 
+### Coda: a second phantom margin caught later, and a wrong first fix
+
+The first correction dropped `.ltx_document { margin-top: 2rem }`.
+A reader inspecting the same demo afterward noticed the title was
+*still* sitting about a rem too low. The mechanism was identical
+but one level deeper:
+
+`.ltx_title.ltx_title_document` had `margin-top: 1rem`. Pre-flow-root,
+this collapsed into `.ltx_document`'s 2 rem (both inside a non-BFC
+chain), then collapsed again into `.ltx_page_content`'s 4 rem.
+The 1 rem was a *phantom* — declared but never visually applied.
+
+Post-flow-root, the BFC blocks the outward collapse. The title's 1
+rem now stands on its own, adding 1 rem to the visible page-top
+gap.
+
+**My first fix was wrong**. I deleted the `margin-top: 1rem`
+declaration entirely. That made things *worse*, because it exposed
+Chrome's UA default `h1 { margin-block-start: 0.83em }`. With the
+element's font-size at 1.7rem, the UA margin resolves to ~1.4 rem —
+*more* than the 1 rem the author rule was setting.
+
+So the author rule was *partially* masking the UA default all
+along. The correct fix is to set the margin explicitly to 0
+(`margin-top: 0`), not to omit it. Omitting cedes the value to the
+cascade, which lands on the UA default we didn't want.
+
+**Reminder for future BFC-introducing changes**: when wrapping a
+container with `flow-root` (or `overflow: clip`, or any other BFC
+trigger), audit *every* margin on the first-in-flow-descendant
+chain — not just the parent's first child. Phantom margins are
+common where authors expected (or unconsciously relied on) margin
+collapse cascading through several non-BFC levels.
+
+**Reminder for cleanups**: deleting a rule is not the same as
+setting its value to the "natural" default. The natural default
+in CSS is *whatever the UA stylesheet says* — and for elements
+with intrinsic UA styling (`h1`–`h6`, `p`, `ul`, etc.), that's a
+non-zero value. When you want zero, write zero.
+
 ### What to do about regression-source patterns like this
 
 Phase 6 (the render-corpus harness in GLOWUP_PROGRESS.md) would have

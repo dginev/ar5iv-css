@@ -257,7 +257,16 @@ article > div:not(.ltx_minipage) > img:first-of-type {
   /* !important is needed since arXiv customizations on title size are not */
   /* completely accurate in latexml yet, so we keep a predictably nice-looking size for now. */
   font-size: 1.7rem !important;
-  margin-top: 1rem;
+  /* Explicit zero (not omitted): `<h1>` carries a UA-default
+     `margin-block-start: 0.83em` which at 1.7rem font-size resolves
+     to ~1.4rem. The pre-iter-1 author rule of `margin-top: 1rem`
+     overrode the UA but was itself absorbed by margin-collapse
+     outward through (then-non-BFC) `.ltx_page_content`. Now that
+     `.ltx_page_content` is a BFC (flow-root), any title-top
+     margin — author's or UA's — stays inside and stacks on top of
+     the 4rem outer margin, visibly pushing the title down.
+     Zero it explicitly. */
+  margin-top: 0;
   margin-bottom: 1.5rem;
   text-align: center;
 }
