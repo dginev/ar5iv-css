@@ -166,7 +166,7 @@ body {
 }
 .ltx_text {
   font-family: var(--text-font-family);
-  word-wrap: break-word;
+  overflow-wrap: break-word;
 }
 .ltx_tag .ltx_text {
   font-family: inherit;
@@ -190,7 +190,7 @@ section.ltx_indent_first > .ltx_title + .ltx_para > .ltx_p {
 math,
 mjx-container {
   font-family: var(--math-font-family);
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   white-space: nowrap;
 }
 /* add some padding to math table cells, e.g. space out cells with fractions */
@@ -300,9 +300,6 @@ span.ltx_personname {
   min-width: calc(0.27 * var(--main-width));
   max-width: calc(0.65 * var(--main-width));
 }
-span.ltx_personname span:first {
-  font-size: 1.5rem;
-}
 span.ltx_personname br.ltx_break {
   margin-top: 0.25rem;
 }
@@ -404,7 +401,7 @@ span.ltx_role_orcid + span.ltx_role_affiliation:not(.ltx_note) {
 /* sometimes ltx_keywords only contains a single text node */
 /* and we can't write a selector for ".ltx_keywords that only has text" via CSS...
    so just fix the completely empty buggy case */
-div.ltx_keywords:empty:before {
+div.ltx_keywords:empty::before {
   content: "Keywords: ";
   font-weight: bold;
 }
@@ -1024,7 +1021,7 @@ span.ltx_font_bold > .ltx_break:last-child {
 .ltx_runin {
   display: inline;
 }
-.ltx_runin:after {
+.ltx_runin::after {
   content: " ";
 }
 .ltx_runin + .ltx_para,
@@ -1194,7 +1191,7 @@ section.ltx_conversion_report > .ltx_para {
   line-height: 1rem;
   font-family: var(--code-font-family);
   font-size: 0.8rem;
-  word-break: break-word;
+  overflow-wrap: break-word;
 }
 section.ltx_conversion_report > .ltx_para > .ltx_p {
   text-align: left;
@@ -1216,7 +1213,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   position: relative;
   z-index: var(--z-page);
 }
-:not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph):before {
+:not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph)::before {
   content: "";
   position: absolute;
   top: 50%;
@@ -1226,7 +1223,7 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
   width: 0.25rem;
   margin-top: -1rem;
 }
-:not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph):after {
+:not(.ltx_quote) > blockquote.ltx_quote:not(.ltx_epigraph)::after {
   content: "“";
   position: absolute;
   top: 50%;
@@ -1879,7 +1876,7 @@ svg foreignObject > .ltx_foreignobject_container {
   & > .ltx_text {
     /* see algorithm 2 in 2406.04076, for an example of the numbering tags getting wide. */
     word-break: keep-all;
-    word-wrap: normal;
+    overflow-wrap: normal;
     /* !important needed due to use of element "style" attributes in latexml */
     /* Sometimes the 80% downscale is too much, 0.7rem is a good pragmatic constant */
     font-size: 0.7rem !important;
@@ -2293,7 +2290,7 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_tabular .ltx_th {
   padding: 0.1em 0.5em;
   max-width: var(--main-width);
-  word-wrap: break-word;
+  overflow-wrap: break-word;
   white-space: normal;
 }
 /* `.ltx_nopad_l`, `.ltx_nopad_r`, and the `.ltx_border_*` / `.ltx_framed_*`

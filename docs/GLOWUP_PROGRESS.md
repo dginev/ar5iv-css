@@ -75,10 +75,10 @@ matter for a scholarly-document CSS theme:
 | Demonstrated extensibility (at least one alt theme) | ❌ no consumer yet |
 | Repeatable visual-regression check | ❌ human eye only |
 | Build / distribution (`dist/`, minified, source-map) | ✅ `npm run build` → `dist/ar5iv.min.css` + map via lightningcss; jsDelivr/unpkg distribution recipe in README |
-| Code-quality enforcement (stylelint or equivalent) | ❌ none |
+| Code-quality enforcement (stylelint or equivalent) | ✅ `npm run lint` with tuned ruleset; allowlisted `!important` as warning |
 | Theming cookbook (recipes beyond the RFC's worked example) | ✅ `docs/THEMING.md` with four recipes |
 
-Four ❌ rows and two ⚠️ rows on a sixteen-row checklist. Ten ✅.
+Three ❌ rows and two ⚠️ rows on a sixteen-row checklist. Eleven ✅.
 Honest verdict: production-ready, not best-in-class — but the gap is
 shrinking.
 
@@ -219,25 +219,25 @@ perf item. CDN integration recipe in `README.md`
 now; the GH-Actions tag-push variant is deferred until the manual
 flow is proven once.
 
-### 8. stylelint with a tuned ruleset
+### ~~8. stylelint with a tuned ruleset~~ — ✅ landed 2026-05-14
 
-Forbid new `!important` outside allowlisted sites (transformed-
-wrappers, inline-style defeats); warn on `margin-left/right` in
-favour of logical equivalents; **after #4 lands**, warn on bare `rem`
-literals in the spacing/type cluster. Land all rules as warnings,
-promote one at a time.
-
-**Next move.** `npm i -D stylelint stylelint-config-standard`. Add
-`.stylelintrc.json` with `extends: "stylelint-config-standard"` +
-rule overrides:
-- `declaration-no-important: [true, { severity: "warning" }]` with
-  per-selector `disableFix` for the allowlist.
-- `selector-no-id: [true, { severity: "warning" }]`.
-- `unit-allowed-list: [ ["rem", "em", "%", "ch", "dvw", "dvh", "vh", "vw"], { severity: "warning" } ]`.
-Add `npm run lint` script. Triage warnings before promoting any rule
-to error. **Do not** add a custom plugin for the "no bare rem"
-rule until #4 has settled — premature plugin code is ~80 LoC of
-churn-risk.
+`npm run lint` runs `stylelint-config-standard` plus rule
+overrides in `.stylelintrc.json`. `declaration-no-important` is
+on at warning severity; the 45 surviving warnings all sit in the
+allowlist (transformed-wrappers feature flag + per-rule
+inline-style defeats in `ar5iv.css`; `[hidden]` reset in
+`a11y.css`; the print override stack in `print.css`). First run
+also surfaced 10 hard errors that became real cleanups: four
+deprecated `word-wrap` → `overflow-wrap` substitutions, one
+deprecated `word-break: break-word` keyword, four legacy
+single-colon `:before` / `:after` pseudo-elements promoted to
+double-colon, and one dead rule (`span.ltx_personname span:first`
+— `:first` is not a valid pseudo-class outside `@page`; the rule
+has been silently inert since it was written). Bare-rem rule
+deferred per the original next-move: now that #4 has tokenised
+the spacing scale, a future custom plugin could enforce
+"prefer `--space-*` over bare rem" — but it's ~80 LoC of churn
+risk for marginal value, deferred until a second offender ships.
 
 ### 9. Demonstrated extensibility — shipped theme *or* worked example
 
@@ -370,6 +370,18 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Item #8 landed: stylelint with tuned ruleset.
+  `npm run lint` against `stylelint-config-standard`;
+  `.stylelintrc.json` overrides allowlist `!important` (warning),
+  ignores LaTeXML-driven naming conventions, and exempts
+  `light-dark()` from `function-no-unknown`. First run surfaced
+  10 real errors that became part of the same commit: four
+  deprecated `word-wrap` → `overflow-wrap` substitutions, one
+  deprecated `word-break: break-word` keyword, four legacy
+  single-colon `:before` / `:after` promoted to double-colon, and
+  one silently-dead rule (`span:first` is invalid outside `@page`).
+  CONTRIBUTING.md updated with the lint workflow. Status table:
+  4 ❌ / 2 ⚠️ / 10 ✅ → 3 ❌ / 2 ⚠️ / 11 ✅.
 - **2026-05-14** — Item #4 landed (partial — ⚠️): spacing scale and
   prose line-height tokenised in `css/ar5iv/tokens.css`
   (`--space-xs/sm/md/lg/xl` mapping to 0.5/1/1.5/2/4 rem and

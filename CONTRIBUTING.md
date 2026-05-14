@@ -73,6 +73,20 @@ the canonical visual-regression corpus. When changing a rule that
 references one of these IDs in a nearby comment, render that paper
 and confirm no visual diff.
 
+## Linting
+
+```bash
+npm run lint
+```
+
+Runs stylelint on `css/**/*.css` with a tuned ruleset
+(`.stylelintrc.json`). Errors fail the run; `!important`
+warnings are advisory — every current `!important` is in the
+allowlist (transformed-wrappers feature flag, per-rule inline-style
+defeats in `ar5iv.css`; `[hidden]` reset in `a11y.css`; the print
+override stack in `print.css`). New `!important` outside those
+clusters should be the exception, justified by a comment.
+
 ## Token discipline
 
 Add tokens to `css/ar5iv/tokens.css`. Use `light-dark(L, D)` when the
