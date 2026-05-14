@@ -245,9 +245,11 @@ mtd {
   text-indent: 0;
 }
 
-/* title page image */
+/* title page image. `min(30rem, 100%)` so the cap never exceeds
+   the containing column — at 320 CSS-px viewport the image stays
+   within the viewport. */
 article > div:not(.ltx_minipage) > img:first-of-type {
-  max-width: 30rem;
+  max-width: min(30rem, 100%);
   width: auto;
   height: auto;
 }
@@ -377,11 +379,13 @@ span.ltx_personname > .ltx_break + .ltx_break {
     display: block;
     margin: var(--space-lg) auto;
     text-align: center;
-    width: var(--main-width);
-    /* dvw avoids the desktop-scrollbar offset that 100vw produces.
-       Formula is symmetric (centered on viewport), so inset-inline-start
-       gives identical positioning in LTR and RTL. */
-    inset-inline-start: calc((100dvw - var(--main-width)) / 2);
+    /* WCAG 1.4.10 reflow: clamp to viewport so 320 CSS-px viewports
+       don't get horizontal scroll from a 52rem-wide author block.
+       `min(--main-width, 100dvw)` lets the block shrink under narrow
+       viewports; `max(0px, …)` clamps the centering offset so it
+       never goes negative (which would push content off-canvas). */
+    width: min(var(--main-width), 100dvw);
+    inset-inline-start: max(0px, calc((100dvw - var(--main-width)) / 2));
 }
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_address)):has( :last-child.ltx_role_address),
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_affiliation)):has( :last-child.ltx_role_affiliation) {
@@ -561,6 +565,11 @@ div.ltx_keywords:empty::before {
     top: 0;
     margin: auto;
     padding: 2rem;
+    /* WCAG 1.4.10: the footnote popover's `width: 20rem` (set in the
+       responsive band at line 511) plus 2rem padding on each side
+       would overflow a 20rem (320 CSS-px) viewport without
+       `border-box`. */
+    box-sizing: border-box;
     background-color: var(--background-color);
     border-width: 0.1rem 0;
     border-bottom: double;
@@ -689,6 +698,7 @@ div.ltx_keywords:empty::before {
     top: 0;
     margin: auto;
     padding: 2rem;
+    box-sizing: border-box;
     background-color: var(--background-color);
     border-width: 0.1rem 0;
     border-bottom: double;
@@ -1182,10 +1192,15 @@ span.ltx_font_bold > .ltx_break:last-child {
   white-space: nowrap;
 }
 
-/* conversion log report */
+/* conversion log report. `max-width` + `box-sizing: border-box` so
+   the padding stays inside the column on narrow viewports — the
+   previous fixed `width: var(--main-width)` produced horizontal
+   scroll at 320 CSS-px (WCAG 1.4.10 reflow). */
 section.ltx_conversion_report > .ltx_para {
   background: var(--surface-subtle);
-  width: var(--main-width);
+  max-width: var(--main-width);
+  width: 100%;
+  box-sizing: border-box;
   padding: 0.1rem 1rem 0.1rem 1rem;
   border-radius: 0.8rem;
   line-height: 1rem;
@@ -1259,12 +1274,17 @@ section.ltx_conversion_report > .ltx_para > .ltx_p {
 
 /* Feature: epigraphs, see e.g. 1911.01547.
    !important defeats LaTeXML's per-element inline style attributes.
-   `min(100%, …)` keeps the epigraph from overflowing narrow
-   viewports, where the unmodified `calc(0.5 * --main-width)` plus
-   the 0.45-of-main-width left margin would exceed the column. */
+
+   Both width and margin-inline-start scale to the containing column,
+   capped to the rem-absolute target. The earlier formulation used
+   `min(100%, …)` for width and `min(50%, …)` for margin — at a
+   320 CSS-px (20rem) viewport that combined to a 27rem visual box
+   inside an 18rem column (10rem overflow). The 50/45 ratio is
+   preserved at wide viewports (where 50% and 45% both hit their
+   rem caps) and shrinks proportionally below. */
 blockquote.ltx_epigraph {
-  width: min(100%, calc(0.5 * var(--main-width))) !important;
-  margin-inline-start: min(50%, calc(0.45 * var(--main-width))) !important;
+  width: min(50%, calc(0.5 * var(--main-width))) !important;
+  margin-inline-start: min(45%, calc(0.45 * var(--main-width))) !important;
 }
 
 /* Exception: some articles carelessly use {quote} instead of abstract */

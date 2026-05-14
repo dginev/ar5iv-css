@@ -68,7 +68,7 @@ matter for a scholarly-document CSS theme:
 | Touch-target minimum (WCAG 2.5.8) | ✅ on `.ltx_note_mark` |
 | Print | ✅ in `print.css` |
 | Typography token system (spacing / type / line-height scales) | ⚠️ spacing scale + prose line-height tokenised; font-size scale deferred (mostly singletons) |
-| Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ⚠️ spot fixes only |
+| Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ⚠️ four structural fixes landed; full DevTools walk still pending |
 | i18n / RTL via logical properties | ✅ ~60 sites converted; LaTeXML-internal `.ltx_border_*` / `.ltx_framed_*` / `.ltx_nopad_*` / `.ltx_align_*` stay physical (LaTeXML emits physical-side semantics) |
 | Container-aware layout for embedded / side-by-side readers | ❌ viewport-only |
 | Override-friendly cascade for downstream themes (`@layer`) | ✅ bulk in `components`; B1/B3 in `fixes`; transformed-wrappers stays un-layered for !important priority |
@@ -118,26 +118,40 @@ anti-aliasing variance is too high). Baseline shipped as
 `tools/snapshots-baseline.tar.zst` so commit history doesn't carry
 binary churn. Tie it to `npm test`.
 
-### 2. Reflow audit at 320 CSS-px and 400 % zoom (WCAG 1.4.10)
+### 2. Reflow audit at 320 CSS-px and 400 % zoom (WCAG 1.4.10) — ⚠️ partial
 
-Real conformance gap, partially addressed (epigraph wrapped in
-`min(100%, …)`, author block on `100dvw`). Never systematically
-swept. Known suspects: Chrome footnote horizontal scroll
-(`ar5iv.css:555-558` author-acknowledged), blockquote
-`:before/:after` overflow, wide-table column stacking. Can be
-triaged by hand in DevTools' responsive mode; #1 makes it
-*faster and safer*, not a hard prerequisite.
+Structural reflow bugs found by code audit and fixed
+2026-05-14:
 
-**Next move.** Open one demo in DevTools, set viewport to 320×568,
-walk the page top to bottom noting horizontal-scroll triggers and
-clipped content. Then set browser zoom to 400 % at viewport 1280 ×
-and walk again. Each finding gets a per-site fix:
-`overflow-wrap: anywhere` for long URLs in footnotes; wrap
-absolute-positioned decorations in `clamp(0, ..., …)`; for tables
-either `overflow-x: auto` (current behaviour) or a stack-rows
-strategy. Verify each fix doesn't regress 768/1280 in the demo
-loop. **Anti-pattern**: blanket `min-width: 0` everywhere — it
-fixes the symptom but hides the structural issue.
+- **Author-block fly-out** at `ar5iv.css:374-385` used a 52rem fixed
+  width plus a negative centering offset that ran off-canvas on
+  narrow viewports. Now `width: min(--main-width, 100dvw)` and
+  `inset-inline-start: max(0px, …)` clamp both.
+- **Conversion-report panel** had `width: var(--main-width)` —
+  forced horizontal scroll at <52rem. Now `max-width:
+  var(--main-width); width: 100%; box-sizing: border-box`.
+- **Title-page image** capped at `max-width: 30rem` overflowed
+  20rem viewports. Now `max-width: min(30rem, 100%)`.
+- **Footnote popover overflow** — the 20rem-band hover popover
+  plus 2rem padding either side computed to 24rem under
+  `content-box`. Added `box-sizing: border-box` to both
+  small-screen and wide-screen popover rules.
+- **Epigraph fly-out math** — width capped at 100% combined with
+  margin-inline-start capped at 50% summed to >100% on narrow
+  viewports (10rem overflow at 320 CSS-px). Now both share the
+  same 50/45 ratio and the same rem cap so the geometry stays
+  inside the column at any width.
+
+**Remaining for full WCAG 1.4.10 conformance.** A live
+DevTools walk at 320×568 and at 400 % zoom on 1280, scrolling
+top-to-bottom on each of the three corpus demos, marking
+horizontal-scroll triggers and clipped content. Code audit
+catches structural overflow; only an in-browser walk catches
+content-driven cases (a long URL in a footnote, a wide formula
+straining `.ltx_eqn_table`, a TikZ figure with embedded
+ginormous text). Per-site fixes per finding;
+`overflow-wrap: anywhere` for URL strings,
+`overflow-x: auto` on equation containers if needed.
 
 ### ~~3. Logical-property walk for i18n / RTL~~ — ✅ landed 2026-05-14
 
@@ -370,6 +384,15 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Item #2 landed (partial — ⚠️): five structural
+  reflow bugs identified by code audit and fixed (author-block
+  fly-out width/offset clamps, conversion-report panel
+  max-width, title-page image clamp, footnote popover
+  `box-sizing: border-box` in both bands, epigraph width/margin
+  ratio fix that prevented a 10rem overflow at 320 CSS-px).
+  Remaining: a live DevTools walk at 320×568 and 400 % zoom on
+  the corpus demos to catch content-driven cases — code audit
+  only catches structural overflow.
 - **2026-05-14** — Item #8 landed: stylelint with tuned ruleset.
   `npm run lint` against `stylelint-config-standard`;
   `.stylelintrc.json` overrides allowlist `!important` (warning),
