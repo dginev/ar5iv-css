@@ -10,6 +10,50 @@
 > `GLOWUP_PHASE2_AUDIT.md` (pre-iter-2). Wisdom record:
 > `GLOWUP_WISDOM.md`.
 
+## How to pick this up
+
+Standing workflow for each iteration-3 item, in order:
+
+1. **Verify build clean** before starting: `npm run build` should
+   succeed on `main`/`glowup` HEAD. lightningcss is strict about
+   brace balance, so a clean build is the quickest sanity check.
+2. **Open the three demos** for the eyeball-loop fallback:
+   ```bash
+   ./examples/fetch.sh ar5iv-1910.06709          # baseline math paper
+   ./examples/fetch.sh -s arxiv 2407.16893       # moderate colour
+   ./examples/fetch.sh -s arxiv 2501.11021       # heavy TikZ colour
+   google-chrome examples/ar5iv-*.html examples/arxiv-*.html &
+   ```
+   The demos are the manual harness while iteration-3 item #1 is
+   pending.
+3. **Make the change**, ideally as one focused commit per item.
+4. **Verify**: `npm run build`, reload the demos, spot-check
+   DevTools' computed styles for the affected selectors. Toggle
+   `data-theme="dark"` via DevTools console to verify both themes.
+5. **Update the status table** and append a `Change log` entry in
+   this file in the same commit.
+6. **Commit message convention**: lowercase first letter, short
+   subject describing the *outcome*, body explaining the *reasoning*
+   and any non-obvious choices. Always include the
+   `Co-Authored-By:` trailer.
+
+### House conventions
+
+- **YAGNI**: don't ship token surfaces, utilities, or build artefacts
+  that have no current consumer. Each iteration-2 case where we
+  almost did is recorded in `GLOWUP_WISDOM.md`.
+- **`!important` discipline**: only inside the allowlisted clusters
+  (transformed-wrappers + the per-rule inline-style defeats).
+  Anywhere else, the right answer is a layered rule or a more
+  specific selector.
+- **Visual changes**: must be intentional. Pixel-shift regressions
+  are the class of bug iteration-2 caught twice (`flow-root` title
+  drift, fill/stroke colour-space inconsistency); demos help, but
+  human review reliably misses small shifts.
+- **Tag commits with line numbers** when describing the *intent*
+  of a rule in the wisdom log — line numbers drift, but the
+  intent claim stays anchored to a moment in time.
+
 ## What "best-in-class" means here
 
 To stop the phrase being unfalsifiable, naming the dimensions that
@@ -64,6 +108,16 @@ inconsistent. Stylelint or code review would catch that class;
 pixel-diff would just flag a difference and require human judgement
 to call it a regression.)
 
+**Next move.** Decide rendering tool (Playwright is the
+best-supported via `@playwright/test`; Puppeteer is lighter).
+Sketch `tools/render-corpus.{mjs,sh}` that fetches the in-tree
+corpus, renders at 320 / 768 / 1280 / 1920 CSS-px × {light, dark},
+and writes PNGs under `tools/.cache/snapshots/<id>/`. Use
+`pixelmatch` for the diff with a *count* tolerance (not SSIM —
+anti-aliasing variance is too high). Baseline shipped as
+`tools/snapshots-baseline.tar.zst` so commit history doesn't carry
+binary churn. Tie it to `npm test`.
+
 ### 2. Reflow audit at 320 CSS-px and 400 % zoom (WCAG 1.4.10)
 
 Real conformance gap, partially addressed (epigraph wrapped in
@@ -74,6 +128,17 @@ swept. Known suspects: Chrome footnote horizontal scroll
 triaged by hand in DevTools' responsive mode; #1 makes it
 *faster and safer*, not a hard prerequisite.
 
+**Next move.** Open one demo in DevTools, set viewport to 320×568,
+walk the page top to bottom noting horizontal-scroll triggers and
+clipped content. Then set browser zoom to 400 % at viewport 1280 ×
+and walk again. Each finding gets a per-site fix:
+`overflow-wrap: anywhere` for long URLs in footnotes; wrap
+absolute-positioned decorations in `clamp(0, ..., …)`; for tables
+either `overflow-x: auto` (current behaviour) or a stack-rows
+strategy. Verify each fix doesn't regress 768/1280 in the demo
+loop. **Anti-pattern**: blanket `min-width: 0` everywhere — it
+fixes the symptom but hides the structural issue.
+
 ### 3. Logical-property walk for i18n / RTL
 
 LaTeXML can convert non-English and RTL papers; ar5iv-css doesn't
@@ -83,6 +148,22 @@ columns and blockquote decoration stay physical. #1 protects
 against accidental LTR regression but isn't strictly required:
 visual diff against the existing in-tree corpus catches most cases.
 
+**Next move.** Build a one-off synthetic RTL test page (arXiv has
+very few native-RTL papers in the corpus): take a demo's HTML,
+flip `<html dir="rtl" lang="ar">`, load in Chrome. Then:
+1. `grep -nE 'margin-(left|right)|padding-(left|right)|border-(left|right)|^\s*(left|right):\s|text-align:\s*(left|right)' css/ar5iv.css` — produces ~190 sites.
+2. Classify each: **mirror** (most cases — convert to
+   `margin-inline-start/end`, `padding-inline-*`, `inset-inline-*`,
+   `text-align: start/end`) vs **stays physical** (numeric-column
+   alignment, blockquote `:before/:after`, border-bottom underlines).
+3. Convert in batches by section banner; reload demos in LTR to
+   confirm no regression; reload synthetic RTL page to confirm
+   the mirror is right.
+
+**Conventions.** `start/end` not `left/right` for text-align. The
+`text-align: right` in numeric table columns is the canonical
+"don't mirror" case — that's the original audit's example.
+
 ### 4. Spacing / type / line-height scales as tokens
 
 The typographic grammar is expressed as ~60 distinct `rem` literals
@@ -90,6 +171,21 @@ today. Tuning the design requires grep, not a single token edit.
 Scale anchors documented in the frozen `GLOWUP_PHASE2_AUDIT.md` §A.
 #1 makes cluster-by-cluster migration safer; without it, the
 `examples/` fetch-and-eye loop is the fallback (slower, but works).
+
+**Next move.** Pick anchors first (read PHASE2_AUDIT §A
+histograms), define them in `css/ar5iv/tokens.css`, document in
+TOKENS.md — but **don't migrate literals yet**. Defining the
+scales without consumers is YAGNI; we migrate in the same commit
+where we substitute the first cluster. Suggested first cluster:
+`margin` 0 / 0.5 / 1 / 1.5 / 2 / 4 rem (six anchors cover ~70 %).
+Verify each substitution by demo reload + diff. Leave hand-tuned
+non-scale values (e.g. `0.66rem` flex-grow interaction) as
+literals with a clarifying comment.
+
+**Conventions.** Scale anchors live in tokens.css. Outliers stay
+as literals (a scale step is for *repeated* values; one-off
+typography stays raw). The `:where()` wrap is for rules that
+consume tokens — *not* for the variable declarations themselves.
 
 ### ~~5. Cascade maturation — fill the `@layer` order~~ — ✅ landed 2026-05-14
 
@@ -112,6 +208,21 @@ verify: `.ltx_document { container-type: inline-size }` re-anchors
 absolute/fixed descendants (today's absolute author block uses
 `100dvw`, so the side effect may bite).
 
+**Next move.** First, *verify the hypothesis* before any CSS edit:
+build a synthetic `examples/embedded-iframe.html` with
+`<iframe src="arxiv-2501.11021.html" width="600">` inside a wide
+viewport. If the sidenote ladder picks viewport-1280 layout
+despite the iframe being 600 px, the gap is real. **If
+hypothesis is wrong** (sidenote picks correctly via some other
+mechanism), close as no-action. **If confirmed**: add
+`container-type: inline-size` to `.ltx_document`, mirror the
+seven `@media` rules in `ar5iv.css:575-668` as `@container`
+rules behind `@supports (container-type: inline-size)`, keep
+viewport fallback for one release. **Critical verification**:
+the absolutely-positioned author block at `ar5iv.css:457-466`
+must still anchor correctly to viewport center, not to
+`.ltx_document`'s left edge.
+
 ### ~~7. Build pipeline + minified bundle~~ — ✅ landed 2026-05-14
 
 `npm run build` → `lightningcss --bundle --minify --sourcemap` →
@@ -131,6 +242,18 @@ favour of logical equivalents; **after #4 lands**, warn on bare `rem`
 literals in the spacing/type cluster. Land all rules as warnings,
 promote one at a time.
 
+**Next move.** `npm i -D stylelint stylelint-config-standard`. Add
+`.stylelintrc.json` with `extends: "stylelint-config-standard"` +
+rule overrides:
+- `declaration-no-important: [true, { severity: "warning" }]` with
+  per-selector `disableFix` for the allowlist.
+- `selector-no-id: [true, { severity: "warning" }]`.
+- `unit-allowed-list: [ ["rem", "em", "%", "ch", "dvw", "dvh", "vh", "vw"], { severity: "warning" } ]`.
+Add `npm run lint` script. Triage warnings before promoting any rule
+to error. **Do not** add a custom plugin for the "no bare rem"
+rule until #4 has settled — premature plugin code is ~80 LoC of
+churn-risk.
+
 ### 9. Demonstrated extensibility — shipped theme *or* worked example
 
 Two ways to prove the token surface generalises beyond the
@@ -141,12 +264,45 @@ re-skins ar5iv-css without forking. (b) is the cheaper proof;
 (a) is the stronger one because it's exercised on every build.
 Pick when an actual user need surfaces.
 
+**Next move (path b).** Bundled with #10 — the cookbook *is*
+the worked example. **Next move (path a).** Pick the theme:
+sepia validates *palette* tokens; `data-theme="high-contrast"`
+(static replacement for the dynamic `prefers-contrast: more`
+override) validates the *override* pathway. Add the new
+`:root[data-theme="..."]` block in `tokens.css` setting only the
+tokens that change; set `color-scheme: only light` (or only dark);
+override `--fn-*-color-to-dark-mode` to `var(--ltx-*-color)` (no
+inversion) if it's a light theme. Test via `data-theme="..."` in
+DevTools console on a demo.
+
 ### 10. Theming cookbook (`docs/THEMING.md`)
 
 The RFC's worked example covers the `--fn-*` override pattern;
 a cookbook adds recipes (override one colour; override the
 inversion; add a third theme; ship a downstream extension package
 cleanly).
+
+**Next move.** Create `docs/THEMING.md` with four recipes, each
+≤30 lines of CSS + a one-paragraph commentary:
+1. *Change one palette colour* — override `--link-text-color`
+   from a downstream stylesheet.
+2. *Change the dark-mode inversion strategy* — override
+   `--fn-fg-color-to-dark-mode` (worked example for "no
+   inversion in dark mode"; for "stronger inversion"; for "use
+   `color-mix()` instead of `oklch(from …)`").
+3. *Add a third `data-theme` value* — full sepia or
+   high-contrast walk-through (overlaps with #9-path-(a) if
+   that's what we ship).
+4. *Distribute via a downstream npm package* — set up
+   `@layer myTheme` after `fixes` so overrides win without
+   `!important`. Reference the jsDelivr CDN pattern.
+Link from README + CONTRIBUTING.
+
+**Pitfalls to call out.** `light-dark(var(--a), var(--b))` is
+spec-allowed but unverified in this codebase — see the
+iteration-2 wisdom entry. Setting `color-scheme` on `:root` for
+each `data-theme` is required for `light-dark()` to resolve
+correctly.
 
 ## Dependency summary
 
@@ -247,3 +403,11 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Doc-handoff pass: added a "How to pick this up"
+  workflow section at the top (build verification, demo loop,
+  commit conventions, YAGNI/!important/visual-change house rules);
+  added a "**Next move**" paragraph at the end of each unfinished
+  item with concrete first-action guidance, tool choices, anti-
+  patterns, and verification approach. The doc is now self-contained
+  for tomorrow's pickup — no item should require re-discovery from
+  the frozen audit archives.
