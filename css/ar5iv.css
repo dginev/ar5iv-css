@@ -13,11 +13,16 @@
   regression fixtures — when changing a rule, check the cited paper.
 */
 
-/* Cascade layer order. Rules left un-layered participate in the
-   implicit, highest-priority layer — so this declaration is purely
-   additive today and does not move any existing rule's effective
-   priority. Subtlety: !important inverts the layer order, so an
-   !important inside `fixes` LOSES to an !important inside `base`. */
+/* Cascade layer order. Tokens land in `tokens`, a11y in `base`, the
+   bulk of this file in `components`, B-fixes in `fixes`. The
+   transformed-wrappers feature flag stays un-layered so its
+   !important rules keep maximum priority. `reset`, `structure`,
+   `math` are declared but currently empty — reserved for future
+   sub-divisions and for downstream themes that want to slot their
+   own rules between ours.
+   Subtlety: !important inverts the layer order, so an !important
+   inside `fixes` LOSES to an !important inside `base`. Un-layered
+   !important beats every layered !important. */
 @layer reset, tokens, base, structure, components, math, fixes;
 
 /* Design tokens (light theme defaults). */
@@ -34,6 +39,19 @@
 
 /* Print styles (only active under @media print). */
 @import url("./ar5iv/print.css");
+
+/* ============================================================
+   The bulk of ar5iv.css now sits inside `@layer components`.
+   Two regions remain un-layered:
+   - the transformed-wrappers feature flag near the middle of the
+     file, whose !important rules need maximum priority to defeat
+     LaTeXML's inline `style="transform:…"` (per the !important
+     cross-layer inversion, un-layered !important beats layered);
+   - nothing else; the imports above and the closing `@layer fixes`
+     near the end are deliberate placements.
+   ============================================================ */
+
+@layer components {
 img {
   filter: none;
   background-color: var(--image-background-color);
@@ -1901,6 +1919,7 @@ svg foreignObject > .ltx_foreignobject_container {
   */
   background-color: var(--border-color) !important;
 }
+}  /* end @layer components — transformed-wrappers feature flag follows un-layered */
 
 /* ===================================================================
    FEATURE FLAG (off): LaTeXML transform handling.
@@ -1972,6 +1991,8 @@ span.ltx_transformed_inner {
 .ltx_flex_cell > .ltx_transformed_outer > .ltx_transformed_inner {
   transform: none !important;
 }
+
+@layer components {  /* resume layered rules */
 
 /* \phantom - hide content but still allocate stand-in space */
 .ltx_phantom {
@@ -2483,6 +2504,10 @@ mfrac > * {
   padding: 0.1em;
 }
 
+}  /* end @layer components — known-bug fixes follow in @layer fixes */
+
+@layer fixes {
+
 /*======================================================================
   Fixes for known markup Bugs
 
@@ -2507,3 +2532,5 @@ mfrac > * {
   margin: auto;
   display: block;
 }
+
+}  /* end @layer fixes */

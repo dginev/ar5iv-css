@@ -30,16 +30,31 @@ docs/
 @layer reset, tokens, base, structure, components, math, fixes;
 ```
 
-- Rules left **un-layered** participate in the implicit highest-priority
-  layer — that's where most of `ar5iv.css` still lives.
-- The `tokens` layer holds variable declarations (lowest among named).
-- The `base` layer holds additive utilities (focus, ::selection, etc.).
+Current placements:
+- `tokens` — variable declarations (`css/ar5iv/tokens.css`).
+- `base` — additive utilities (focus, `:target`, `::selection`,
+  forced-colors, `[hidden]` reset; `css/ar5iv/a11y.css`).
+- `components` — the bulk of `css/ar5iv.css` (page chrome, document
+  body, paragraphs, frontmatter, footnotes, bibliography, lists,
+  tables, math, the whole catalogue of `.ltx_*` rules).
+- `fixes` — the B1/B3 known-bug patches at the bottom of `ar5iv.css`.
+- `reset`, `structure`, `math` — declared but currently empty.
+  Reserved for future sub-divisions and for downstream themes that
+  want to slot their own rules between ours.
+
+Two things stay **un-layered**, deliberately:
+- The transformed-wrappers feature flag in `ar5iv.css` (its
+  `!important` rules need maximum priority to defeat LaTeXML's
+  inline `style="transform:…"`).
+- `dark-mode.css` and `print.css` imports (their selectors carry
+  enough specificity / media-query gating that they don't need a
+  layer; staying un-layered keeps them at the top of the cascade).
 
 **Subtlety:** with `!important`, layer order *inverts*. An `!important`
 declaration in an earlier layer beats one in a later layer. Un-layered
 `!important` beats all named-layer `!important`. If you need a fix to
-override *everything*, leave it un-layered (or in the `fixes` layer
-without `!important`).
+override *everything*, leave it un-layered (or place it in `reset`
+which is the earliest named layer).
 
 ## :is() vs :where()
 

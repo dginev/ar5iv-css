@@ -27,14 +27,14 @@ matter for a scholarly-document CSS theme:
 | Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ⚠️ spot fixes only |
 | i18n / RTL via logical properties | ❌ one site, the rest physical |
 | Container-aware layout for embedded / side-by-side readers | ❌ viewport-only |
-| Override-friendly cascade for downstream themes (`@layer`) | ⚠️ order declared, bulk un-layered |
+| Override-friendly cascade for downstream themes (`@layer`) | ✅ bulk in `components`; B1/B3 in `fixes`; transformed-wrappers stays un-layered for !important priority |
 | Demonstrated extensibility (at least one alt theme) | ❌ no consumer yet |
 | Repeatable visual-regression check | ❌ human eye only |
 | Build / distribution (`dist/`, minified, source-map) | ✅ `npm run build` → `dist/ar5iv.min.css` + map via lightningcss; jsDelivr/unpkg distribution recipe in README |
 | Code-quality enforcement (stylelint or equivalent) | ❌ none |
 | Theming cookbook (recipes beyond the RFC's worked example) | ❌ |
 
-Seven ❌ rows and two ⚠️ rows on a sixteen-row checklist. Seven ✅.
+Seven ❌ rows and one ⚠️ row on a sixteen-row checklist. Eight ✅.
 Honest verdict: production-ready, not best-in-class — but the gap is
 shrinking.
 
@@ -91,15 +91,16 @@ Scale anchors documented in the frozen `GLOWUP_PHASE2_AUDIT.md` §A.
 #1 makes cluster-by-cluster migration safer; without it, the
 `examples/` fetch-and-eye loop is the fallback (slower, but works).
 
-### 5. Cascade maturation — fill the `@layer` order
+### ~~5. Cascade maturation — fill the `@layer` order~~ — ✅ landed 2026-05-14
 
-`tokens` and `base` (via a11y.css) inhabit named layers; `print`
-and `dark-mode` are imported un-layered; ~2,400 lines of `ar5iv.css`
-are un-layered. Filling the named layers lets `@layer`-using
-downstream themes override without specificity wars. Rare today,
-non-zero. Per the iteration-2 wisdom note: most consumers using
-`!important` or specificity-based overrides are *unaffected* by
-this change.
+Bulk of `ar5iv.css` now sits in `@layer components`; the B1/B3
+known-bug patches at the bottom sit in `@layer fixes`. The
+transformed-wrappers feature flag stays un-layered (preserves
+`!important` priority over inline LaTeXML transforms). `reset`,
+`structure`, `math` are declared but empty — reserved for future
+sub-divisions and as override slots for downstream themes.
+Verified via the lightningcss build: 11/11 transformed-rule
+occurrences un-layered; B1 fix correctly in `@layer fixes`.
 
 ### 6. Container-query pilot on the sidenote ladder (hypothesis)
 
@@ -159,7 +160,7 @@ cleanly).
                                  stylelint's !important and physical-
                                  direction rules can ship without #4)
 
-#5 cascade maturation        (independent)
+#5 cascade maturation        ✅ done
 #6 container-query pilot     (independent, after verification)
 #7 build pipeline            ✅ done
 #9 demonstrated extensibility (independent)
@@ -238,3 +239,11 @@ without retrospective impact evidence.
   integration recipe in `README.md` for `cdn.jsdelivr.net/npm` and
   `unpkg.com`; `dist/` gitignored, shipped via `npm publish` (manual
   for now). Status table updated 8❌/2⚠️/6✅ → 7❌/2⚠️/7✅.
+- **2026-05-14** — Item #5 landed: the bulk of `ar5iv.css` now sits
+  in `@layer components`; B1/B3 fixes in `@layer fixes`; the
+  transformed-wrappers feature flag stays un-layered. Pragmatic
+  two-layer split — `reset`, `structure`, `math` are declared but
+  empty, reserved as override slots for downstream themes. Verified
+  via lightningcss build (transformed-wrappers correctly un-layered,
+  B1 fix in `fixes`). CONTRIBUTING.md updated with the new
+  placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
