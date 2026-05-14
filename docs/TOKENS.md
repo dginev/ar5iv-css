@@ -17,11 +17,17 @@ are a separate, upstream contract.
 :root { color-scheme: light dark; }
 :root[data-theme="light"] { color-scheme: only light; }
 :root[data-theme="dark"]  { color-scheme: only dark; }
+:root[data-theme="sepia"] { color-scheme: only light;
+                            /* + warm palette overrides */ }
 ```
 
 `light-dark()` resolves against the computed `color-scheme`. With no
 `data-theme` attribute, OS preference wins. Explicit `data-theme`
 overrides.
+
+The shipping themes are `light` (default), `dark`, and `sepia`. The
+sepia variant is a first-party demonstration of the cookbook's
+recipe 3 — see `docs/THEMING.md`.
 
 ---
 

@@ -46,12 +46,14 @@ inlines all local `@import`s into a single file via
 
 ## Theming
 
-The theme honours `<html data-theme="light|dark">`, OS
+The theme honours `<html data-theme="light|dark|sepia">`, OS
 `prefers-color-scheme`, and `prefers-contrast: more`. Author-supplied
 inline colours (LaTeXML's `--ltx-*-color` custom properties) are
 inverted under dark mode via an override-friendly `--fn-*` indirection
 — see `docs/rfc_latexml_custom_properties.md` for the contract and an
-override example.
+override example. For recipes on overriding tokens, changing the
+inversion strategy, or shipping a downstream theme, see
+`docs/THEMING.md`.
 
 ## Docs
 

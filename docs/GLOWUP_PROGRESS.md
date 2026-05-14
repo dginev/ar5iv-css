@@ -72,13 +72,13 @@ matter for a scholarly-document CSS theme:
 | i18n / RTL via logical properties | ✅ ~60 sites converted; LaTeXML-internal `.ltx_border_*` / `.ltx_framed_*` / `.ltx_nopad_*` / `.ltx_align_*` stay physical (LaTeXML emits physical-side semantics) |
 | Container-aware layout for embedded / side-by-side readers | ✅ verified not-needed: iframe embedding picks correctly via own-viewport media query; no other consumer in scope |
 | Override-friendly cascade for downstream themes (`@layer`) | ✅ bulk in `components`; B1/B3 in `fixes`; transformed-wrappers stays un-layered for !important priority |
-| Demonstrated extensibility (at least one alt theme) | ❌ no consumer yet |
+| Demonstrated extensibility (at least one alt theme) | ✅ first-party `data-theme="sepia"` + real-world arxiv-browse vendor theme cross-referenced in cookbook |
 | Repeatable visual-regression check | ❌ human eye only |
 | Build / distribution (`dist/`, minified, source-map) | ✅ `npm run build` → `dist/ar5iv.min.css` + map via lightningcss; jsDelivr/unpkg distribution recipe in README |
 | Code-quality enforcement (stylelint or equivalent) | ✅ `npm run lint` with tuned ruleset; allowlisted `!important` as warning |
 | Theming cookbook (recipes beyond the RFC's worked example) | ✅ `docs/THEMING.md` with four recipes |
 
-Two ❌ rows and two ⚠️ rows on a sixteen-row checklist. Twelve ✅.
+One ❌ row and two ⚠️ rows on a sixteen-row checklist. Thirteen ✅.
 Honest verdict: production-ready, not best-in-class — but the gap is
 shrinking.
 
@@ -250,26 +250,24 @@ the spacing scale, a future custom plugin could enforce
 "prefer `--space-*` over bare rem" — but it's ~80 LoC of churn
 risk for marginal value, deferred until a second offender ships.
 
-### 9. Demonstrated extensibility — shipped theme *or* worked example
+### ~~9. Demonstrated extensibility~~ — ✅ landed 2026-05-14
 
-Two ways to prove the token surface generalises beyond the
-light/dark pair: (a) ship an additional `data-theme="sepia"` /
-`data-theme="high-contrast"` as a first-party variant, or (b)
-walk a downstream-override example in `docs/THEMING.md` that
-re-skins ar5iv-css without forking. (b) is the cheaper proof;
-(a) is the stronger one because it's exercised on every build.
-Pick when an actual user need surfaces.
+Both paths shipped:
 
-**Next move (path b).** Bundled with #10 — the cookbook *is*
-the worked example. **Next move (path a).** Pick the theme:
-sepia validates *palette* tokens; `data-theme="high-contrast"`
-(static replacement for the dynamic `prefers-contrast: more`
-override) validates the *override* pathway. Add the new
-`:root[data-theme="..."]` block in `tokens.css` setting only the
-tokens that change; set `color-scheme: only light` (or only dark);
-override `--fn-*-color-to-dark-mode` to `var(--ltx-*-color)` (no
-inversion) if it's a light theme. Test via `data-theme="..."` in
-DevTools console on a demo.
+- **Path (a)** — first-party `data-theme="sepia"` variant in
+  `css/ar5iv/tokens.css`. Validates the palette-token override
+  pathway (it's exercised on every build and lint). Demo at
+  `examples/ar5iv-1910.06709-sepia.html`.
+- **Path (b)** — `docs/THEMING.md` (item #10) cross-references
+  the production arxiv-browse `arxiv-html-papers-*.css` /
+  `arxiv-html-papers-theme-*.css` stack. The cross-check
+  surfaced a real cookbook gap (the `--text-color-author-black-dark`
+  token was not mentioned as the answer to the arxiv-browse
+  TODO comment about the author-black rescue); fixed in the
+  same commit. Also added an "Extending the token surface"
+  section after recipe 3 covering net-new tokens for downstream
+  chrome (headers, footers, nav), which the arxiv-browse stack
+  exercises heavily but the cookbook had only implied.
 
 ### ~~10. Theming cookbook (`docs/THEMING.md`)~~ — ✅ landed 2026-05-14
 
@@ -381,6 +379,25 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Item #9 landed both paths. Path (a):
+  first-party `data-theme="sepia"` declared in
+  `css/ar5iv/tokens.css` with cream/brown palette overrides, no
+  `--fn-*` inversion (the application rules' gate doesn't fire
+  for `sepia`), and a synthetic demo at
+  `examples/ar5iv-1910.06709-sepia.html`. Path (b): the user
+  pointed at the production arxiv-browse stack
+  (`arxiv-html-papers-20260131.css` + theme variant) as a real
+  in-the-wild consumer; the cookbook (#10) now cites it as the
+  validation case. The cross-check surfaced one real gap: the
+  downstream had a TODO comment about wanting a dedicated token
+  for the dark-mode author-black rescue, which iteration 2
+  introduced as `--text-color-author-black-dark` but the
+  cookbook hadn't called out. Cookbook updated with a
+  short callout in recipe 2 and a new "Extending the token
+  surface" section covering net-new downstream tokens (headers,
+  footers, nav) — these are common in real themes but only
+  implicit in recipe 4. Status table: 2 ❌ / 2 ⚠️ / 12 ✅ →
+  1 ❌ / 2 ⚠️ / 13 ✅.
 - **2026-05-14** — Item #6 closed: hypothesis falsified. The
   iframe-in-wide-host test (`examples/embedded-iframe.html`)
   confirmed that the sidenote-ladder media query evaluates

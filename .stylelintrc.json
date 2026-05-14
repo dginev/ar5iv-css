@@ -19,6 +19,7 @@
     "comment-empty-line-before": null,
     "rule-empty-line-before": null,
     "declaration-empty-line-before": null,
+    "custom-property-empty-line-before": null,
     "selector-id-pattern": null,
     "color-function-notation": null,
     "alpha-value-notation": null,

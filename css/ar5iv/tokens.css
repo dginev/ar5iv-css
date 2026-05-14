@@ -140,6 +140,31 @@
 :root[data-theme="light"] { color-scheme: only light; }
 :root[data-theme="dark"]  { color-scheme: only dark; }
 
+/* Sepia — first-party reference for the cookbook recipe-3 pattern
+   (`docs/THEMING.md`). A warm light theme; doubles as proof that
+   the token surface generalises beyond the light/dark pair.
+
+   Contrast on the cream background (#f4ecd8):
+   - text  #5b4636 — ~7.4:1 ✓
+   - link  #6b4423 — ~7.3:1 ✓
+   - border #8a7458 — decorative, not a contrast surface
+
+   No `--fn-*` overrides: the per-element dark-mode application
+   rules are gated on `[data-theme="dark"]` and on
+   `:root:not([data-theme="light"])` inside
+   `@media (prefers-color-scheme: dark)`, so `data-theme="sepia"`
+   doesn't trigger any inversion. Author-supplied colours render
+   as-is on the sepia background. */
+:root[data-theme="sepia"] {
+  color-scheme: only light;
+  --background-color: #f4ecd8;
+  --text-color: #5b4636;
+  --border-color: #8a7458;
+  --link-text-color: #6b4423;
+  --note-highlight-color: #ebe0c0;
+  --surface-subtle: #ede2c8;
+}
+
 /* Bumped contrast for users who request it. */
 @media (prefers-contrast: more) {
   :root {
