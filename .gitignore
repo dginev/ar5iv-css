@@ -285,3 +285,7 @@ dist/
 
 # Node tooling
 node_modules/
+
+# Visual-regression harness scratch (fresh renders + diff PNGs).
+# The committed baseline lives in tools/baseline/.
+tools/.cache/

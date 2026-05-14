@@ -73,14 +73,15 @@ matter for a scholarly-document CSS theme:
 | Container-aware layout for embedded / side-by-side readers | ✅ verified not-needed: iframe embedding picks correctly via own-viewport media query; no other consumer in scope |
 | Override-friendly cascade for downstream themes (`@layer`) | ✅ bulk in `components`; B1/B3 in `fixes`; transformed-wrappers stays un-layered for !important priority |
 | Demonstrated extensibility (at least one alt theme) | ✅ first-party `data-theme="sepia"` + real-world arxiv-browse vendor theme cross-referenced in cookbook |
-| Repeatable visual-regression check | ❌ human eye only |
+| Repeatable visual-regression check | ✅ `npm test` runs Playwright + pixelmatch against `tools/baseline/` PNGs |
 | Build / distribution (`dist/`, minified, source-map) | ✅ `npm run build` → `dist/ar5iv.min.css` + map via lightningcss; jsDelivr/unpkg distribution recipe in README |
 | Code-quality enforcement (stylelint or equivalent) | ✅ `npm run lint` with tuned ruleset; allowlisted `!important` as warning |
 | Theming cookbook (recipes beyond the RFC's worked example) | ✅ `docs/THEMING.md` with four recipes |
 
-One ❌ row and two ⚠️ rows on a sixteen-row checklist. Thirteen ✅.
-Honest verdict: production-ready, not best-in-class — but the gap is
-shrinking.
+Zero ❌ rows and two ⚠️ rows on a sixteen-row checklist. Fourteen ✅.
+Honest verdict: every dimension has at least a starting answer; the
+two ⚠️ rows have well-defined remaining work (font-size scale,
+in-browser reflow walk) but neither blocks shipping today.
 
 A reader should note the rows mix four kinds of dimension:
 **CSS capabilities** (themes, contrast, scales, reflow, RTL,
@@ -92,31 +93,39 @@ the CSS-capabilities rows than for the others.
 
 ## Priority list (flat — tier classifications dropped as forced)
 
-### 1. Visual-regression harness — has retrospective evidence
+### ~~1. Visual-regression harness~~ — ✅ landed 2026-05-14
 
-The iteration-1 `flow-root` swap moved the document title ~32 px
-without anyone noticing for the whole iteration-2 critique cycle.
-That's the clean case for mechanical pixel-diff: a real, geometric,
-unintended change that text review reliably misses. Shape sketched
-in the frozen `GLOWUP_PHASE2_AUDIT.md` §J — extract arXiv IDs from
-in-tree comments, fetch HTML, capture screenshots across viewport ×
-theme, diff against a committed baseline.
+`tools/visual.mjs` renders the three corpus demos at 1280 CSS-px ×
+{light, dark} using Playwright and diffs against PNG baselines in
+`tools/baseline/` using pixelmatch (per-pixel YIQ threshold 0.1,
+per-image pixel-count tolerance 400). `npm test` runs the diff;
+fresh renders and diff PNGs land in `tools/.cache/` (gitignored).
+`node tools/visual.mjs --update` refreshes the baseline after an
+intentional change.
 
-(The fill/stroke OKLCH/HSL change is *not* harness evidence — the
-output rendered acceptably either way, only the expressed intent was
-inconsistent. Stylelint or code review would catch that class;
-pixel-diff would just flag a difference and require human judgement
-to call it a regression.)
+Scope decisions deviating from the original next-move sketch:
 
-**Next move.** Decide rendering tool (Playwright is the
-best-supported via `@playwright/test`; Puppeteer is lighter).
-Sketch `tools/render-corpus.{mjs,sh}` that fetches the in-tree
-corpus, renders at 320 / 768 / 1280 / 1920 CSS-px × {light, dark},
-and writes PNGs under `tools/.cache/snapshots/<id>/`. Use
-`pixelmatch` for the diff with a *count* tolerance (not SSIM —
-anti-aliasing variance is too high). Baseline shipped as
-`tools/snapshots-baseline.tar.zst` so commit history doesn't carry
-binary churn. Tie it to `npm test`.
+- **First-viewport only, not fullPage.** Full-page rendering put
+  the committed baseline at 25 MB (the 2407.16893 paper alone was
+  8 MB). First-viewport keeps the whole baseline under 1.5 MB —
+  small enough to live in git history without churn. The
+  retrospective evidence for this harness (`flow-root` title
+  shifts, UA-default margin re-assertion) all manifests in the
+  first viewport. If a class of below-the-fold regression slips
+  through, the script flips to `fullPage: true` (one-line change)
+  and the baseline migrates out of git to a
+  `tools/snapshots-baseline.tar.zst` blob.
+- **One viewport (1280), not four.** The 320/768/1280/1920 matrix
+  would have been 4x the baseline size for marginal coverage —
+  the structural layout responds at 96rem and 52rem media
+  breakpoints, both visible from a single mid-range viewport.
+  Smaller-than-baseline regressions are covered by the reflow
+  audit (#2) and would benefit from an explicit reflow harness
+  rather than fork the visual-regression budget.
+
+Both decisions are reversible. Both prefer "ship a working
+harness today" over "ship the theoretically maximal one some
+sprint later".
 
 ### 2. Reflow audit at 320 CSS-px and 400 % zoom (WCAG 1.4.10) — ⚠️ partial
 
@@ -379,6 +388,18 @@ without retrospective impact evidence.
   via lightningcss build (transformed-wrappers correctly un-layered,
   B1 fix in `fixes`). CONTRIBUTING.md updated with the new
   placements. Status table 7❌/2⚠️/7✅ → 7❌/1⚠️/8✅.
+- **2026-05-14** — Item #1 landed: visual-regression harness.
+  `npm test` → `node tools/visual.mjs` → Playwright renders the
+  three corpus demos at 1280 × {light, dark}, pixelmatch diffs
+  against PNG baselines in `tools/baseline/`. First-viewport only
+  (not fullPage) to keep the baseline under 1.5 MB. Workflow
+  documented in CONTRIBUTING.md (corpus fetch via
+  `examples/fetch.sh`, then `npm test`; `--update` refreshes
+  baseline after intentional changes). With #1 landed, every
+  iteration-2 regression class now has a mechanical guard: the
+  visual harness catches geometric changes, stylelint catches
+  syntax/idiom drift. Status table: 1 ❌ / 2 ⚠️ / 13 ✅ →
+  0 ❌ / 2 ⚠️ / 14 ✅.
 - **2026-05-14** — Item #9 landed both paths. Path (a):
   first-party `data-theme="sepia"` declared in
   `css/ar5iv/tokens.css` with cream/brown palette overrides, no

@@ -73,6 +73,38 @@ the canonical visual-regression corpus. When changing a rule that
 references one of these IDs in a nearby comment, render that paper
 and confirm no visual diff.
 
+## Visual regression
+
+```bash
+./examples/fetch.sh ar5iv-1910.06709          # populate corpus
+./examples/fetch.sh -s arxiv 2407.16893
+./examples/fetch.sh -s arxiv 2501.11021
+npm test                                       # diff against tools/baseline/
+```
+
+`npm test` runs `node tools/visual.mjs`, which uses Playwright +
+pixelmatch to compare first-viewport renders of the three corpus
+demos at 1280 CSS-px × {light, dark} against PNG baselines
+committed under `tools/baseline/`. Differences above the per-image
+pixel-count tolerance (default 400) fail the run; diff PNGs land
+in `tools/.cache/diff/` (gitignored) for inspection.
+
+After an intentional visual change, refresh the baseline:
+
+```bash
+node tools/visual.mjs --update
+```
+
+The baseline is first-viewport-only (full-page rendering pushed
+the committed PNGs past 25 MB; first-viewport keeps the whole set
+under 1.5 MB). All iteration-2 visual regressions caught
+retrospectively (`flow-root` title shifts, UA-default margin
+re-assertion) manifest in the first viewport, so the coverage
+matches the failure mode that drove the harness's inclusion. If a
+class of below-the-fold regression starts slipping through, the
+script's commented-out branch flips to `fullPage: true` and the
+baseline migrates to an out-of-tree `tools/snapshots-baseline.tar.zst`.
+
 ## Linting
 
 ```bash
