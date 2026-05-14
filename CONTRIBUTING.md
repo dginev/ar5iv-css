@@ -4,6 +4,22 @@ Welcome. ar5iv-css styles LaTeXML's HTML output for arXiv articles.
 This file orients new contributors; for the longer story of recent
 architectural decisions, see `docs/GLOWUP_WISDOM.md`.
 
+## Provenance
+
+ar5iv-css was forked from LaTeXML's bundled `LaTeXML.css`
+(`lib/LaTeXML/resources/CSS/LaTeXML.css` in the LaTeXML repo). The
+custom properties LaTeXML emits inline (`--ltx-fg-color`,
+`--ltx-bg-color`, `--ltx-fo-width`, `--ltx-fo-height`,
+`--ltx-fo-depth`, etc.) are an *upstream contract*: LaTeXML
+deposits them per-element from its TeX-box machinery, and any
+stylesheet for LaTeXML output reads them back. We've diverged
+significantly on presentation (ar5iv.css is ~2,500 lines vs
+LaTeXML.css's ~600) but the contract surface stays in lockstep.
+When LaTeXML adds or changes a custom-property name, ar5iv-css
+follows. Vanilla LaTeXML.css is worth checking when adding rules
+that consume LaTeXML-deposited inline styles or class names —
+the contract may already be documented there.
+
 ## Layout of the codebase
 
 ```
@@ -94,6 +110,16 @@ After an intentional visual change, refresh the baseline:
 ```bash
 node tools/visual.mjs --update
 ```
+
+When `npm test` fails, three artefacts help diagnose:
+- `tools/.cache/snapshots/<name>.png` — the fresh render
+- `tools/.cache/diff/<name>.png` — pink overlay marking differing
+  pixels against the baseline
+- `tools/baseline/<name>.png` — the committed baseline
+
+Open all three side by side in an image viewer (or in the
+browser via `file://` URLs). The diff PNG points at *what
+moved*; the snapshot vs baseline shows *which direction*.
 
 The baseline is first-viewport-only (full-page rendering pushed
 the committed PNGs past 25 MB; first-viewport keeps the whole set

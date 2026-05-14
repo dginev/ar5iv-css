@@ -23,27 +23,45 @@ If you're new here, the mental model is:
 
 ## Recipe 1 — Override a single palette colour
 
-Goal: change the link colour in light mode only.
+Goal: change the link colour. The token surface is theme-aware
+(`light-dark()`), so an override has to specify both branches:
 
 ```css
 /* downstream.css */
 :root {
-  --link-text-color: light-dark(#0066cc, var(--link-text-color));
+  --link-text-color: light-dark(#0066cc, #d4d4d4);
 }
 ```
 
-That's the whole change. The token already participates in the
-cascade via `light-dark()`, so we re-declare it preserving the
-dark branch and replacing only the light side. The unlayered
-declaration wins over ar5iv-css's `@layer tokens` definition for
-non-`!important` rules.
+Look up the original dark value in [TOKENS.md](./TOKENS.md) if
+you want to preserve it (here `#c9d1d9`/`#d4d4d4` for various
+foreground tokens) — otherwise the dark branch becomes whatever
+you write.
 
-**Pitfall.** `light-dark(var(--a), var(--b))` is spec-allowed but
-not exercised in the shipping ar5iv path (see the `--fn-*` design
-note in `dark-mode.css`). The pattern above is fine because the
-arguments are a *literal* and a *var()* — the literal is what
-`light-dark()` is designed for. If you wanted both sides as
-variables, test it across your target browser matrix first.
+**Why you can't `var()`-reference the original.** A pattern like
+`light-dark(#0066cc, var(--link-text-color))` *looks* like it
+would keep the dark branch, but it's a CSS *cyclic dependency*:
+the inner `var(--link-text-color)` references the property being
+defined, the browser detects the cycle, and the entire property
+becomes `unset` — links go currentColor in both modes. There's
+no spec-level "previous value" you can reach for; CSS will get
+this with `@function` (see the deferred wisdom note in
+`GLOWUP_WISDOM.md`), but as of writing it doesn't.
+
+**Side-only override pattern (light-only without touching dark).**
+If you really want to leave the dark branch alone, override per
+`data-theme` and per OS preference separately:
+
+```css
+:root[data-theme="light"] { --link-text-color: #0066cc; }
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme="dark"]) { --link-text-color: #0066cc; }
+}
+```
+
+This mirrors ar5iv-css's own pattern for the `--fn-*` application
+rules (`dark-mode.css`). The unlayered declarations win the
+cascade over `@layer tokens` for non-`!important`.
 
 ---
 
@@ -71,7 +89,7 @@ Useful when the upstream document is colour-curated for both
 themes already (rare for arXiv, common for hand-authored
 publishing pipelines).
 
-**(b) Stronger inversion — bump the scale toward 1.**
+**(b) More dramatic inversion — bump the scale toward 1.**
 
 ```css
 @supports (color: oklch(from white l c h)) {
@@ -82,9 +100,19 @@ publishing pipelines).
 }
 ```
 
-Raises the foreground floor from L=0.3 (default) to L=0.15 — more
-contrast on near-black inputs at the cost of compressing the
-distinct-author-colour palette.
+The default 0.7 maps author lightness `l ∈ [0, 1]` to output
+`[0.3, 1]`. A scale of 0.85 maps to `[0.15, 1]` — distinct
+author colours spread across a wider range, so two near-white
+author colours (e.g. `#cccccc` and `#aaaaaa`) end up *visibly
+different* in dark mode rather than collapsing to similar pale
+shades.
+
+**Trade-off.** At mid-tone author inputs the larger scale
+produces *darker* dark-mode outputs (a mid-grey author colour
+inverts further toward black). That can drop below the contrast
+floor on the theme's dark background. The 0.7 default is a
+contrast/distinction balance; 0.85 prioritises distinction. Test
+on your actual paper corpus before committing.
 
 **(c) `color-mix()` instead of relative `oklch()`.**
 

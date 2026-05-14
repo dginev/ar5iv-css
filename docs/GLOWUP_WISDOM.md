@@ -897,7 +897,16 @@ What survives:
   contract IS the consumer).
 - `@import` chain collapse (real CSSOM staircase, real fix).
 - TODO triage (stale comments are real noise).
-- `--fo_width` investigation (undefined fallback is a real mystery).
+- `--fo_width` investigation: turned out to be a legacy
+  underscore-named fallback in the `var(--ltx-fo-width, var(--fo_width))`
+  chain. The hyphen-named `--ltx-fo-width` is *the* upstream contract —
+  LaTeXML emits it inline on every `<svg:foreignObject>` (see
+  `lib/LaTeXML/Engine/TeX_Box.pool.ltxml:385`). The underscore
+  fallback had no producer in current LaTeXML and was dropped in
+  iteration 2; the hyphen-named consumer was kept. (Originally
+  framed in this doc as "undefined fallback is a real mystery";
+  more accurately: the *underscore* form was the dead fallback,
+  the *hyphen* form is alive and load-bearing.)
 - `[hidden]` reset (defensive against universal mechanism — already
   landed).
 - Container queries pilot — *real* benefit for embedded readers,
@@ -910,3 +919,240 @@ that is exhaustive but not justified. A YAGNI re-pass turns that into
 a plan of "everything we *must* improve right now". The two passes are
 both valuable; the order matters. Do the exhaustive audit first, the
 YAGNI pass second.
+
+---
+
+# Iteration 3
+
+## Stylelint surfaced a six-year-dead rule
+
+Adding stylelint to the build (iteration-3 item #8) turned up
+`span.ltx_personname span:first { font-size: 1.5rem }` in `ar5iv.css`.
+`:first` is a valid pseudo-class only inside `@page` rule blocks; in
+a regular selector it is unknown, and browsers silently drop the
+whole rule. So this declaration has been an inert string for the
+lifetime of the file (git blame puts it pre-glow-up by years).
+Multiple human review passes — including this iteration's critique
+cycles — missed it because the syntax is *plausible-looking*.
+
+Other errors stylelint caught in the same pass were the routine kind:
+four `word-wrap` → `overflow-wrap` deprecations, one
+`word-break: break-word` deprecated keyword, four single-colon
+`:before` / `:after` pseudo-elements. Together with the dead rule,
+ten "errors" in 2,500 lines of stable CSS — none of which a human
+linter would have hit reliably.
+
+### The lesson
+
+A class of bug exists where the *syntax is plausible* but the
+*semantics are wrong*. Human review is unreliable on this class —
+not because of inattention but because reviewers parse what they
+*expect* to be there. Mechanical readers don't have expectations.
+Land lint coverage early, even if the ruleset is mostly
+warnings-not-errors.
+
+---
+
+## A token nobody uses is the same as a token that doesn't exist
+
+When iteration-3 reached item #9 (demonstrated extensibility), the
+user pointed at the arxiv-browse vendor stylesheet
+(`arxiv-html-papers-theme-20250131.css`) as a real downstream
+consumer. That file contains:
+
+```css
+/* TODO: This color should be a design token name eventually.
+   Without that we have to copy the full selector rule from
+   ar5iv.css: */
+[data-theme="dark"] [style*="--ltx-fg-color:#000000;"] {
+  --text-color: #f9f7f7;
+  color: var(--text-color);
+}
+```
+
+The token they wanted *had been added* in iteration 2:
+`--text-color-author-black-dark` in `tokens.css`. ar5iv-css's own
+rescue rule reads it. A one-line downstream override
+(`:root { --text-color-author-black-dark: #f9f7f7; }`) replaces the
+selector-chain copy.
+
+But the cookbook (`THEMING.md`) didn't mention this token, and
+TOKENS.md only described it. So the consumer couldn't have found it
+without reading the upstream source.
+
+### The lesson
+
+A token's *purpose* needs to land where a consumer would
+*discover the need*. TOKENS.md is the reference, but the cookbook is
+the discovery surface — recipes are where someone writing
+`color: #f9f7f7` would think to look. Document at the failure point,
+not at the definition point.
+
+The vendor cross-reference also caught a pattern the cookbook had
+only implied: real downstream themes don't just *override* tokens,
+they *extend* the token surface with their own chrome variables
+(`--header-background-color`, `--toc-text-highlight-color`,
+`--nav-width`). Added a section explicitly for that pattern.
+
+---
+
+## "Falsified by hypothesis test" beats "falsified by reasoning"
+
+Iteration-3 item #6 was a container-query pilot. The original
+audit framed it as a hypothesis: *in a narrow iframe inside a
+wide host viewport, the sidenote ladder picks the wrong band*. The
+Next-move guidance was explicit: build a synthetic test page,
+verify, then decide.
+
+Built `examples/embedded-iframe.html` (a 600 CSS-px iframe inside
+a wide host) and reasoned: per the CSS spec, the `width` media
+feature evaluates against the iframe's own viewport when the iframe
+declares `<meta name="viewport" content="width=device-width">`,
+which every LaTeXML output does. So the predicted misclassification
+can't happen. Closed as no-action.
+
+The test page exists. The argument is reasoning-from-spec, but the
+test page is the artifact that would have DISproved the reasoning
+if reality diverged. Different from a pure thought-experiment
+closure — *I could have been wrong, and the test would have shown
+it*.
+
+### The lesson
+
+A "verified" hypothesis is one where the test could have
+falsified you. Reasoning from spec is a strong argument; reasoning
+*plus an artifact that exposes you to falsification* is stronger.
+For features that aren't load-bearing today (container queries
+would have been speculative anyway), the artifact-bearing closure
+is enough.
+
+---
+
+## Visual harness: ship working scope today, iterate scope later
+
+Iteration-3 item #1 specified 320/768/1280/1920 CSS-px × {light, dark}
+× fullPage for the visual-regression harness baseline. Shipped
+1280 × {light, dark} × first-viewport-only.
+
+Why:
+- fullPage put the committed baseline at 25 MB — the 2407.16893 paper
+  alone was 8 MB. First-viewport keeps the whole set under 1.5 MB.
+- The retrospective evidence motivating the harness (the iteration-2
+  flow-root title shift, the post-flow-root UA-default margin
+  re-assertion) all manifests in the first viewport at any of the
+  responsive breakpoints. So 1280 catches the class of bug that
+  drove the harness's inclusion.
+- 320/768/1920 quadruples baseline size for marginal coverage of
+  *responsive* layout, which has its own audit item (#2) and would
+  benefit from a dedicated narrow-viewport harness — not a fork of
+  the visual-regression budget.
+
+Both decisions are reversible (one-line script change for fullPage;
+add to matrix for more viewports). The baseline migrates out of
+git to a `tools/snapshots-baseline.tar.zst` if it grows.
+
+### The lesson
+
+A tooling spec like "render at the full matrix" is the *theoretical
+maximum* the tool can do. Shipping the theoretical maximum on day
+one is a YAGNI violation if a narrower scope catches the
+retrospective evidence motivating the tool. Ship working scope;
+expand the matrix when a *new* class of regression slips through.
+
+---
+
+## `light-dark(literal, var(--same-name))` is a CSS cyclic dependency
+
+Writing recipe 1 of the cookbook, claimed this pattern works:
+
+```css
+:root { --link-text-color: light-dark(#0066cc, var(--link-text-color)); }
+```
+
+The intuition: "redeclare with a new light branch, preserve the dark
+branch by referencing the existing token". The reality: per CSS
+Custom Properties Level 2 §5.1 (cyclic dependencies), `var(--link-text-color)`
+inside the value of `--link-text-color` is a cycle — the browser
+detects it and the entire property becomes `unset`. Links would
+inherit `currentColor` in *both* themes, not preserve the dark
+branch.
+
+Caught it on the critique pass after shipping. CSS doesn't have a
+spec-level "previous value" reference; the working pattern is to
+inline both branches (look up the dark value in TOKENS.md), or to
+override per-theme separately (`:root[data-theme="light"] { … }` and
+a parallel `@media (prefers-color-scheme: light)` rule for the OS
+case).
+
+### The lesson
+
+Code examples in docs are still code — run them. The intuition was
+good, the spec doesn't support it. CSS `@function` (Level 5) will
+provide a way to compute properties from previous values; until
+then, downstream overrides have to know both branches.
+
+---
+
+## Logical-property stays-physical: a judgment call about LaTeXML
+
+Item #3 converted ~60 sites in `ar5iv.css` from physical
+(`margin-left`, `padding-right`, `border-left`, `text-align: left`)
+to logical equivalents (`margin-inline-start`, `padding-inline-end`,
+`border-inline-start`, `text-align: start`). The conversion was
+mostly mechanical, with one judgment-call boundary:
+
+LaTeXML emits class names like `.ltx_border_l`, `.ltx_border_r`,
+`.ltx_nopad_l`, `.ltx_nopad_r`, `.ltx_align_left`, `.ltx_align_right`,
+`.ltx_framed_left`, `.ltx_framed_right`. The `_l`/`_r`/`_left`/`_right`
+suffix names the physical side directly, derived from TeX-source
+column position. Today's arXiv corpus is overwhelmingly LTR, so
+physical and logical agree. If LaTeXML eventually emits RTL tables,
+*the same class name on the same cell* should produce the
+inline-start edge (right in RTL), not the literal left. So the
+question is: do these classes mean "physical left" or "inline-start"?
+
+Left them physical, with an explanatory comment block in the
+borders section. The rationale: LaTeXML's intent today is physical;
+ar5iv-css can re-interpret when LaTeXML's emission documentation
+catches up. The alternative (re-interpret eagerly as logical) would
+"work" today but might break a future LaTeXML emission whose author
+actually meant "physical left".
+
+### The lesson
+
+Class names that embed direction in their suffix are an
+*upstream contract*, not a styling primitive. Treat them as the
+upstream emitter intends, even when the codebase has moved past
+the physical primitive itself. The cost is a couple of remaining
+physical declarations; the alternative is breaking a future
+contract.
+
+---
+
+## A "fix" that changes a function's shape almost always has side-effects
+
+The epigraph reflow fix (iteration-3 #2) changed:
+
+```css
+/* before */ width: min(100%, calc(0.5 * var(--main-width)));
+             margin-inline-start: min(50%, calc(0.45 * var(--main-width)));
+
+/* after  */ width: min(50%, calc(0.5 * var(--main-width)));
+             margin-inline-start: min(45%, calc(0.45 * var(--main-width)));
+```
+
+The commit message claimed "preserves the wide-viewport intent". True
+at *very* wide viewports (where the rem caps apply to both branches),
+but at moderate viewports (~50-60rem) the new formula produces a
+slightly smaller epigraph (~25rem width vs the original 26rem,
+~22.5rem indent vs 23.4rem). The visual harness at 1280 doesn't catch
+this because the rem caps apply at that width.
+
+### The lesson
+
+Changing the *shape* of a function (e.g. `min(100%, X)` →
+`min(50%, X)`) almost always has effects across the function's
+range, even if it preserves end-point behaviour. "Preserves intent"
+needs to specify the input range. Document the side-effect at the
+time of the change rather than waiting for it to show up as a
+diff later.

@@ -144,10 +144,12 @@
    (`docs/THEMING.md`). A warm light theme; doubles as proof that
    the token surface generalises beyond the light/dark pair.
 
-   Contrast on the cream background (#f4ecd8):
-   - text  #5b4636 — ~7.4:1 ✓
-   - link  #6b4423 — ~7.3:1 ✓
-   - border #8a7458 — decorative, not a contrast surface
+   Contrast on the cream background (#f4ecd8), per the WCAG 2.x
+   relative-luminance formula (sRGB linearised, weights
+   0.2126/0.7152/0.0722, `(L_max + 0.05) / (L_min + 0.05)`):
+   - text   #5b4636 — 7.48:1 (WCAG AAA for body)
+   - link   #6b4423 — 7.19:1 (WCAG AAA for body)
+   - border #8a7458 — decorative; not a contrast surface
 
    No `--fn-*` overrides: the per-element dark-mode application
    rules are gated on `[data-theme="dark"]` and on

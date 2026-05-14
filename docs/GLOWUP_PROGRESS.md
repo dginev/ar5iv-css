@@ -206,27 +206,30 @@ sub-divisions and as override slots for downstream themes.
 Verified via the lightningcss build: 11/11 transformed-rule
 occurrences un-layered; B1 fix correctly in `@layer fixes`.
 
-### ~~6. Container-query pilot~~ — ✅ closed 2026-05-14 (hypothesis falsified)
+### ~~6. Container-query pilot~~ — ✅ closed 2026-05-14 (spec-based + artifact)
 
 Hypothesis-driven step from the iteration-3 plan: build a
 synthetic iframe-in-wide-host page, verify whether the sidenote
 ladder picks the wrong band. Test page at
 `examples/embedded-iframe.html` (a 600 CSS-px iframe inside a
-wide host page, both `ar5iv-1910.06709.html` and the
-embedded-arxiv variant load fine).
+wide host page).
 
-**Result:** the hypothesis is wrong. Inside an iframe with
-`<meta name="viewport" content="width=device-width">`, the
-`width` media feature evaluates against the iframe's own
-viewport (600 CSS-px) and the `@media (width >= 96rem)` query
-correctly fails — the narrow-screen sidenote band applies.
+**Reasoning closure** rather than visual-verification closure:
+per the CSS spec, the `width` media feature inside an iframe
+evaluates against the iframe's own viewport, and every LaTeXML
+output declares `<meta name="viewport" content="width=device-width">`.
+So `@media (width >= 96rem)` cannot match a 600 CSS-px iframe
+even when the host is at 1920. The narrow-screen sidenote band
+applies; no misclassification possible.
 
-Container queries would still be useful for scenarios that
-don't exist today (ar5iv embedded directly in a CMS sidebar
-without iframe isolation; side-by-side dual-article reader
-view). Per YAGNI: defer until a real consumer surfaces. Closed
-as no-action with the test page retained for future
-re-verification.
+The test page is the falsifiable artifact — open in a maximised
+browser, the iframe shows the narrow-band layout to confirm. If a
+future spec change broke the assumption, the test would diverge.
+
+Container queries would still be useful for scenarios that don't
+exist today (ar5iv embedded directly in a CMS sidebar without
+iframe isolation; side-by-side dual-article reader view). Per
+YAGNI: defer until a real consumer surfaces.
 
 ### ~~7. Build pipeline + minified bundle~~ — ✅ landed 2026-05-14
 
