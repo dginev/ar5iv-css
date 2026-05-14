@@ -1184,3 +1184,70 @@ range, even if it preserves end-point behaviour. "Preserves intent"
 needs to specify the input range. Document the side-effect at the
 time of the change rather than waiting for it to show up as a
 diff later.
+
+---
+
+## Impedance-mismatch problems: print-sized content in screen-sized boxes
+
+A class of bugs in `ar5iv.css` named by the project owner during
+iteration 3: source content was *originally typeset for A4 or
+Letter paper* — fixed-width page, comfortable margins, no
+scrollbars. When LaTeXML extracts the same content and ar5iv-css
+re-renders it for variable-width screens, the original sizing
+assumptions break. Common symptoms:
+
+- A code listing whose lines comfortably fit ~75 character columns
+  on a 5.5″ printed page overflows horizontally on a 320 CSS-px
+  phone viewport.
+- A 600×400 figure that fits centred on Letter paper crowds a
+  narrow column.
+- A wide tabular environment that A4 makes look balanced becomes
+  a horizontal-scroll trigger on screen.
+
+These aren't bugs in the upstream LaTeX source, nor are they bugs
+in LaTeXML's HTML emission. They're bugs in the *interface
+between* — the impedance mismatch between fixed-width print
+geometry and elastic screen geometry. Naming the category
+clarifies the design space:
+
+- A fix that *reflows* content (allow wrapping, shrink graphics)
+  buys mobile readability at the cost of preserved formatting.
+- A fix that *contains overflow inside the source element*
+  (`overflow-x: auto` on a listing, `overflow-x: auto` on a wide
+  table) preserves the original geometry but introduces a
+  per-element scrollbar.
+- A fix that *constrains the source* (re-render the figure at a
+  smaller size; shrink the listing font) requires LaTeXML-side
+  re-emission.
+
+Each axis is a different cost. The category exists because the
+project owner has multiple of these open in different shapes —
+listings, figures, tables, wide math — and the *right* answer
+varies by content type. A listing's structure (line numbers,
+indentation, monospace columns) is load-bearing in a way prose
+isn't, so reflow breaks more than it fixes; containment is
+typically the right call. A figure has no such structure, so
+shrinking it works. Wide tables are in between; ar5iv currently
+uses `overflow-x: auto` on `.ltx_table`.
+
+### The lesson
+
+When a rule looks like it's "fighting the medium" — like a
+listing that overflows the viewport — first ask whether the
+content was sized for a different medium. If yes, the design
+space is the three axes above, not a binary choice. Pick the
+axis whose cost matches the content's load-bearing properties.
+
+### Anti-lesson on the fix tactic
+
+`overflow-x: auto` on a container is tempting because it's a
+one-line fix. It also frequently produces *unwanted in-content
+scrollbars* in cases the author didn't anticipate — a listing
+whose content fits the viewport on most papers but is wider than
+`--main-width` for a few specific corpus papers (algorithm
+listings with deep indentation, for example) will now grow a
+horizontal scrollbar on those papers, even on desktop. That's
+not necessarily wrong, but it's *different* from before and
+worth visual verification across the corpus in both Chrome and
+Firefox before landing — scrollbar visibility, position, and
+behaviour vary between browsers and platforms.
