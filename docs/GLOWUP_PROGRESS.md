@@ -83,6 +83,29 @@ Honest verdict: every dimension has at least a starting answer; the
 two ⚠️ rows have well-defined remaining work (font-size scale,
 in-browser reflow walk) but neither blocks shipping today.
 
+**End-of-iteration-3-with-followups verdict (2026-05-14):**
+substantively best-in-class for the CSS capabilities a scholarly
+theme is expected to cover. The remaining open work, captured in
+the iteration-4 plan below, is **engineering polish and
+real-world validation**, not capability gaps in the CSS itself:
+
+- Tooling: harness is Chromium-only; no CI / shared baseline; 5-min
+  serial render time per `npm test`.
+- Real-world cases: two-column corpus entry pending from the
+  project owner (Q1 thread); a 400 % zoom DevTools walk for
+  content-driven reflow hasn't happened.
+- User-tracked bug backlog: 15 GitHub issues under arXiv/html_feedback
+  (recorded in the local `black-on-black-list.md`) are open against
+  ar5iv styling. These are concrete bugs from production users;
+  triaging each yields targeted CSS fixes.
+- Upstream LaTeXML: a handful of TODOs in `ar5iv.css` wait on
+  LaTeXML-side emission improvements (transformed-wrappers feature
+  flag retirement, focusable `.ltx_note_mark`, positive
+  `.ltx_long` class, etc.).
+
+None of these prevent shipping ar5iv-css as a credible best-in-class
+theme today.
+
 A reader should note the rows mix four kinds of dimension:
 **CSS capabilities** (themes, contrast, scales, reflow, RTL,
 containers, cascade), **codebase tooling** (visual-regression,
@@ -338,7 +361,173 @@ without retrospective impact evidence.
 
 ---
 
+# Iteration 4 — engineering polish + real-world validation
+
+The CSS itself is best-in-class for the scholarly-document brief.
+The remaining work is on the *tools and process* around it, plus
+running it against more of the real-world content corpus. No
+single item below changes the rendered output for most papers;
+together they raise confidence that the rendered output stays
+right.
+
+## 1. Cross-engine harness (Firefox + WebKit)
+
+`tools/visual.mjs` uses `playwright.chromium` only. Playwright
+ships Firefox and WebKit drivers too via `playwright.firefox` /
+`playwright.webkit`. Add both as opt-in engines (e.g.
+`node tools/visual.mjs --engine=firefox`) and document the
+baseline-per-engine matrix.
+
+The Q4 obsolescence test for the 7-mrow MathML workaround was
+verified Chromium-only. A multi-engine run would have caught any
+engine where the underlying failure mode survives. Same shape
+of argument applies to every CSS feature we lean on (subgrid,
+`light-dark()`, OKLCH relative, `:has()` selectors): all are
+Baseline, but Baseline doesn't mean rendering-identical.
+
+**Next move.** Add an `--engine` CLI flag. Default `chromium`.
+Baseline subdir per engine (`tools/baseline/<engine>/<name>.png`).
+Bump pixel-tolerance per engine if AA variance forces it
+(WebKit's font-hinting differs visibly from Chromium's). Document
+the per-engine flow in CONTRIBUTING. Decide whether multi-engine
+is opt-in (developer runs `--engine=all`) or default (`npm test`
+runs all three) — opt-in is cheaper, but defers a class of bug
+that opt-out catches automatically.
+
+## 2. Parallelize harness rendering
+
+`npm test` is currently serial: one browser context, one page,
+one render at a time. 47 papers × 2 themes × ~3 seconds per render
+= ~5 minutes. Playwright supports launching multiple contexts in
+the same browser instance and rendering them concurrently. With
+4-way concurrency, ~75 seconds per `npm test`. The 5-min wait is
+real friction for the inner edit loop.
+
+**Next move.** Refactor the main loop in `tools/visual.mjs` to
+use a worker pool (Node's `worker_threads` or just a Promise.all
+over chunks). Test the cap of concurrency that doesn't
+oversaturate (Chromium can handle ~8 contexts on a typical dev
+machine; more starts thrashing). Re-baseline after the refactor
+to confirm zero pixel diff vs the serial run.
+
+## 3. CI pipeline + shared baseline tarball
+
+Today each developer generates `tools/baseline/` locally and the
+harness compares against that. There's no "main branch is
+correct" assertion — a developer's local baseline could drift
+from main without anyone noticing.
+
+The audit recommended `tools/snapshots-baseline.tar.zst` as a
+release-artifact tarball. Implementation needs (a) a CI pipeline
+(GitHub Actions) that runs the harness on each PR/main, and (b)
+a publication mechanism — likely github release attachments.
+
+**Next move.** Decide whether `npm test` on first run should
+download the latest baseline tarball or whether each developer
+generates fresh. The latter is simpler but means cross-developer
+diffs become non-comparable (font hinting varies by OS). The
+former needs a stable hosting story. Probably: GitHub Releases
+attachment, downloaded at first `npm test` if `tools/baseline/`
+is empty, then refreshed by `--update-from-release`.
+
+## 4. Triage the user-tracked bug backlog
+
+`black-on-black-list.md` (currently a local-only file in the
+working tree, not committed) lists 15 GitHub issues against
+`arXiv/html_feedback` that appear to relate to ar5iv styling.
+Each issue is a concrete bug from a production user. Some are
+likely *already fixed* by iteration-3 work (contrast audit,
+dark-mode rescue token); others are real outstanding bugs that
+warrant per-issue CSS fixes.
+
+**Next move.** Walk each issue. For each: reproduce in the
+demo corpus, confirm whether iteration-3 fixed it, file a fix
+PR if not. Move the URL out of `black-on-black-list.md` once
+resolved or commented on. Consider committing the file to the
+repo (or to `docs/`) as a tracked open-bugs ledger.
+
+## 5. Two-column corpus expansion
+
+Project owner mentioned preparing arXiv IDs that exercise
+two-column layouts — currently the corpus has none. Once those
+IDs are in `tools/corpus.txt` and fetched, the harness picks
+them up automatically.
+
+**Next move.** Once IDs are dropped in: `./examples/fetch-corpus.sh
+ar5iv`, `node tools/visual.mjs --update`. Look at the new
+baselines for any obvious layout regressions that the
+single-column corpus didn't catch. The two-column case may
+expose `.ltx_flex_figure` / `.ltx_flex_cell` issues, two-column
+math reflow, or floats-across-columns edge cases. Fix per
+finding.
+
+## 6. The 400 % zoom DevTools walk
+
+WCAG 1.4.10 requires content to reflow without horizontal scroll
+at 400 % zoom (typically tested at viewport 1280, zoomed to
+320-equivalent). Item iteration-3 #2 landed five structural
+fixes from code audit; the live in-browser walk for
+content-driven cases (long URLs, wide formulas in narrow text
+boxes, large TikZ figures) hasn't been done.
+
+**Next move.** Open each of the three primary demos at viewport
+1280, zoom to 400 %, scroll top to bottom. Note each
+horizontal-scroll trigger and clipped element. Apply per-site
+fixes (`overflow-wrap: anywhere` for URL strings,
+`overflow-x: auto` on equation containers, etc.). Re-verify in
+the harness afterward.
+
+## 7. Audit remaining 2023-era and "paper over" comments
+
+The Q4 MathML deletion was the cleanest win — a defensive rule
+that the visual harness could disprove was needed. Several other
+`paper over` / `TODO` comments in the file may be in the same
+category: defensive rules from earlier in the project's lifetime
+that current browsers handle natively.
+
+Candidates from a fresh grep:
+- `237`: italic-in-inline-cites override
+- `838`: `.ltx_TOC > h6` selector that may now be replaceable by the positive `.ltx_title_contents` class LaTeXML now emits
+- `1083`, `2242`: nested-list approach TODOs (these are structural — probably stay)
+- `1290`-ish: blockquote-trailing-break paper-over
+
+**Next move.** For each, run the same disable-and-diff experiment
+that retired the 7-mrow rule. Document obsolescent ones for
+deletion; keep the rest with a date-stamped "verified still load-bearing".
+
+## Iteration-4 dependency summary
+
+```
+#1 cross-engine harness   (no dep)
+#2 parallelize harness    (no dep — independent of #1)
+#3 CI baseline            (soft dep on #1 and #2 — works either way)
+#4 issue backlog          (independent; per-issue work)
+#5 two-column corpus      (waiting on user-supplied IDs)
+#6 400% reflow walk       (independent; manual)
+#7 obsolescence audit     (independent; uses harness)
+```
+
+No hard dependencies. Pick by appetite:
+- Highest immediate impact: **#4** (real user bugs get fixed)
+- Highest leverage on confidence: **#1** + **#3** (multi-engine + CI)
+- Highest leverage on inner loop: **#2** (parallelization)
+- Highest leverage on iteration-rate: **#7** (deletion is the best refactor)
+
+---
+
 ## Change log
+
+- **2026-05-14** — End of iteration-3 follow-up thread. Six
+  commits landed beyond the initial iteration-3 close:
+  `.ltx_ref` text-decoration modernization (`e2b28e8`),
+  impedance-mismatch wisdom category (`5e88bfb`), `.ltx_listing`
+  flush-left (`4eac357`), `.ltx_biblist` subgrid uniform
+  alignment (`3513fb0`), MathML 7-mrow workaround retired
+  (`5e0521c`), iteration-4 punch list opened. Capability
+  dimensions: still 14 ✅ / 2 ⚠️ / 0 ❌. Verdict updated to
+  "substantively best-in-class for CSS capabilities — remaining
+  open work is engineering polish + real-world validation, not
+  capability gaps."
 
 - **2026-05-13** — Fill/stroke OKLCH/HSL inconsistency cleaned up.
   Pre-iter-1 code used HSL for fill/stroke even inside the
