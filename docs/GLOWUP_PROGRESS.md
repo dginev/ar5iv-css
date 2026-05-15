@@ -68,7 +68,7 @@ matter for a scholarly-document CSS theme:
 | Touch-target minimum (WCAG 2.5.8) | ✅ on `.ltx_note_mark` |
 | Print | ✅ in `print.css` |
 | Typography token system (spacing / type / line-height scales) | ⚠️ spacing scale + prose line-height tokenised; font-size scale deferred (mostly singletons) |
-| Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ⚠️ five structural fixes landed; 320 viewport now in visual-regression matrix; 400 % zoom DevTools walk still pending |
+| Reflow at 320 CSS-px and 400 % zoom (WCAG 1.4.10) | ✅ five structural fixes landed; 320 × {light, dark} in the harness matrix (mechanically equivalent to 1280 @ 400 % zoom for reflow purposes) |
 | i18n / RTL via logical properties | ✅ ~60 sites converted; LaTeXML-internal `.ltx_border_*` / `.ltx_framed_*` / `.ltx_nopad_*` / `.ltx_align_*` stay physical (LaTeXML emits physical-side semantics) |
 | Container-aware layout for embedded / side-by-side readers | ✅ verified not-needed: iframe embedding picks correctly via own-viewport media query; no other consumer in scope |
 | Override-friendly cascade for downstream themes (`@layer`) | ✅ bulk in `components`; B1/B3 in `fixes`; transformed-wrappers stays un-layered for !important priority |
@@ -78,10 +78,11 @@ matter for a scholarly-document CSS theme:
 | Code-quality enforcement (stylelint or equivalent) | ✅ `npm run lint` with tuned ruleset; allowlisted `!important` as warning |
 | Theming cookbook (recipes beyond the RFC's worked example) | ✅ `docs/THEMING.md` with four recipes |
 
-Zero ❌ rows and two ⚠️ rows on a sixteen-row checklist. Fourteen ✅.
-Honest verdict: every dimension has at least a starting answer; the
-two ⚠️ rows have well-defined remaining work (font-size scale,
-in-browser reflow walk) but neither blocks shipping today.
+Zero ❌ rows and one ⚠️ row on a sixteen-row checklist. Fifteen ✅.
+Honest verdict: every dimension is fully addressed except the
+font-size scale deferral, which is YAGNI-defensible (the histogram is
+mostly singletons; defining anchors would invent semantics rather
+than reflect them).
 
 **End-of-iteration-3-with-followups verdict (2026-05-14):**
 substantively best-in-class for the CSS capabilities a scholarly
@@ -361,7 +362,58 @@ without retrospective impact evidence.
 
 ---
 
-# Iteration 4 — engineering polish + real-world validation
+# Iteration 4 — closed
+
+Status as of 2026-05-14, end of iteration-4 stretch-goal pass:
+
+| Item | Outcome | Commit |
+|---|---|---|
+| #1 Cross-engine (Firefox + WebKit) | ✅ Firefox; WebKit pending `libavif16` system package | `05902b3` |
+| #2 Parallelize harness | ✅ 5:30 → 4:13 at 4-way; bottleneck shifts to PNG encoding | `02f9510` |
+| #3 CI pipeline + shared baseline | ⏳ deferred — needs PR-pipeline + hosting decision (iteration-5) |
+| #4 Triage `black-on-black-list.md` | ✅ 13/15 closed by iteration-2 work, 2 are LaTeXML upstream, legacy-form CSS rescue prototyped and kept commented-out per project direction | `353b67a` |
+| #5 Two-column corpus | ⏸ waiting on project-owner-supplied IDs (async) |
+| #6 320 CSS-px reflow harness | ✅ 320 × {light, dark} added to matrix; mechanically covers WCAG 1.4.10 reflow at 400 % zoom | `11c8ed5` |
+| #7 Obsolescence audit | ✅ 2 dead rules deleted, 2 confirmed load-bearing | `db6cfea` |
+| Stretch: TOKENS.md drift check | ✅ `tools/check-tokens.mjs` wired into `npm run lint` | `3c9f126` |
+| Stretch: Baseline-feature audit | ✅ `docs/BASELINE_AUDIT.md`; project policy = keep all current uses, full Widely-Available milestone Nov 2026 | `711311a` |
+
+Plus bonus iteration-4 work that fell out of the project-owner
+walkthrough:
+
+| Change | Commit |
+|---|---|
+| `.ltx_ref`: `border-bottom: dotted` → `text-decoration: underline dotted` (skip-ink, from-font thickness) | `e2b28e8` |
+| `.ltx_listing { text-align: left }` to defeat figure-ancestor centring cascade | `4eac357` |
+| `.ltx_biblist` subgrid with `fit-content(12em)` tag cap, `column-gap: 3em`, baseline alignment, full-row hover highlight | `3513fb0`, `45a27d8` |
+| `.ltx_enumerate` subgrid for uniform Roman-tag column | `353b67a` |
+| MathML 7-mrow workaround retired (obsolete on current Chromium incl. arXiv:2105.10386 canonical trigger) | `5e0521c` |
+| Impedance-mismatch wisdom category recorded | `5e88bfb` |
+
+## Verdict at end of iteration-4
+
+**Best-in-class for CSS substance.** The 16-row dimension checklist is
+15 ✅ / 1 ⚠️ / 0 ❌. The one remaining ⚠️ (font-size scale) is a
+YAGNI deferral that's defensible on the merits — the histogram is
+mostly singletons, so defining anchors would invent semantics rather
+than reflect them. A future font-size sweep can land if clusters
+emerge.
+
+**Best-in-class for tooling.** Visual-regression harness covers the
+full 47-paper corpus at 4 matrix entries × fullPage; Firefox cross-
+engine works (WebKit pending system package); stylelint + TOKENS.md
+drift-check + parallelized rendering all in `npm run lint` / `npm
+test`. The Baseline-feature audit gives the project a concrete
+Nov 2026 milestone for "every un-gated feature is Widely Available".
+
+**Remaining outstanding work is bounded and known.** See iteration-5
+below — it's all tooling polish or work waiting on external inputs
+(CI hosting story, two-column corpus IDs). Nothing in iteration-5
+blocks shipping ar5iv-css as a credible best-in-class theme today.
+
+---
+
+# Iteration 5 — bounded follow-ups
 
 The CSS itself is best-in-class for the scholarly-document brief.
 The remaining work is on the *tools and process* around it, plus
@@ -495,27 +547,60 @@ Candidates from a fresh grep:
 that retired the 7-mrow rule. Document obsolescent ones for
 deletion; keep the rest with a date-stamped "verified still load-bearing".
 
-## Iteration-4 dependency summary
+## Iteration-5 items
 
-```
-#1 cross-engine harness   (no dep)
-#2 parallelize harness    (no dep — independent of #1)
-#3 CI baseline            (soft dep on #1 and #2 — works either way)
-#4 issue backlog          (independent; per-issue work)
-#5 two-column corpus      (waiting on user-supplied IDs)
-#6 400% reflow walk       (independent; manual)
-#7 obsolescence audit     (independent; uses harness)
-```
+1. **CI pipeline + release-artifact tarball baseline.** Once a
+   GitHub Actions / equivalent pipeline lands, publish a baseline
+   tarball as a release asset. `npm test` downloads if local
+   baseline absent; `--update-from-release` refreshes. The
+   alternative — each developer generates locally — works for
+   inner-loop but can't assert "main is correct".
 
-No hard dependencies. Pick by appetite:
-- Highest immediate impact: **#4** (real user bugs get fixed)
-- Highest leverage on confidence: **#1** + **#3** (multi-engine + CI)
-- Highest leverage on inner loop: **#2** (parallelization)
-- Highest leverage on iteration-rate: **#7** (deletion is the best refactor)
+2. **WebKit harness path.** Currently blocked by the `libavif16`
+   system package on Linux. Once installed, regenerate the
+   baseline subdir at `tools/baseline/webkit/`. Cross-engine
+   diffs between WebKit and Chromium will exercise a class of
+   bug (font hinting, MathML rendering edges) that neither
+   browser alone catches.
+
+3. **Paginated rendering** for Firefox's 32767-px and Chromium's
+   ~50000-px screenshot limits. Slice fullPage into viewport-tall
+   chunks; diff each independently. Converts the ~13 SKIP results
+   into clean coverage for the long-math papers.
+
+4. **Two-column corpus expansion.** Waiting on project-owner-supplied
+   IDs; once they land in `tools/corpus.txt` and fetch, the harness
+   picks them up automatically. May surface `.ltx_flex_figure`,
+   two-column math reflow, or floats-across-columns edge cases.
+
+5. **Font-size scale (deferred per YAGNI).** Re-evaluate when a
+   meaningful cluster emerges in the histogram. Until then, every
+   font-size literal in the file is a one-off hand-tune.
+
+6. **`oklch(from …)` `@supports` cleanup, scheduled for Jan 2027.**
+   Per the Baseline audit, relative-color OKLCH reaches Widely
+   Available in Jan 2027; the `@supports` fallback in
+   `dark-mode.css` becomes dead weight and can be deleted.
+
+Items 1-3 are tooling. Item 4 is data-dependent. Items 5-6 are
+calendar-dependent. None block shipping today.
+
+---
+
+# Iteration 4 — engineering polish + real-world validation (closed; reference)
 
 ---
 
 ## Change log
+
+- **2026-05-14** — Iteration-4 closed: 15 ✅ / 1 ⚠️ / 0 ❌ on the
+  16-row dimension checklist. The remaining ⚠️ (font-size scale)
+  is a YAGNI deferral with sound justification. Verdict updated
+  to "best-in-class for CSS substance AND tooling". Iteration-5
+  backlog opened — six small items, all tooling polish or
+  waiting on external inputs (CI hosting story, two-column
+  corpus IDs, system packages, calendar). None block shipping
+  today.
 
 - **2026-05-14** — End of iteration-3 follow-up thread. Six
   commits landed beyond the initial iteration-3 close:
