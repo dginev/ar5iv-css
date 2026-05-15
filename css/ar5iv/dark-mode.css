@@ -170,28 +170,35 @@
   }
 }
 
-/* ----- Legacy-form author-black rescue — DISABLED for production -----
+/* ----- Legacy-form author-black rescue -----
 
-   Reference rule kept commented out for context. Production
-   ar5iv-css does NOT ship this rescue; LaTeXML upstream is moving
-   away from the legacy `style="color:#000000;"` emission, and
-   arxiv-browse's downstream pipeline handles the few remaining
-   cases. Re-enabling here would be premature.
+   Catches the older inline-color form (`style="color:#000000;"`)
+   that LaTeXML still emits in places where the modern
+   `--ltx-fg-color` custom property isn't reached. Without this
+   rule, author-black text renders black-on-dark and becomes
+   invisible.
 
-   What the rule did: caught the older inline-color form
-   (`style="color:#000000;"`) on elements where the modern
-   `--ltx-fg-color` custom property isn't emitted — notably
-   citation reference numbers in papers like arXiv:2409.12111
-   (1368 occurrences in that single paper, reported as
-   arXiv/html_feedback issue #3461) and a few others
-   (1909.02255: 69, 1910.06706: 17, 2105.00613: 2).
+   Reproducible cases in the corpus:
+   - arXiv:2403.11784 Table 3 headers ("Component", "Manufacturer",
+     "Model") — reported as arXiv/html_feedback issue #3642.
+   - arXiv:2409.12111 reference numbers (4173 legacy emissions in
+     the ar5iv-labs HTML) — reported as #3461.
+   - 1909.02255: 69, 1910.06706: 17, 2105.00613: 2.
+
+   The previous disabling of this rule (2026 audit) was based on
+   the assumption that arxiv-browse's downstream pipeline rescued
+   the legacy form. Verified 2026-05-15 by inspection of
+   `arxiv-html-papers-theme-{20250131,20250916}.css`: arxiv-browse
+   only rescues the *modern* `--ltx-fg-color:#000000` form, not
+   the legacy `color:#000000` form. So legacy emissions fall
+   through both layers and render black-on-dark. Re-enabled here.
 
    Two attribute-selector forms because the `color:` declaration
    may sit at the start of `style` (no preceding `;`) or
    mid-style. The bare `[style*="color:#000000"]` would match
    `background-color:#000000` and `border-color:#000000` too —
    the `;`-anchored and `^`-anchored forms together catch only
-   the `color:` property without false positives.
+   the `color:` property without false positives. */
 
 [data-theme="dark"] :is(
   [style^="color:#000000"],
@@ -207,7 +214,6 @@
     color: var(--text-color-author-black-dark) !important;
   }
 }
-*/
 
 /* Note: SVG foreignObject colour propagation lives un-gated in
    `ar5iv.css` (the `.ltx_foreignobject_content { color: var(--text-color) }`

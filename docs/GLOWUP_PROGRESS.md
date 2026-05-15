@@ -561,11 +561,15 @@ likely *already fixed* by iteration-3 work (contrast audit,
 dark-mode rescue token); others are real outstanding bugs that
 warrant per-issue CSS fixes.
 
-**Next move.** Walk each issue. For each: reproduce in the
-demo corpus, confirm whether iteration-3 fixed it, file a fix
-PR if not. Move the URL out of `black-on-black-list.md` once
-resolved or commented on. Consider committing the file to the
-repo (or to `docs/`) as a tracked open-bugs ledger.
+**Done 2026-05-15.** Walked the 15 issues. 13 already closed
+by the project owner with "regenerated, see improvement"; 2
+open. #3461 (2409.12111) is stale — production version has
+0 legacy emissions. #3642 (2403.11784) is a real reproducible
+bug: 3 black-color cells in Table 3 fall through both ar5iv-css
+and arxiv-browse's downstream theme (which only rescues modern
+`--ltx-fg-color:#000000`, not legacy `color:#000000`). Fixed by
+re-enabling the legacy-form rescue in `css/ar5iv/dark-mode.css`
+(see Change log entry "legacy-form dark rescue re-enabled").
 
 ## 5. Two-column corpus expansion
 
@@ -699,6 +703,50 @@ calendar-dependent. None block shipping today.
 
 ## Change log
 
+- **2026-05-15 (bug backlog)** — Iteration-5 item #4 (triage
+  user-tracked bug backlog) executed against the 15 GitHub
+  issues in `black-on-black-list.md`. **13 of 15 already
+  closed** by the project owner with comments noting the
+  paper was regenerated (LaTeXML's modern `--ltx-fg-color`
+  emission is rescued by arxiv-browse's downstream theme).
+  Two issues remained open:
+  • **#3461** (arXiv:2409.12111) — production
+    `arxiv-2409.12111v1.html` now has 0 legacy emissions;
+    the issue likely lingers because nobody re-checked.
+    Spot inspection looks clean. Recommend closing as
+    fixed-by-regeneration.
+  • **#3642** (arXiv:2403.11784) — **real reproducible bug**.
+    Table 3 ("FT_ENTh Hardware Architecture") has three
+    `<span style="color:#000000;">` header cells that render
+    black-on-dark and become invisible. arxiv-browse's
+    downstream rescue covers only `--ltx-fg-color:#000000`
+    (the modern form), not the legacy `color:#000000` form —
+    so this falls through both layers. **Fix landed below.**
+  Sample of 3 closed issues (#4744, #3855, #4068) shows the
+  same pattern: closed by project owner with "regenerated,
+  see the improvement" — paper-by-paper triage, not a
+  systemic CSS fix. The legacy rescue we just landed
+  preempts the next round of these reports.
+- **2026-05-15 (legacy-form dark rescue re-enabled)** — The
+  previously-disabled `[data-theme="dark"]
+  [style^="color:#000000"]` / `[style*=";color:#000000"]`
+  rescue block in `css/ar5iv/dark-mode.css` re-enabled. Two
+  attribute-selector forms together catch only the `color:`
+  property (not `background-color:` / `border-color:`).
+  Maps to `--text-color-author-black-dark`.
+  Rationale: the original disabling assumed arxiv-browse
+  downstream covered legacy emissions. Verified by inspection
+  of `arxiv-html-papers-theme-{20250131,20250916}.css`: only
+  the *modern* `--ltx-fg-color:#000000` form is rescued
+  downstream, not the legacy `color:#000000`. Legacy
+  emissions still happen for ~6 corpus papers (2409.12111:
+  2192, 1909.02255: 69, 2006.13760: 34, 1910.06706: 17,
+  2403.11784: 3, 2105.00613: 2). Re-enabling fixes the
+  bug for all of them on both arxiv-html and ar5iv-labs
+  consumer paths. Spot-check: arXiv:2403.11784 chunk
+  1280-dark-p007 (Table 3 headers) now legible (1287 px
+  surgical diff, 0 px on every other chunk). Both Chromium
+  and WebKit baselines refreshed for the 6 affected papers.
 - **2026-05-15 (CI phase 1)** — Iteration-5 item #1 phase 1
   landed. `.github/workflows/ci.yml` runs `npm ci`,
   `npm run lint`, `npm run build` on push to main and PRs.
