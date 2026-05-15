@@ -66,15 +66,26 @@ const corpusIds = (await readFile(corpusFile, 'utf-8'))
   .map(s => s.replace(/#.*/, '').trim())
   .filter(s => s.length > 0);
 
-// Viewports × themes. 1280 × {light, dark}, fullPage rendering so the
-// entire article is captured (the previous first-viewport-only design
-// missed below-the-fold regressions, including everything past the
-// frontmatter — most of an arXiv paper). 320 is dropped from the matrix
-// because fullPage × 47 papers at narrow viewports balloons the
-// baseline disk cost without proportional regression coverage; reflow
-// regressions at narrow viewports are now tracked manually under
-// iteration-3 item #2.
+// Viewports × themes. fullPage rendering captures the entire article.
+//
+// - 1280 × {light, dark} — the typical desktop reading layout. The
+//   regressions iteration-3 caught here (flow-root title shift,
+//   UA-default margin re-assertion, bibliography subgrid jaggedness)
+//   all manifest at this width.
+// - 320 × {light, dark} — WCAG 1.4.10 reflow check. Equivalent to
+//   viewport 1280 at 400 % zoom for content-reflow purposes. Catches
+//   horizontal-scroll triggers, clipped content, and structural
+//   overflows that don't appear at the desktop width. Adds 47 × 2
+//   snapshots; pages get ~3x taller at 320 width so the baseline
+//   grows substantially. Worth the disk cost — closes iteration-3
+//   item #2's outstanding ⚠️ on the dimension checklist.
+//
+// fullPage at 320 will exceed Firefox's 32767-px screenshot limit for
+// most papers (Chromium has no limit). The Firefox path SKIPs those
+// gracefully.
 const matrix = [
+  { width: 320,  height: 568,  theme: 'light' },
+  { width: 320,  height: 568,  theme: 'dark'  },
   { width: 1280, height: 1600, theme: 'light' },
   { width: 1280, height: 1600, theme: 'dark'  },
 ];
@@ -144,15 +155,21 @@ async function renderAndDiff(browser, demoPath, demoId, view) {
   // misleading. With fullPage, a regression deep in the bibliography
   // or in a figure half-way down still flags.
   //
-  // Firefox screenshot height is capped at 32767 px (int16 in the
-  // Marionette protocol). Long papers (1502.04633, 2105.10386,
-  // some others) exceed that. We pre-check the document scroll
-  // height and SKIP-TOO-TALL when relevant; pagination would be a
-  // proper fix and is on the iteration-4 deferred list.
+  // Per-engine screenshot height limits. Pre-check and SKIP rather
+  // than failing — pagination would be a proper fix and is on the
+  // iteration-4 deferred list.
+  //   - Firefox: 32767 px (int16 in the Marionette protocol)
+  //   - Chromium: nominally 100k+ px, but very tall pages (~400k+)
+  //     under concurrent contexts trigger memory-pressure "Unable to
+  //     capture screenshot" errors. 50000 is a conservative cap.
+  //     Hits arXiv:2105.10386 (~400k px at 1280, even taller at 320).
+  //   - WebKit: TBD when libavif16 ships.
+  const heightLimits = { firefox: 32767, chromium: 50000, webkit: 32767 };
   const docHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-  if (engineName === 'firefox' && docHeight > 32767) {
+  const limit = heightLimits[engineName];
+  if (limit && docHeight > limit) {
     await context.close();
-    return { name, status: 'skip-too-tall', info: `scrollHeight ${docHeight} > 32767 px Firefox limit` };
+    return { name, status: 'skip-too-tall', info: `scrollHeight ${docHeight} > ${limit} px ${engineName} limit` };
   }
   await page.screenshot({ path: renderPath, fullPage: true });
   await context.close();
