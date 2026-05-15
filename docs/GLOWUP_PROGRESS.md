@@ -12,46 +12,51 @@
 
 ## ⏭ Next pickup — 2026-05-16+
 
-**Where we left off (end of 2026-05-15):** eight commits today
-on `glowup`. Iteration-5 items #3, #2, #1-phase-1 all closed;
-paper-over audit done; iteration-4's "best-in-class for CSS
-substance AND tooling" verdict stands. Zero critical CSS issues.
+**Where we left off (end of 2026-05-15):** ten commits today
+on `glowup`. Iteration-5 items #3, #2, #1-phase-1, #4 (bug
+backlog triage) all closed; paper-over audit done; **real
+user-reported bug fixed** (#3642). Iteration-4's "best-in-class
+for CSS substance AND tooling" verdict stands. Zero critical
+CSS issues remaining.
 
-**Today's eight commits:**
-1. `a9d9177` — Iteration-5 item #3: paginated rendering. 28
-   papers now produce chunked baselines; snapshot count grew
-   from ~188 to 8151.
-2. `cd4f3c5` — Accurate WCAG contrast ratios across all token
-   themes; sepia documented as AAA.
-3. `11e1fb6` — Logged the CSS-quality audit pass.
-4. `99d79e2` — Item #2: WebKit harness substantively landed;
-   **7-mrow MathML workaround retirement cross-engine verified**.
-5. `e12774f` — Recovery plan after WebKit hung on a
-   networkidle-on-remote-image issue.
+**Today's ten commits:**
+1. `a9d9177` — Item #3: paginated rendering. 28 papers chunked;
+   snapshot count grew from ~188 to 8151.
+2. `cd4f3c5` — Accurate WCAG contrast ratios; sepia AAA.
+3. `11e1fb6` — CSS-quality audit pass logged.
+4. `99d79e2` — Item #2 substantively landed; 7-mrow MathML
+   workaround retirement cross-engine verified.
+5. `e12774f` — Recovery plan after WebKit networkidle hang.
 6. `a6c79b1` — Recovery plan executed: image-only
-   `context.route()` block, `waitUntil: 'load'`, `timeout: 15000`.
-   WebKit harness fully landed; all 47 papers covered.
-7. `7af724d` — Paper-over audit: `.ltx_cite > .ltx_ref`
-   workaround **verified still load-bearing cross-engine**.
-8. `8eaa6b7` — Item #1 phase 1: `.github/workflows/ci.yml`
-   runs lint + build on push to main and PRs.
+   `context.route()`, `waitUntil: 'load'`, `timeout: 15000`.
+   WebKit fully landed; all 47 papers covered.
+7. `7af724d` — Paper-over audit: cite-ref workaround
+   verified still load-bearing cross-engine.
+8. `8eaa6b7` — Item #1 phase 1: GitHub Actions lint+build CI.
+9. `a958e86` — Pickup banner refresh.
+10. `e383182` — **Item #4: bug backlog triage.** 13/15 already
+    closed by project owner; #3461 stale; #3642 real bug fixed
+    by re-enabling the legacy-form `color:#000000` dark-mode
+    rescue in `css/ar5iv/dark-mode.css`. arxiv-browse downstream
+    only rescues the modern `--ltx-fg-color` form, so the legacy
+    emissions (still ~2300 sites across 6 corpus papers) fall
+    through both layers without this. Cross-engine verified.
 
-**Recommended first pick:** decide direction on item #1 phase 2.
-Two unresolved questions: where to host the release-artifact
-baseline tarball (GitHub Releases attachment / Git LFS / S3-equiv),
-and how to handle AA drift on CI runners (pin OS + fonts in the
-workflow, or raise `pixelTolerance` and accept the noise). Without
-those, phase 2 (visual harness on CI) is brittle. Phase 1 catches
-the no-browser regressions today.
+**Recommended first pick:** close the two open issues on
+GitHub. `#3461` and `#3642` are now both addressable —
+`#3642` has a real fix in commit `e383182`, and `#3461`'s
+production URL has been clean for a while. Posting a comment
+on each (citing the commit and confirming the fix lands once
+ar5iv-css is updated downstream) is the obvious next courtesy.
+**This is a user action, not mine** — I should not write to
+public issues without explicit permission.
 
-**Runner-up — primary-task-aligned alternative.** The Q4 / paper-
-over audit methodology proved its value today: cross-engine
-disable-and-diff confirmed the cite-ref workaround is still
-needed. Other testable defensive rules likely exist in
-`css/ar5iv.css` that the cursory scan missed; a second pass
-(grep for `!important` clusters with comments, look for
-property-overrides on LaTeXML-emitted attributes) could surface
-more confidence (or rare deletions).
+**Then** iteration-5 item #1 phase 2 (visual harness on CI
+with shared baselines) — still needs hosting decision and
+AA-drift determinism resolved. Or, primary-task-aligned:
+re-scan `css/ar5iv.css` for additional paper-over candidates
+the cursory pass missed (grep `!important` clusters, look
+for property-overrides on LaTeXML-emitted attributes).
 
 **Same-machine AA drift caveat.** Persistent across all today's
 runs: ~24-85 px page-height variance between `--update` calls on
