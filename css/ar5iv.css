@@ -2273,17 +2273,18 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
   display: list-item;
 }
 /* Position the tag to look like a normal item bullet. */
-/* TODO: This needs extra work, particularly for nested lists,
-         and is made difficult between the padding needs (typical to "block")
-         and the list-like display (close to "inline").
-  Can't figure out a better approach at the moment,
-        so I'm instead documenting the need here for now. */
+/* This approach works for the common case (`.ltx_itemize`,
+   `.ltx_description`) where the tag is short and uniform-ish.
+   `.ltx_enumerate` with custom Roman / multi-character tags
+   (`I` / `II` / `III` / ...) is handled separately below via
+   subgrid, so the per-row content always starts at the same x. */
 li.ltx_item > .ltx_tag {
   display: inline;
   margin-inline-start: -2.5rem;
   padding-inline-end: 0.5rem;
   text-align: end;
 }
+
 .ltx_item .ltx_tag + .ltx_para {
   vertical-align: top;
   display: inline-block;
@@ -2294,6 +2295,59 @@ li.ltx_item > .ltx_tag {
 }
 span.ltx_item .ltx_tag + span.ltx_para {
   display: inline;
+}
+
+/* Enumerate-list tag column via subgrid. Same shape as the
+   `.ltx_biblist` refactor: parent grid sets two tracks, each
+   `.ltx_item` participates via `subgrid` so the *widest tag in
+   the whole list* sizes the tag column and every item lines up.
+   Fixed `1`/`2`/`3` numeric tags looked fine under the inline +
+   negative-margin approach above; `I`/`II`/`III`-style custom
+   tags didn't, because tag widths vary visibly and content
+   positions staggered. Reported by the project owner on
+   arXiv:2403.11784 during iteration-4.
+
+   This block lands *after* the `.ltx_enumerate .ltx_item {
+   display: list-item }` rule above on purpose — the source-order
+   cascade lets `display: grid` win without needing increased
+   specificity. Overrides on the tag and on adjacent rules too
+   so that the legacy inline + width:calc(100%-0.5rem) pair on
+   `.ltx_tag + .ltx_para` doesn't interfere. */
+.ltx_enumerate {
+  display: grid;
+  grid-template-columns: max-content minmax(0, 1fr);
+  column-gap: 0.5em;
+  /* Drop the <ol>/<ul> UA-default `padding-inline-start: 40px`
+     so the tag column starts flush with the prose paragraph
+     above. Pre-subgrid, the negative-margin trick on the tag
+     offset the UA padding by hand; with subgrid the right move
+     is to remove the padding outright. Matches the same
+     treatment on `.ltx_biblist`. */
+  padding-inline-start: 0;
+}
+.ltx_enumerate > .ltx_item {
+  display: grid;
+  grid-template-columns: subgrid;
+  grid-column: 1 / -1;
+}
+.ltx_enumerate > .ltx_item > .ltx_tag {
+  grid-column: 1;
+  grid-row: 1;
+  display: block;
+  margin: 0;
+  padding: 0;
+  text-align: start;
+}
+.ltx_enumerate > .ltx_item > :not(.ltx_tag) {
+  grid-column: 2;
+}
+/* Inside an enumerate, the legacy `.ltx_tag + .ltx_para` rule
+   (inline-block, width: calc(100% - 0.5rem)) double-counted the
+   gutter once the tag moved out of the inline flow. Reset for
+   the enumerate scope. */
+.ltx_enumerate > .ltx_item > .ltx_tag + .ltx_para {
+  display: block;
+  width: auto;
 }
 
 .ltx_item > .ltx_para > .ltx_p:first-child {
