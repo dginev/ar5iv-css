@@ -98,8 +98,8 @@ Motion tokens are honoured only outside `prefers-reduced-motion: reduce`.
 |---|---|---|
 | `--headings-font-family` | Noto Sans + fallbacks | Headings. |
 | `--text-font-family` | Noto Serif + fallbacks | Body text and most other prose. |
-| `--math-font-family` | Latin Modern Math + fallbacks | MathML rendering. |
-| `--math-caligraphic-font-family` | Latin Modern Math + fallbacks | `\mathcal`-style math. |
+| `--math-font-family` | STIX Two Math + fallbacks | MathML rendering. |
+| `--math-caligraphic-font-family` | STIX Two Math + fallbacks | `\mathcal`-style math. |
 | `--code-font-family` | Noto Sans Mono + fallbacks | Listings, inline code, verbatim. |
 | `--svg-text-size` | `0.82em` | Compensates for Noto Sans metrics inside SVG/`foreignObject` (fragile — re-tune if you change `--text-font-family`). |
 

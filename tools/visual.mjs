@@ -200,6 +200,13 @@ async function renderAndDiff(browser, demoPath, demoId, view) {
   // worker's try/catch reports ERROR rather than the harness
   // hanging the whole run.
   await page.goto(url, { waitUntil: 'load', timeout: 15000 });
+  // Wait for `@font-face` resources to settle. `load` fires when the
+  // page's load event finishes, which does not guarantee web fonts
+  // have rendered — `display=swap` deliberately paints fallbacks
+  // first and swaps later. Without this await the screenshot can
+  // capture fallback glyphs (Cambria Math instead of STIX Two Math,
+  // system serif instead of Noto Serif) which is misleading.
+  await page.evaluate(() => document.fonts.ready);
   // Mirror the OS preference into an explicit `data-theme` so the
   // application rules fire deterministically — the harness shouldn't
   // depend on Playwright's `colorScheme` behaviour alone.
