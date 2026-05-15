@@ -10,6 +10,58 @@
 > `GLOWUP_PHASE2_AUDIT.md` (pre-iter-2). Wisdom record:
 > `GLOWUP_WISDOM.md`.
 
+## ⏭ Next pickup — 2026-05-16+
+
+**Where we left off (end-of-day 2026-05-15):** iteration-5 item #3
+(paginated rendering) landed. `tools/visual.mjs` now chunks
+over-limit pages into viewport-tall slices instead of SKIP. ~12
+previously-SKIP papers now produce N-chunk baselines; only
+arXiv:2105.10386 still SKIPs (Chromium renderer crashes at
+chunk ~144 of 254 — fundamental DOM-size limit, not a pagination
+bug; partial coverage of ~57% lands before the crash). Baselines
+re-generated to absorb same-machine AA drift between yesterday's
+`--update` (22:05) and today's run — diffs visually verified as
+AA edge-rendering variance, not layout regressions.
+
+**Recommended first pick:** iteration-5 **item #2 — WebKit
+harness path**. Cheap and high-leverage: `sudo apt-get install
+libavif16`, then `npx playwright install webkit`, then
+`node tools/visual.mjs --engine=webkit --update`. Cross-engine
+AA + font-hinting + MathML rendering diff coverage is a class of
+bug Chromium alone can't catch (Q4 obsolescence test for the
+7-mrow MathML workaround was verified Chromium-only).
+
+**Runner-up alternatives, in order:**
+1. **Item #1 — CI pipeline + release-artifact baseline tarball.**
+   Bigger scope; needs a hosting decision first (GitHub Releases
+   attachment vs. equivalent). With paginated rendering done,
+   baselines are now larger (~13 papers add ~100 chunks each)
+   which makes "ship as release artifact" more useful.
+2. **Item #4 — Two-column corpus expansion.** Blocked on
+   project-owner-supplied IDs (user committed to providing).
+3. **Items #5, #6** are calendar-dependent — leave alone.
+
+**Same-machine AA drift caveat.** Today's session surfaced a
+real same-machine same-Chromium drift between two `--update`
+runs (~24px page-height differences plus pervasive sub-pixel
+character-edge AA variance). Root cause not pinned down (font
+cache / fontconfig state most likely). Pragmatic resolution
+is "re-baseline whenever drift surfaces"; if it becomes a
+maintenance pain, raise pixel-tolerance (currently 400) or
+investigate deterministic-fonts setup.
+
+**Where to start reading next:**
+- This file's "Iteration-5 items" section (search for
+  "## Iteration-5 items") — full per-item brief.
+- `tools/visual.mjs` `renderAndDiff` — short-paper vs paginated
+  path lives here.
+- `docs/BASELINE_AUDIT.md` — feature inventory, no action needed
+  unless auditing a newly-introduced CSS feature.
+
+**House rules still apply** (see "How to pick this up" below):
+YAGNI, `!important` discipline, visual changes via the harness,
+commit-message convention.
+
 ## How to pick this up
 
 Standing workflow for each iteration-3 item, in order:
@@ -564,9 +616,22 @@ deletion; keep the rest with a date-stamped "verified still load-bearing".
    browser alone catches.
 
 3. **Paginated rendering** for Firefox's 32767-px and Chromium's
-   ~50000-px screenshot limits. Slice fullPage into viewport-tall
-   chunks; diff each independently. Converts the ~13 SKIP results
-   into clean coverage for the long-math papers.
+   ~50000-px screenshot limits — **landed 2026-05-15.**
+   `tools/visual.mjs` `renderAndDiff` now takes the short-paper
+   path (single fullPage PNG) for pages within the engine limit
+   and a paginated path (viewport-tall chunks via
+   scroll-then-clip) for pages over the limit. Each chunk is its
+   own `<base>-pNNN.png` diffed independently. 28 papers now
+   produce chunked baselines at 320 CSS-px viewport, 6 of them
+   also at 1280; snapshot count grew from ~188 to 8151 across
+   the 47-paper corpus.
+   Residual: arXiv:2105.10386 (~405k px at 1280, ~796k at 320)
+   crashes the Chromium renderer at chunk ~144 of 254 even at
+   viewport-sized clips — the page DOM itself is too big for
+   Chromium to hold and rasterize, not the screenshot. Treated
+   as a structured `skip-renderer-crash` status with partial
+   coverage of the first 57 % of the document. WebKit/Firefox
+   may behave differently here — re-evaluate when item #2 lands.
 
 4. **Two-column corpus expansion.** Waiting on project-owner-supplied
    IDs; once they land in `tools/corpus.txt` and fetch, the harness
@@ -593,6 +658,37 @@ calendar-dependent. None block shipping today.
 
 ## Change log
 
+- **2026-05-15** — Iteration-5 item #3 landed: paginated
+  rendering in `tools/visual.mjs`. The over-limit branch that
+  previously returned `skip-too-tall` now slices the page into
+  viewport-tall chunks via scroll-then-clip and diffs each
+  chunk independently against `<base>-pNNN.png`. Short-paper
+  path unchanged (preserves existing baselines). Coverage
+  gain: **28 papers** now produce fully chunked baselines at
+  narrow viewport (320 CSS-px), **6 of them also at desktop
+  width** (1280 CSS-px); arXiv:2105.10386 (~400k px) retains
+  a structured SKIP at chunk ~144 with partial coverage of
+  the first 57 % (Chromium renderer crashes on the 50k-DOM-node
+  page regardless of clip size). Snapshot count went from
+  ~188 to **8151 across 47 papers**. Verified on three
+  corpus papers: short (PASS preserved against existing
+  baselines), medium 2105.00613 (552 NEW chunks first run,
+  all UPDATED after `--update`), pathological 2105.10386
+  (clean SKIP, no ERROR cascade). Also absorbed same-machine
+  AA drift between yesterday's baseline and today's render
+  — visually verified as font edge variance, not layout —
+  by re-baselining the full corpus. The end-of-day pickup
+  banner is now dated for 2026-05-16+ and points at item #2
+  (WebKit) as the next pick.
+- **2026-05-14 (eod)** — End-of-day pickup banner added at top of
+  this file under "⏭ Tomorrow's pickup". Recommended first
+  resume task: iteration-5 item #3 (paginated rendering in
+  `tools/visual.mjs`) — converts the ~13 SKIP results from the
+  Firefox 32767-px + Chromium 50000-px height caps into clean
+  coverage. Runner-up: item #2 (WebKit) if `libavif16` install
+  is acceptable. No in-flight work; tree clean apart from
+  untracked notes (`black-on-black-list.md`,
+  `docs/color_overview_christopher.html`, `docs/colors_hsl.html`).
 - **2026-05-14** — Iteration-4 closed: 15 ✅ / 1 ⚠️ / 0 ❌ on the
   16-row dimension checklist. The remaining ⚠️ (font-size scale)
   is a YAGNI deferral with sound justification. Verdict updated

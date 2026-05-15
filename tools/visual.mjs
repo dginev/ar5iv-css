@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 // Visual-regression harness for ar5iv-css.
 //
-// Renders each demo in examples/ at 1280 CSS-px × {light, dark}
-// using Playwright, in fullPage mode so the entire article is captured.
-// Diffs against tools/baseline/. Mismatches above the per-image
-// pixel-count threshold fail the run.
+// Renders each demo in examples/ at {320, 1280} CSS-px × {light, dark}
+// using Playwright. Pages within the engine's screenshot-height limit
+// are captured as a single fullPage PNG; pages over the limit take the
+// paginated path — viewport-tall chunks scrolled and captured into
+// `<base>-pNNN.png` files, each diffed independently. Mismatches
+// above the per-image pixel-count threshold fail the run.
 //
 // Usage:
 //   node tools/visual.mjs            # diff against baseline
@@ -80,9 +82,10 @@ const corpusIds = (await readFile(corpusFile, 'utf-8'))
 //   grows substantially. Worth the disk cost — closes iteration-3
 //   item #2's outstanding ⚠️ on the dimension checklist.
 //
-// fullPage at 320 will exceed Firefox's 32767-px screenshot limit for
-// most papers (Chromium has no limit). The Firefox path SKIPs those
-// gracefully.
+// fullPage at 320 commonly exceeds Firefox's 32767-px screenshot
+// limit (and Chromium's softer 50000-px concurrent cap). Such pages
+// take the paginated path in `renderAndDiff` instead: viewport-tall
+// chunks scrolled and captured independently.
 const matrix = [
   { width: 320,  height: 568,  theme: 'light' },
   { width: 320,  height: 568,  theme: 'dark'  },
@@ -121,59 +124,10 @@ async function findDemoFile(id) {
   return null;
 }
 
-async function renderAndDiff(browser, demoPath, demoId, view) {
-  const url = 'file://' + demoPath;
-  const safeId = demoId.replace(/\//g, '_');
-  const name = `${safeId}-${view.width}-${view.theme}.png`;
-
-  const context = await browser.newContext({
-    viewport: { width: view.width, height: view.height },
-    colorScheme: view.theme,
-    deviceScaleFactor: 1,
-  });
-  const page = await context.newPage();
-  await page.goto(url, { waitUntil: 'networkidle' });
-  // Mirror the OS preference into an explicit `data-theme` so the
-  // application rules fire deterministically — the harness shouldn't
-  // depend on Playwright's `colorScheme` behaviour alone.
-  await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), view.theme);
-  // Give the cascade a moment to settle after the data-theme flip.
-  // The body-of-evidence is: previous flaky AA pixels around theme
-  // switching went away once we waited an extra animation frame.
-  // (Avoid a second `waitForLoadState('networkidle')` here — long
-  // math-heavy papers in Firefox don't always reach networkidle a
-  // second time within 30s, which produced a Timeout failure on
-  // math/0002050. The data-theme flip is synchronous; one rAF is
-  // enough for the cascade to settle.)
-  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => r())));
-
-  await mkdir(renderDir, { recursive: true });
-  const renderPath = join(renderDir, name);
-  // fullPage: true captures the entire article scroll height, not just
-  // the first viewport. The previous header-only baseline missed
-  // everything past the frontmatter and was rightly called out as
-  // misleading. With fullPage, a regression deep in the bibliography
-  // or in a figure half-way down still flags.
-  //
-  // Per-engine screenshot height limits. Pre-check and SKIP rather
-  // than failing — pagination would be a proper fix and is on the
-  // iteration-4 deferred list.
-  //   - Firefox: 32767 px (int16 in the Marionette protocol)
-  //   - Chromium: nominally 100k+ px, but very tall pages (~400k+)
-  //     under concurrent contexts trigger memory-pressure "Unable to
-  //     capture screenshot" errors. 50000 is a conservative cap.
-  //     Hits arXiv:2105.10386 (~400k px at 1280, even taller at 320).
-  //   - WebKit: TBD when libavif16 ships.
-  const heightLimits = { firefox: 32767, chromium: 50000, webkit: 32767 };
-  const docHeight = await page.evaluate(() => document.documentElement.scrollHeight);
-  const limit = heightLimits[engineName];
-  if (limit && docHeight > limit) {
-    await context.close();
-    return { name, status: 'skip-too-tall', info: `scrollHeight ${docHeight} > ${limit} px ${engineName} limit` };
-  }
-  await page.screenshot({ path: renderPath, fullPage: true });
-  await context.close();
-
+// Compare one rendered PNG against the baseline (or write the
+// baseline under --update). Factored out so the short-paper path
+// and the paginated path can share the diff logic.
+async function compareOrWrite(name, renderPath) {
   if (update) {
     await mkdir(baselineDir, { recursive: true });
     await writeFile(join(baselineDir, name), await readFile(renderPath));
@@ -209,6 +163,118 @@ async function renderAndDiff(browser, demoPath, demoId, view) {
   return { name, status: 'pass', info: `${diffPixels} pixels` };
 }
 
+async function renderAndDiff(browser, demoPath, demoId, view) {
+  const url = 'file://' + demoPath;
+  const safeId = demoId.replace(/\//g, '_');
+  const baseName = `${safeId}-${view.width}-${view.theme}`;
+
+  const context = await browser.newContext({
+    viewport: { width: view.width, height: view.height },
+    colorScheme: view.theme,
+    deviceScaleFactor: 1,
+  });
+  const page = await context.newPage();
+  await page.goto(url, { waitUntil: 'networkidle' });
+  // Mirror the OS preference into an explicit `data-theme` so the
+  // application rules fire deterministically — the harness shouldn't
+  // depend on Playwright's `colorScheme` behaviour alone.
+  await page.evaluate((t) => document.documentElement.setAttribute('data-theme', t), view.theme);
+  // Give the cascade a moment to settle after the data-theme flip.
+  // The body-of-evidence is: previous flaky AA pixels around theme
+  // switching went away once we waited an extra animation frame.
+  // (Avoid a second `waitForLoadState('networkidle')` here — long
+  // math-heavy papers in Firefox don't always reach networkidle a
+  // second time within 30s, which produced a Timeout failure on
+  // math/0002050. The data-theme flip is synchronous; one rAF is
+  // enough for the cascade to settle.)
+  await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => r())));
+
+  await mkdir(renderDir, { recursive: true });
+
+  // Per-engine screenshot height limits. Pages within the limit take
+  // the short-paper path (single fullPage PNG, the previously shipped
+  // baseline). Pages over the limit take the paginated path below.
+  //   - Firefox: 32767 px (int16 in the Marionette protocol)
+  //   - Chromium: nominally 100k+ px, but very tall pages (~400k+)
+  //     under concurrent contexts trigger memory-pressure "Unable to
+  //     capture screenshot" errors. 50000 is a conservative cap.
+  //     Hits arXiv:2105.10386 (~400k px at 1280, even taller at 320).
+  //   - WebKit: TBD when libavif16 ships; conservative 32767.
+  const heightLimits = { firefox: 32767, chromium: 50000, webkit: 32767 };
+  const docHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  const limit = heightLimits[engineName];
+
+  if (!limit || docHeight <= limit) {
+    // Short-paper path: single fullPage screenshot. fullPage: true
+    // captures the entire article scroll height — a regression deep
+    // in the bibliography or a figure half-way down still flags.
+    const name = `${baseName}.png`;
+    const renderPath = join(renderDir, name);
+    await page.screenshot({ path: renderPath, fullPage: true });
+    await context.close();
+    return [await compareOrWrite(name, renderPath)];
+  }
+
+  // Paginated path: chunk the page into viewport-tall slices,
+  // scrolling between captures. Each chunk is its own PNG, diffed
+  // independently against `<base>-pNNN.png`. Three-digit zero-padding
+  // because the longest paper (arXiv:2105.10386) at 320 width is
+  // ~700 chunks.
+  //
+  // Chunking by viewport — not a larger value — keeps `vh`/`dvh`
+  // semantics consistent with the short-paper render: the viewport
+  // dimensions never change during the run. A `position: fixed`
+  // element would repeat in every chunk; academic-paper CSS doesn't
+  // use any, but worth noting if a future consumer introduces one.
+  const chunkHeight = view.height;
+  const chunkCount = Math.ceil(docHeight / chunkHeight);
+  const results = [];
+
+  for (let i = 0; i < chunkCount; i++) {
+    const y = i * chunkHeight;
+    const captureHeight = Math.min(chunkHeight, docHeight - y);
+    await page.evaluate((sy) => window.scrollTo(0, sy), y);
+    await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => r())));
+
+    const pageNum = String(i + 1).padStart(3, '0');
+    const chunkName = `${baseName}-p${pageNum}.png`;
+    const chunkPath = join(renderDir, chunkName);
+    // `clip` with the default (non-fullPage) screenshot mode is
+    // relative to the viewport, so x:0/y:0 captures the top
+    // `captureHeight` pixels of what's currently scrolled in.
+    // The trailing chunk has captureHeight < chunkHeight.
+    //
+    // Per-chunk try/catch: arXiv:2105.10386 (~400k px, ~50k DOM
+    // nodes) crashes the Chromium renderer somewhere between
+    // chunks 140 and 170 — memory pressure from accumulated
+    // layer state. Exact crash chunk varies with concurrency
+    // (chunk 144 at CONCURRENCY=1, 160-166 at CONCURRENCY=4).
+    // Catch the crash and abandon the remaining chunks for this
+    // view rather than ERRORing the whole worker. Under
+    // `--update`, the partial chunks 1..(crash-1) DO land as
+    // baseline files (`compareOrWrite` runs after each successful
+    // screenshot), so re-runs verify the partial coverage we
+    // can capture — about 57 % of the page on this paper.
+    try {
+      await page.screenshot({
+        path: chunkPath,
+        clip: { x: 0, y: 0, width: view.width, height: captureHeight },
+      });
+    } catch (err) {
+      await context.close();
+      return [{
+        name: `${baseName}-p${pageNum}`,
+        status: 'skip-renderer-crash',
+        info: `chunk ${i + 1}/${chunkCount} of ${docHeight} px page: ${err.message.split('\n')[0]}`,
+      }];
+    }
+    results.push(await compareOrWrite(chunkName, chunkPath));
+  }
+
+  await context.close();
+  return results;
+}
+
 async function main() {
   console.log(`engine: ${engineName}`);
   const browser = await engines[engineName].launch();
@@ -236,20 +302,27 @@ async function main() {
     }
   }
 
+  // Per-chunk result tags. `renderAndDiff` returns an array — one
+  // entry for short papers, N entries for the paginated path.
+  const statusTag = {
+    pass: 'PASS', diff: 'DIFF',
+    'no-baseline': 'NEW', 'size-mismatch': 'SIZE',
+    updated: 'UPDATED',
+    'skip-renderer-crash': 'SKIP',
+  };
+
   async function worker() {
     for (;;) {
       const task = tasks.shift();
       if (!task) return;
       const { id, path, view } = task;
       try {
-        const r = await renderAndDiff(browser, path, id, view);
-        results.push(r);
-        const tag = {
-          pass: 'PASS', diff: 'DIFF',
-          'no-baseline': 'NEW', 'size-mismatch': 'SIZE',
-          updated: 'UPDATED', 'skip-too-tall': 'SKIP',
-        }[r.status];
-        console.log(`${tag} ${r.name}${r.info ? ` — ${r.info}` : ''}`);
+        const rs = await renderAndDiff(browser, path, id, view);
+        for (const r of rs) {
+          results.push(r);
+          const tag = statusTag[r.status] ?? r.status.toUpperCase();
+          console.log(`${tag} ${r.name}${r.info ? ` — ${r.info}` : ''}`);
+        }
       } catch (err) {
         console.log(`ERROR ${id} ${view.width} ${view.theme}: ${err.message}`);
         results.push({ name: `${id}-${view.width}-${view.theme}`, status: 'error' });
