@@ -28,7 +28,7 @@
   ],
   "scripts": {
     "build": "mkdir -p dist && lightningcss --bundle --minify --sourcemap css/ar5iv.css -o dist/ar5iv.min.css",
-    "lint": "stylelint 'css/**/*.css'",
+    "lint": "stylelint 'css/**/*.css' && node tools/check-tokens.mjs",
     "test": "node tools/visual.mjs",
     "prepublishOnly": "npm run build"
   },
