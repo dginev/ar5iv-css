@@ -12,45 +12,46 @@
 
 ## ⏭ Next pickup — 2026-05-16+
 
-**Where we left off (end of 2026-05-15):** WebKit harness fully
-landed and cross-engine validated. Six commits today on `glowup`;
-iteration-5 items #3 (paginated rendering) and #2 (WebKit) both
-closed. CSS-quality audit performed across ten dimensions —
-**zero critical issues found**, iteration-4's "best-in-class for
-CSS substance AND tooling" verdict stands.
+**Where we left off (end of 2026-05-15):** eight commits today
+on `glowup`. Iteration-5 items #3, #2, #1-phase-1 all closed;
+paper-over audit done; iteration-4's "best-in-class for CSS
+substance AND tooling" verdict stands. Zero critical CSS issues.
 
-**Today's six commits:**
+**Today's eight commits:**
 1. `a9d9177` — Iteration-5 item #3: paginated rendering. 28
-   papers now produce chunked baselines at narrow viewport;
-   snapshot count grew from ~188 to 8151.
+   papers now produce chunked baselines; snapshot count grew
+   from ~188 to 8151.
 2. `cd4f3c5` — Accurate WCAG contrast ratios across all token
-   themes; previously-undocumented sepia documented as AAA.
+   themes; sepia documented as AAA.
 3. `11e1fb6` — Logged the CSS-quality audit pass.
-4. `99d79e2` — WebKit harness substantively landed; **7-mrow
-   MathML workaround retirement cross-engine verified** (the
-   primary-task validation rationale for item #2).
-5. `e12774f` — Recovery plan written after a guarded retry
-   hung on `2106.15835` (networkidle-on-remote-image).
-6. [today, post-pause] — Recovery plan executed: image-only
-   `context.route()` block, `waitUntil: 'load'`, `timeout:
-   15000` on `page.goto`. WebKit completion done; ~70 % of
-   the 17 missing papers covered before any further breakage.
+4. `99d79e2` — Item #2: WebKit harness substantively landed;
+   **7-mrow MathML workaround retirement cross-engine verified**.
+5. `e12774f` — Recovery plan after WebKit hung on a
+   networkidle-on-remote-image issue.
+6. `a6c79b1` — Recovery plan executed: image-only
+   `context.route()` block, `waitUntil: 'load'`, `timeout: 15000`.
+   WebKit harness fully landed; all 47 papers covered.
+7. `7af724d` — Paper-over audit: `.ltx_cite > .ltx_ref`
+   workaround **verified still load-bearing cross-engine**.
+8. `8eaa6b7` — Item #1 phase 1: `.github/workflows/ci.yml`
+   runs lint + build on push to main and PRs.
 
-**Recommended first pick:** verify the final WebKit baseline
-state (`node tools/visual.mjs --engine=webkit` no `--update`,
-under CONCURRENCY=1 + timeout guards). If any chunks still SKIP
-due to the `2105.10386` renderer-crash pattern, that's expected
-and documented. Anything else surfaces a regression to
-investigate. Acceptance target: WebKit clean run + Chromium
-clean run (re-baseline the Chromium side too — same-machine AA
-drift continues to surface ~24-85 px page-height differences
-between runs, harmless but visible as SIZE).
+**Recommended first pick:** decide direction on item #1 phase 2.
+Two unresolved questions: where to host the release-artifact
+baseline tarball (GitHub Releases attachment / Git LFS / S3-equiv),
+and how to handle AA drift on CI runners (pin OS + fonts in the
+workflow, or raise `pixelTolerance` and accept the noise). Without
+those, phase 2 (visual harness on CI) is brittle. Phase 1 catches
+the no-browser regressions today.
 
-**Then** iteration-5 **item #1 — CI pipeline + release-artifact
-baseline tarball**. Now genuinely valuable: two engines' worth
-of baselines exist; "main is correct" assertion needs a shared
-ground truth. Hosting decision still open (GitHub Releases
-attachment vs. equivalent).
+**Runner-up — primary-task-aligned alternative.** The Q4 / paper-
+over audit methodology proved its value today: cross-engine
+disable-and-diff confirmed the cite-ref workaround is still
+needed. Other testable defensive rules likely exist in
+`css/ar5iv.css` that the cursory scan missed; a second pass
+(grep for `!important` clusters with comments, look for
+property-overrides on LaTeXML-emitted attributes) could surface
+more confidence (or rare deletions).
 
 **Same-machine AA drift caveat.** Persistent across all today's
 runs: ~24-85 px page-height variance between `--update` calls on
