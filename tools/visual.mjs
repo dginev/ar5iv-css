@@ -25,7 +25,7 @@
 // to `tools/snapshots-baseline.tar.zst` is the planned approach
 // (deferred until first CI/PR pipeline lands).
 
-import { chromium } from 'playwright';
+import { chromium, firefox, webkit } from 'playwright';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
 import { readFile, writeFile, mkdir, access, readdir } from 'node:fs/promises';
@@ -34,9 +34,25 @@ import { fileURLToPath } from 'node:url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const repoRoot = join(__dirname, '..');
-const baselineDir = join(__dirname, 'baseline');
-const renderDir = join(__dirname, '.cache', 'snapshots');
-const diffDir = join(__dirname, '.cache', 'diff');
+
+// Engine selection. Default chromium; --engine=firefox or --engine=webkit
+// opt in to cross-engine runs. WebKit currently requires the system
+// package `libavif16` (`sudo apt-get install libavif16`) on Linux;
+// Firefox runs out of the box after `npx playwright install firefox`.
+const engineArg = (process.argv.find(a => a.startsWith('--engine=')) ?? '').split('=')[1];
+const engineName = engineArg || 'chromium';
+const engines = { chromium, firefox, webkit };
+if (!engines[engineName]) {
+  console.error(`Unknown engine: ${engineName}. Use chromium | firefox | webkit.`);
+  process.exit(1);
+}
+
+// Baseline subdir per engine so cross-engine runs don't clobber
+// each other. Cross-engine AA variance is large enough that a
+// shared baseline wouldn't be meaningful.
+const baselineDir = join(__dirname, 'baseline', engineName);
+const renderDir = join(__dirname, '.cache', 'snapshots', engineName);
+const diffDir = join(__dirname, '.cache', 'diff', engineName);
 
 // Corpus: read from `tools/corpus.txt`, the single source of truth
 // shared with `examples/fetch-corpus.sh`. One ID per non-blank,
@@ -113,7 +129,11 @@ async function renderAndDiff(browser, demoPath, demoId, view) {
   // Give the cascade a moment to settle after the data-theme flip.
   // The body-of-evidence is: previous flaky AA pixels around theme
   // switching went away once we waited an extra animation frame.
-  await page.waitForLoadState('networkidle');
+  // (Avoid a second `waitForLoadState('networkidle')` here — long
+  // math-heavy papers in Firefox don't always reach networkidle a
+  // second time within 30s, which produced a Timeout failure on
+  // math/0002050. The data-theme flip is synchronous; one rAF is
+  // enough for the cascade to settle.)
   await page.evaluate(() => new Promise((r) => requestAnimationFrame(() => r())));
 
   await mkdir(renderDir, { recursive: true });
@@ -123,6 +143,17 @@ async function renderAndDiff(browser, demoPath, demoId, view) {
   // everything past the frontmatter and was rightly called out as
   // misleading. With fullPage, a regression deep in the bibliography
   // or in a figure half-way down still flags.
+  //
+  // Firefox screenshot height is capped at 32767 px (int16 in the
+  // Marionette protocol). Long papers (1502.04633, 2105.10386,
+  // some others) exceed that. We pre-check the document scroll
+  // height and SKIP-TOO-TALL when relevant; pagination would be a
+  // proper fix and is on the iteration-4 deferred list.
+  const docHeight = await page.evaluate(() => document.documentElement.scrollHeight);
+  if (engineName === 'firefox' && docHeight > 32767) {
+    await context.close();
+    return { name, status: 'skip-too-tall', info: `scrollHeight ${docHeight} > 32767 px Firefox limit` };
+  }
   await page.screenshot({ path: renderPath, fullPage: true });
   await context.close();
 
@@ -162,7 +193,8 @@ async function renderAndDiff(browser, demoPath, demoId, view) {
 }
 
 async function main() {
-  const browser = await chromium.launch();
+  console.log(`engine: ${engineName}`);
+  const browser = await engines[engineName].launch();
   const results = [];
   const present = [];
   const missing = [];
@@ -198,7 +230,7 @@ async function main() {
         const tag = {
           pass: 'PASS', diff: 'DIFF',
           'no-baseline': 'NEW', 'size-mismatch': 'SIZE',
-          updated: 'UPDATED',
+          updated: 'UPDATED', 'skip-too-tall': 'SKIP',
         }[r.status];
         console.log(`${tag} ${r.name}${r.info ? ` — ${r.info}` : ''}`);
       } catch (err) {

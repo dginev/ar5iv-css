@@ -119,6 +119,32 @@ For shared CI verification, a release-artifact tarball at
 `tools/snapshots-baseline.tar.zst` is the planned approach
 (deferred until the first CI/PR pipeline lands).
 
+### Cross-engine runs
+
+Opt in to Firefox or WebKit via the `--engine` flag:
+
+```bash
+node tools/visual.mjs --engine=firefox --update     # generate Firefox baseline
+node tools/visual.mjs --engine=firefox              # diff against it
+```
+
+Each engine has its own baseline subdir (`tools/baseline/<engine>/`)
+because cross-engine AA variance is much larger than the per-image
+pixel-count tolerance — a shared baseline wouldn't be meaningful.
+
+**Caveats:**
+- **WebKit** needs `libavif16` on Linux:
+  `sudo apt-get install libavif16` (or `sudo npx playwright install-deps`).
+  Without it, `webkit.launch()` fails at validation. Chromium and
+  Firefox launch fine out of the box after
+  `npx playwright install firefox webkit`.
+- **Firefox** has a 32767 px screenshot height limit (int16 in the
+  Marionette protocol). Long papers (1502.04633 at ~60k px,
+  2105.10386 at ~400k px, etc.) are detected pre-render and
+  reported as `SKIP scrollHeight … > 32767 px Firefox limit`.
+  About 12 corpus papers exceed the limit; the rest (~35) render
+  fine. A proper paginated-capture fix is on the deferred list.
+
 After an intentional visual change, refresh the baseline:
 
 ```bash
