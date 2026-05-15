@@ -245,13 +245,13 @@ mtd {
 }
 .ltx_cite > .ltx_ref {
   white-space: nowrap;
-  /* why inline-block with a custom line height?
-    cites separated with text nodes holding semicolons
-    get spaced out too far with the "justified" text alignment.
-    example: see the three cites at the beginning of 2006.09882's Introduction
-
-    These are also interpreted slightly differently on different browsers...
-    Maybe a better approach exists? */
+  /* inline-block + custom line-height: cites separated by
+     semicolon text nodes get spaced out too far under justified
+     text-align without these (see 2006.09882's Introduction
+     `[10, 24, 44]` cluster). Verified still load-bearing
+     2026-05-15 cross-engine: disable-and-diff on 2006.09882
+     produces 8753 px diff in WebKit p004 and 2544 px in
+     Chromium p012, with downstream reflow cascade. */
   display: inline-block;
   line-height: 1.4rem;
   /* see the introduction at 1810.10704 for why text-indent needs to be 0 */

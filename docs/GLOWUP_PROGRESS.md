@@ -689,6 +689,31 @@ calendar-dependent. None block shipping today.
 
 ## Change log
 
+- **2026-05-15 (paper-over audit)** — Cross-engine audit pass
+  on the iteration-3 #7 paper-over candidates, now that WebKit
+  is wired up. Findings:
+  • `.ltx_cite > .ltx_ref { display: inline-block; line-height:
+    1.4rem }` (line 246) — **verified still load-bearing
+    cross-engine.** Disable-and-diff on 2006.09882 (the comment's
+    reference paper, `[10, 24, 44]` cite cluster in the
+    Introduction): Chromium p012 shows 2544 px diff, WebKit
+    p004 shows 8753 px with downstream reflow cascade. Date-
+    stamped in source to retire the open question.
+  • `.ltx_item > .ltx_theorem` (line 1097) — **no corpus
+    coverage.** No paper in the 47-paper corpus has a
+    `.ltx_item` element with a `.ltx_theorem` direct child;
+    can't verify or disprove. Preserved defensively.
+  • Lines 1818 (`.ltx_inline-block > .ltx_p { width: auto }`),
+    2090, 2093 (transform-disable on equation/flex cells) —
+    these defend against inaccurate LaTeXML emitted dimensions/
+    transforms. Disable-and-diff against an existing baseline
+    can't help: the baseline ALSO uses these overrides, so the
+    test would just verify "removing the override matches the
+    override removed", not "is the override needed". Would need
+    ground-truth (the source PDF) which the harness lacks.
+    Out of scope for this audit pass.
+  Net: one declarative-update commit, zero deletions. Audit
+  produced confidence, not code reduction.
 - **2026-05-15 (post-pause)** — Six-step recovery plan from
   the pre-commute commit (`e12774f`) executed in full.
   `tools/visual.mjs` got three small changes: an image-only
