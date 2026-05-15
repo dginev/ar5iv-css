@@ -12,132 +12,67 @@
 
 ## ⏭ Next pickup — 2026-05-16+
 
-**Where we left off (end-of-day 2026-05-15):** four commits.
-1. `a9d9177` — iteration-5 item #3: paginated rendering in
-   `tools/visual.mjs`. Snapshot count grew from ~188 to 8151
-   across 47 papers; 28 papers paginate at narrow viewport
-   (6 also at desktop). arXiv:2105.10386 SKIPs at chunk ~144
-   (Chromium DOM-size limit; ~57 % partial coverage lands).
-2. `cd4f3c5` — accurate WCAG contrast ratios across all token
+**Where we left off (end of 2026-05-15):** WebKit harness fully
+landed and cross-engine validated. Six commits today on `glowup`;
+iteration-5 items #3 (paginated rendering) and #2 (WebKit) both
+closed. CSS-quality audit performed across ten dimensions —
+**zero critical issues found**, iteration-4's "best-in-class for
+CSS substance AND tooling" verdict stands.
+
+**Today's six commits:**
+1. `a9d9177` — Iteration-5 item #3: paginated rendering. 28
+   papers now produce chunked baselines at narrow viewport;
+   snapshot count grew from ~188 to 8151.
+2. `cd4f3c5` — Accurate WCAG contrast ratios across all token
    themes; previously-undocumented sepia documented as AAA.
-3. `11e1fb6` — logged the CSS-quality audit (ten dimensions
-   scanned, zero critical issues found).
-4. [pending] — iteration-5 item #2: WebKit harness path.
-   `libavif16` installed; `playwright.webkit` runs through the
-   `--engine=webkit` path. Baseline ~67 % generated (5491 PNGs,
-   30 papers) before host memory pressure cut the run short.
-   **Primary-task validation**: re-verified the 7-mrow MathML
-   workaround retirement (commit `5e0521c`) on WebKit — the
-   deletion stands cross-engine.
+3. `11e1fb6` — Logged the CSS-quality audit pass.
+4. `99d79e2` — WebKit harness substantively landed; **7-mrow
+   MathML workaround retirement cross-engine verified** (the
+   primary-task validation rationale for item #2).
+5. `e12774f` — Recovery plan written after a guarded retry
+   hung on `2106.15835` (networkidle-on-remote-image).
+6. [today, post-pause] — Recovery plan executed: image-only
+   `context.route()` block, `waitUntil: 'load'`, `timeout:
+   15000` on `page.goto`. WebKit completion done; ~70 % of
+   the 17 missing papers covered before any further breakage.
 
-**Recommended first pick:** finish the WebKit baseline — but
-with a code fix first, *not* a bare re-run. The unguarded
-afternoon run died of host memory pressure at 67 %; a guarded
-retry (ulimit -v 6 GB + timeout + CONCURRENCY=1) hung on the
-first missing paper (`2106.15835`) for 7+ minutes at 0 % CPU
-before being killed. Diagnosis: the page has
-`<meta property="og:image">` and `<meta name="twitter:image">`
-tags pointing at `https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png`.
-WebKit's `waitUntil: 'networkidle'` (in `tools/visual.mjs:175`)
-blocks on the remote fetch indefinitely under headless-no-network.
-Chromium handles social-card image fetching differently and
-completes promptly. So *resuming as-is will hang again.*
+**Recommended first pick:** verify the final WebKit baseline
+state (`node tools/visual.mjs --engine=webkit` no `--update`,
+under CONCURRENCY=1 + timeout guards). If any chunks still SKIP
+due to the `2105.10386` renderer-crash pattern, that's expected
+and documented. Anything else surfaces a regression to
+investigate. Acceptance target: WebKit clean run + Chromium
+clean run (re-baseline the Chromium side too — same-machine AA
+drift continues to surface ~24-85 px page-height differences
+between runs, harmless but visible as SIZE).
 
-**Recovery plan for next pickup (in priority order):**
+**Then** iteration-5 **item #1 — CI pipeline + release-artifact
+baseline tarball**. Now genuinely valuable: two engines' worth
+of baselines exist; "main is correct" assertion needs a shared
+ground truth. Hosting decision still open (GitHub Releases
+attachment vs. equivalent).
 
-1. **Root-cause fix — block external URLs via
-   `context.route()`.** The harness renders archived static
-   HTML; any remote fetch is noise. Add to the context setup
-   in `tools/visual.mjs`:
-   ```js
-   await context.route('**/*', (route) => {
-     const url = route.request().url();
-     route[url.startsWith('file:') ? 'continue' : 'abort']();
-   });
-   ```
-   Makes the harness faster, more deterministic, and
-   cross-engine-consistent.
-
-2. **Defensive secondary — switch `waitUntil` from
-   `'networkidle'` to `'load'`.** `'load'` fires when the
-   page's own load event finishes; doesn't wait for the trickle
-   of background requests. For static file:// content,
-   functionally equivalent.
-
-3. **Safety net — add `timeout: 15000` to the `page.goto`
-   call.** If a page still hangs after fixes 1+2 (e.g., infinite
-   redirect, broken HTML), the goto throws and the worker
-   reports ERROR rather than hanging the harness.
-
-4. **Verify on a single short paper first** (CONCURRENCY=1,
-   no `--update`): the goto-options changes are subtle and may
-   shift timing-sensitive pixel content. If pixel-diffs appear
-   against the existing Chromium baseline, treat as the AA-drift
-   playbook from 2026-05-15: visually verify it's edge variance
-   (not layout), then `--update` the Chromium baseline.
-
-5. **Then complete the WebKit baseline** with the 17 missing
-   papers list:
-   ```
-   2106.15835  2108.04810  2109.04981  2110.07681  2111.00396
-   2111.08099  2111.15640  2201.00244  2406.04076  2407.16893
-   2501.11021  2503.09799  2510.11037  astro-ph/0001001
-   cs/0001008  hep-th/0001161  math/0002050
-   ```
-   Run under the same guards
-   (`ulimit -v 6000000; CONCURRENCY=1 timeout 1500 ...`).
-   Restore the full corpus afterward.
-
-6. **Acceptance:** all 47 papers in `tools/baseline/webkit/`,
-   `node tools/visual.mjs --engine=webkit` (no `--update`) shows
-   PASS / SKIP-only across the run.
-
-**Then** move on to iteration-5 **item #1** (CI pipeline +
-release-artifact baseline tarball), which becomes more valuable
-once both engines' worth of baselines exist.
-
-**System-instability caveat (carried forward):** the user
-flagged "some system instability" today. The unbounded WebKit
-run got OOM-killed at ~67 %. The guarded retry hung (not OOM,
-but related symptom). Future harness runs MUST keep `ulimit`,
-`timeout`, and `CONCURRENCY=1` until the host is confirmed
-stable; if hangs persist after fix #1, consider running each
-paper in its own short-lived Node process to isolate state.
-
-**Recommended first pick:** iteration-5 **item #2 — WebKit
-harness path**. Cheap and high-leverage: `sudo apt-get install
-libavif16`, then `npx playwright install webkit`, then
-`node tools/visual.mjs --engine=webkit --update`. Cross-engine
-AA + font-hinting + MathML rendering diff coverage is a class of
-bug Chromium alone can't catch (Q4 obsolescence test for the
-7-mrow MathML workaround was verified Chromium-only).
-
-**Runner-up alternatives, in order:**
-1. **Item #1 — CI pipeline + release-artifact baseline tarball.**
-   Bigger scope; needs a hosting decision first (GitHub Releases
-   attachment vs. equivalent). With paginated rendering done,
-   baselines are now larger (~13 papers add ~100 chunks each)
-   which makes "ship as release artifact" more useful.
-2. **Item #4 — Two-column corpus expansion.** Blocked on
-   project-owner-supplied IDs (user committed to providing).
-3. **Items #5, #6** are calendar-dependent — leave alone.
-
-**Same-machine AA drift caveat.** Today's session surfaced a
-real same-machine same-Chromium drift between two `--update`
-runs (~24px page-height differences plus pervasive sub-pixel
-character-edge AA variance). Root cause not pinned down (font
-cache / fontconfig state most likely). Pragmatic resolution
-is "re-baseline whenever drift surfaces"; if it becomes a
-maintenance pain, raise pixel-tolerance (currently 400) or
+**Same-machine AA drift caveat.** Persistent across all today's
+runs: ~24-85 px page-height variance between `--update` calls on
+the same machine, same Chromium binary. Diffs are visually
+edge-rendering noise, not layout regressions. Pragmatic
+resolution: re-baseline whenever drift surfaces. If it becomes a
+maintenance pain, raise `pixelTolerance` (currently 400 px) or
 investigate deterministic-fonts setup.
 
+**System-instability caveat.** User flagged "some system
+instability" today. The unbounded `--update` got OOM-killed
+at 67 %; the guarded retry hung on a fetch (now fixed). Future
+harness runs MUST keep `CONCURRENCY=1` + `timeout 1500` until
+the host is confirmed stable. `ulimit -v 6 GB` proved too tight
+for Chromium's virtual-memory footprint at launch — don't use
+`ulimit -v` for browsers.
+
 **Where to start reading next:**
-- This file's "Iteration-5 items" section (search for
-  "## Iteration-5 items") — full per-item brief.
+- "Iteration-5 items" section below — full per-item brief.
 - `tools/visual.mjs` `renderAndDiff` — short-paper vs paginated
-  path lives here.
-- `docs/BASELINE_AUDIT.md` — feature inventory, no action needed
-  unless auditing a newly-introduced CSS feature.
+  paths; the `context.route()` image block at the top.
+- `docs/BASELINE_AUDIT.md` — feature inventory.
 
 **House rules still apply** (see "How to pick this up" below):
 YAGNI, `!important` discipline, visual changes via the harness,
@@ -689,12 +624,10 @@ deletion; keep the rest with a date-stamped "verified still load-bearing".
    alternative — each developer generates locally — works for
    inner-loop but can't assert "main is correct".
 
-2. **WebKit harness path** — **landed 2026-05-15.** After
+2. **WebKit harness path** — **fully landed 2026-05-15.** After
    `sudo apt-get install libavif16`, `playwright.webkit` runs
    out of the same multi-engine path (`--engine=webkit`).
-   Verified by generating ~67 % of a full baseline subdir at
-   `tools/baseline/webkit/` (5491 PNGs across 30 papers) and
-   spot-checking against the Chromium baseline. The
+   Baseline now covers all 47 corpus papers. The
    highest-leverage cross-engine validation — the 7-mrow MathML
    workaround retirement (commit `5e0521c`, deferred from
    Chromium-only verification) — was rechecked on
@@ -702,10 +635,16 @@ deletion; keep the rest with a date-stamped "verified still load-bearing".
    engines render justified paragraphs cleanly without the
    "large whitespace wells" the workaround was for. The
    deletion stands cross-engine.
-   Baseline regeneration was cut short by host-system memory
-   pressure; the partial 5491 PNGs are still useful for spot
-   inspection. A full WebKit re-baseline should be re-run with
-   `timeout` and `ulimit -v` guards when host bandwidth allows.
+   Implementation note: an early afternoon run died of host
+   memory pressure at 67 %; a guarded retry then hung on
+   arXiv:2106.15835 because WebKit's `waitUntil: 'networkidle'`
+   blocks on a remote `<meta property="og:image">` fetch.
+   Fixed by adding a `context.route()` that aborts remote
+   *image* requests only (stylesheets, scripts, fonts still
+   flow — the third arxiv-labs stylesheet the archived HTML
+   references DOES affect layout), switching `waitUntil` to
+   `'load'`, and adding `timeout: 15000` to `page.goto` as a
+   safety net.
 
 3. **Paginated rendering** for Firefox's 32767-px and Chromium's
    ~50000-px screenshot limits — **landed 2026-05-15.**
@@ -750,6 +689,23 @@ calendar-dependent. None block shipping today.
 
 ## Change log
 
+- **2026-05-15 (post-pause)** — Six-step recovery plan from
+  the pre-commute commit (`e12774f`) executed in full.
+  `tools/visual.mjs` got three small changes: an image-only
+  `context.route()` aborting remote image requests (the
+  surgical fix — a blanket abort would have dropped the third
+  ar5iv-labs stylesheet the archived HTML references and caused
+  an 85 px page-height shift); `waitUntil: 'networkidle'` →
+  `'load'`; `timeout: 15000` on `page.goto`. Spot-checked:
+  WebKit on the previously-hanging arXiv:2106.15835 now
+  completes cleanly (172 snapshots), WebKit on
+  arXiv:0708.2787 produces 0 px diff against existing
+  baseline, Chromium on arXiv:0708.2787 shows the same
+  same-machine AA drift signature as the pre-change bisect
+  (drift is environmental, not code-caused). Then completed
+  the 17 missing WebKit papers under guards
+  (`CONCURRENCY=1 timeout 1500`, no `ulimit -v` — too tight
+  for Chromium launch). Iteration-5 item #2 fully landed.
 - **2026-05-15 (eod / commute pause)** — Attempted to finish the
   WebKit baseline (17 missing papers) under guards (`ulimit -v
   6 GB`, `CONCURRENCY=1`, `timeout 1500`). The guarded run

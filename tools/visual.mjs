@@ -173,8 +173,33 @@ async function renderAndDiff(browser, demoPath, demoId, view) {
     colorScheme: view.theme,
     deviceScaleFactor: 1,
   });
+  // Block remote *image* requests only. The hang on WebKit came
+  // from `<meta property="og:image">` / `<meta name="twitter:image">`
+  // pointing at `https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png`:
+  // WebKit's `waitUntil` blocks on the fetch under headless-no-network.
+  // A blanket abort would also drop the third stylesheet the archived
+  // HTML references (`https://ar5iv.labs.arxiv.org/assets/ar5iv-site.*.css`)
+  // — and that does affect layout (we measured an 85 px page-height
+  // shift at 320). So: block only image resourceType remote requests.
+  // Stylesheets, scripts, fonts, document fetches all flow normally.
+  await context.route('**/*', (route) => {
+    const req = route.request();
+    if (req.resourceType() === 'image' && !req.url().startsWith('file:')) {
+      route.abort();
+    } else {
+      route.continue();
+    }
+  });
   const page = await context.newPage();
-  await page.goto(url, { waitUntil: 'networkidle' });
+  // `waitUntil: 'load'` (the page's own load event) instead of
+  // `'networkidle'`. For static file:// content the two are
+  // functionally equivalent — except `networkidle` can wait on
+  // background pings the page doesn't depend on (and which we
+  // now abort above anyway). `timeout: 15000` is a safety net:
+  // if a page somehow still hangs, the goto throws and the
+  // worker's try/catch reports ERROR rather than the harness
+  // hanging the whole run.
+  await page.goto(url, { waitUntil: 'load', timeout: 15000 });
   // Mirror the OS preference into an explicit `data-theme` so the
   // application rules fire deterministically — the harness shouldn't
   // depend on Playwright's `colorScheme` behaviour alone.
