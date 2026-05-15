@@ -1138,7 +1138,14 @@ span.ltx_font_bold > .ltx_break:last-child {
    and auto-row, stacking vertically beside the tag. */
 .ltx_biblist {
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
+  /* `fit-content(12em)` caps the tag column at 12em. Keys narrower
+     than the cap (numeric `[1]`, short author-year like `[Wil16]`)
+     get their natural width; long author-year keys (`Chandler and
+     Kerswell [2013]`-style) wrap inside the cap rather than
+     pushing the entry column to a too-narrow strip. 12em fits
+     about 20 characters of body text — the "Budanur et al.
+     [2017]" reference style — anything longer reflows. */
+  grid-template-columns: fit-content(12em) minmax(0, 1fr);
   column-gap: 3em;
   /* Drop the <ul> UA-default `padding-inline-start: 40px` so the
      tag column ([1], [2], ...) starts at the same x as the
@@ -1151,6 +1158,12 @@ span.ltx_font_bold > .ltx_break:last-child {
   display: grid;
   grid-template-columns: subgrid;
   grid-column: 1 / -1;
+  /* Align grid items by their first baseline so the tag's "[1]"
+     and the bibblock's first line of text sit on the same baseline.
+     Default `align-items: stretch` made the bibblock's first text
+     line render a hair below the tag's visual top because of the
+     line-box padding asymmetry between the two contents. */
+  align-items: baseline;
   list-style-type: none;
   padding-bottom: 0.75em;
   font-family: var(--text-font-family);
@@ -1189,7 +1202,11 @@ span.ltx_font_bold > .ltx_break:last-child {
 }
 @media only screen and (width > 52rem) {
   .ltx_bibitem .ltx_tag {
-    white-space: nowrap;
+    /* No `white-space: nowrap` — long author-year keys need to
+       wrap inside the `fit-content(12em)` cap on the tag column.
+       Numeric keys collapse far below the cap; short author-year
+       keys still fit on one line. */
+    overflow-wrap: break-word;
   }
 }
 /*.bibitem-tag + div { display:inline; }*/
@@ -1206,11 +1223,13 @@ span.ltx_font_bold > .ltx_break:last-child {
   font-weight: bold;
 }
 
-/* highlight feature for bibitem-tag */
-.ltx_tag_bibitem ~ *:active,
-.ltx_tag_bibitem ~ *:hover,
-.ltx_tag_bibitem:active ~ *,
-.ltx_tag_bibitem:hover ~ * {
+/* Highlight the whole bibitem (key + entry) on hover, not just the
+   sibling of the tag. The earlier `.ltx_tag_bibitem ~ *` chain only
+   highlighted siblings of the tag — hovering the bibblock left the
+   tag unhighlighted, and vice versa. `.ltx_bibitem:is(:hover, :active)
+   > *` highlights both children when any part of the bibitem
+   triggers the state. */
+.ltx_bibitem:is(:hover, :active) > * {
   background-color: var(--note-highlight-color);
 }
 
