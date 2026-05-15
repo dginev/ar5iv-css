@@ -12,16 +12,26 @@
 
 ## ⏭ Next pickup — 2026-05-16+
 
-**Where we left off (end-of-day 2026-05-15):** iteration-5 item #3
-(paginated rendering) landed. `tools/visual.mjs` now chunks
-over-limit pages into viewport-tall slices instead of SKIP. ~12
-previously-SKIP papers now produce N-chunk baselines; only
-arXiv:2105.10386 still SKIPs (Chromium renderer crashes at
-chunk ~144 of 254 — fundamental DOM-size limit, not a pagination
-bug; partial coverage of ~57% lands before the crash). Baselines
-re-generated to absorb same-machine AA drift between yesterday's
-`--update` (22:05) and today's run — diffs visually verified as
-AA edge-rendering variance, not layout regressions.
+**Where we left off (end-of-day 2026-05-15):** two commits landed.
+1. `a9d9177` — iteration-5 item #3: paginated rendering in
+   `tools/visual.mjs`. Over-limit pages now chunk into
+   viewport-tall slices instead of SKIP; 28 papers now have
+   chunked baselines at narrow viewport (6 also at desktop),
+   snapshot count grew from ~188 to 8151. arXiv:2105.10386
+   still SKIPs at chunk ~144 (Chromium DOM-size limit; partial
+   coverage of ~57 % lands before the crash).
+2. `cd4f3c5` — CSS audit follow-up: accurate WCAG contrast
+   ratios across all token themes in `docs/TOKENS.md`,
+   including a previously-undocumented sepia theme that is
+   AAA-compliant. Two dark-theme values were significantly
+   understated in the prior docs (warning AAA at 7.73:1,
+   error 5.46:1 vs documented 4.8:1). No CSS change — pure
+   docs accuracy in service of the best-in-class primary task.
+
+Same-machine AA drift surfaced today between yesterday's
+`--update` (22:05) and today's render — diffs visually verified
+as font-edge variance, not layout. Absorbed by `--update`
+during the paginated-rendering work.
 
 **Recommended first pick:** iteration-5 **item #2 — WebKit
 harness path**. Cheap and high-leverage: `sudo apt-get install
@@ -658,6 +668,23 @@ calendar-dependent. None block shipping today.
 
 ## Change log
 
+- **2026-05-15 (audit)** — CSS-quality audit run per the
+  user's primary-task reminder. Ten dimensions scanned in
+  `css/ar5iv.css` + `css/ar5iv/*.css`: deprecated patterns
+  (none), single-colon pseudo-elements (none outside
+  comments), `outline:0/none` (none), focus-visible coverage
+  (comprehensive via `a11y.css`), `display:none` rules (all
+  hide LaTeXML metadata, not content), ARIA/role selectors
+  (none needed — semantic LaTeXML output), print stylesheet
+  (complete), `!important` discipline (42 uses, all in the
+  allowlisted clusters), z-index tokens (all via
+  `--z-popover`/`--z-page`/`--z-below`, zero literals),
+  animation/transition tokens (all via `--duration-fast`/
+  `--ease-out`). **No critical CSS issues found.** Single
+  actionable finding: WCAG contrast ratios in
+  `docs/TOKENS.md` were stale or missing — fixed in
+  commit `cd4f3c5`. Confirms iteration-4's "best-in-class
+  for CSS substance AND tooling" verdict still stands.
 - **2026-05-15** — Iteration-5 item #3 landed: paginated
   rendering in `tools/visual.mjs`. The over-limit branch that
   previously returned `skip-too-tall` now slices the page into
