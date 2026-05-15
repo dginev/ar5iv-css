@@ -71,6 +71,12 @@ const matrix = [
 // page height — consider this when interpreting the diff number.)
 const pixelTolerance = 400;
 
+// Concurrent renders per browser instance. Default 4 — Chromium handles
+// it comfortably on a typical dev machine; higher (e.g. 8) is fine on
+// 8+ core machines but starts trading off latency against parallelism
+// for snapshot encoding. Override via `CONCURRENCY=N npm test`.
+const concurrency = Math.max(1, parseInt(process.env.CONCURRENCY ?? '4', 10) || 4);
+
 const update = process.argv.includes('--update');
 
 async function fileExists(path) {
@@ -172,8 +178,20 @@ async function main() {
     console.log(`Run ./examples/fetch-corpus.sh ar5iv to fetch them all.\n`);
   }
 
+  // Flat queue of work, drained concurrently by N workers sharing
+  // the single Chromium instance via separate Playwright contexts.
+  const tasks = [];
   for (const { id, path } of present) {
     for (const view of matrix) {
+      tasks.push({ id, path, view });
+    }
+  }
+
+  async function worker() {
+    for (;;) {
+      const task = tasks.shift();
+      if (!task) return;
+      const { id, path, view } = task;
       try {
         const r = await renderAndDiff(browser, path, id, view);
         results.push(r);
@@ -189,6 +207,8 @@ async function main() {
       }
     }
   }
+
+  await Promise.all(Array.from({ length: concurrency }, () => worker()));
   await browser.close();
 
   const fails = results.filter(r => r.status === 'diff' || r.status === 'size-mismatch' || r.status === 'error');

@@ -3,10 +3,8 @@
 # Every arXiv ID cited in `css/ar5iv.css` comments as a hand-tested
 # example. Read by `examples/fetch-corpus.sh` (bulk-fetch) and by
 # `tools/visual.mjs` (render + diff).
-#
 # Lines starting with `#` and blank lines are ignored. Add a new ID
 # by appending a line; both scripts pick it up automatically.
-#
 # Sync source (re-run after editing ar5iv.css comments):
 #   grep -oE 'arXiv:[0-9]{4}\.[0-9]{4,5}(v[0-9]+)?|arXiv:[a-z-]+/[0-9]{7}|[^0-9a-zA-Z][0-9]{4}\.[0-9]{4,5}(v[0-9]+)?|[a-z-]{2,}/[0-9]{7}' css/ar5iv.css \
 #     | grep -oE '[0-9]{4}\.[0-9]{4,5}(v[0-9]+)?|[a-z-]{2,}/[0-9]{7}' \
