@@ -112,9 +112,11 @@ bibliography or in a mid-paper figure still flags. Differences
 above the per-image pixel-count tolerance (default 400) fail the
 run; diff PNGs land in `tools/.cache/diff/` for inspection.
 
-**Baselines are gitignored**, not committed. fullPage rendering of
-46 papers × 2 themes is ~440 MB — too large for git history. Each
-developer generates locally via `node tools/visual.mjs --update`.
+**Baselines are gitignored**, not committed. The Chromium baseline
+(47 papers × 4 viewport/theme cells, with paginated long papers
+chunked into `<base>-pNNN.png` files) totals ~8 000 PNGs per engine
+— too large for git history. Each developer generates locally via
+`node tools/visual.mjs --update`.
 For shared CI verification, a release-artifact tarball at
 `tools/snapshots-baseline.tar.zst` is the planned approach
 (deferred until the first CI/PR pipeline lands).
@@ -138,12 +140,16 @@ pixel-count tolerance — a shared baseline wouldn't be meaningful.
   Without it, `webkit.launch()` fails at validation. Chromium and
   Firefox launch fine out of the box after
   `npx playwright install firefox webkit`.
-- **Firefox** has a 32767 px screenshot height limit (int16 in the
-  Marionette protocol). Long papers (1502.04633 at ~60k px,
-  2105.10386 at ~400k px, etc.) are detected pre-render and
-  reported as `SKIP scrollHeight … > 32767 px Firefox limit`.
-  About 12 corpus papers exceed the limit; the rest (~35) render
-  fine. A proper paginated-capture fix is on the deferred list.
+- **Screenshot height limits** per engine: Firefox 32767 px (int16
+  in the Marionette protocol), Chromium ~50000 px under concurrent
+  contexts, WebKit conservatively 32767 px. Pages over the limit
+  take the paginated path automatically — viewport-tall chunks
+  scrolled and captured into `<base>-pNNN.png` files, diffed
+  independently. Roughly 28 papers in the corpus trigger this path
+  at the 320-CSS-px viewport, 6 of them also at 1280. The one
+  outlier is arXiv:2105.10386 (~400k px, ~50k DOM nodes), which
+  crashes Chromium's renderer mid-pagination and lands a structured
+  `SKIP skip-renderer-crash` for the chunks past the crash point.
 
 After an intentional visual change, refresh the baseline:
 

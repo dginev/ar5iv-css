@@ -12,26 +12,31 @@
 
 ## ⏭ Next pickup — 2026-05-16+
 
-**Where we left off (end-of-day 2026-05-15):** two commits landed.
+**Where we left off (end-of-day 2026-05-15):** four commits.
 1. `a9d9177` — iteration-5 item #3: paginated rendering in
-   `tools/visual.mjs`. Over-limit pages now chunk into
-   viewport-tall slices instead of SKIP; 28 papers now have
-   chunked baselines at narrow viewport (6 also at desktop),
-   snapshot count grew from ~188 to 8151. arXiv:2105.10386
-   still SKIPs at chunk ~144 (Chromium DOM-size limit; partial
-   coverage of ~57 % lands before the crash).
-2. `cd4f3c5` — CSS audit follow-up: accurate WCAG contrast
-   ratios across all token themes in `docs/TOKENS.md`,
-   including a previously-undocumented sepia theme that is
-   AAA-compliant. Two dark-theme values were significantly
-   understated in the prior docs (warning AAA at 7.73:1,
-   error 5.46:1 vs documented 4.8:1). No CSS change — pure
-   docs accuracy in service of the best-in-class primary task.
+   `tools/visual.mjs`. Snapshot count grew from ~188 to 8151
+   across 47 papers; 28 papers paginate at narrow viewport
+   (6 also at desktop). arXiv:2105.10386 SKIPs at chunk ~144
+   (Chromium DOM-size limit; ~57 % partial coverage lands).
+2. `cd4f3c5` — accurate WCAG contrast ratios across all token
+   themes; previously-undocumented sepia documented as AAA.
+3. `11e1fb6` — logged the CSS-quality audit (ten dimensions
+   scanned, zero critical issues found).
+4. [pending] — iteration-5 item #2: WebKit harness path.
+   `libavif16` installed; `playwright.webkit` runs through the
+   `--engine=webkit` path. Baseline ~67 % generated (5491 PNGs,
+   30 papers) before host memory pressure cut the run short.
+   **Primary-task validation**: re-verified the 7-mrow MathML
+   workaround retirement (commit `5e0521c`) on WebKit — the
+   deletion stands cross-engine.
 
-Same-machine AA drift surfaced today between yesterday's
-`--update` (22:05) and today's render — diffs visually verified
-as font-edge variance, not layout. Absorbed by `--update`
-during the paginated-rendering work.
+**Recommended first pick:** finish the WebKit baseline with
+`timeout` + `ulimit -v` guards (the run was 67 % done when
+host memory pressure killed it; resume with bounded resources
+during a fresh session). Then iteration-5 **item #1 — CI
+pipeline + release-artifact baseline tarball**, which becomes
+more valuable now that there are two engines' worth of
+baselines worth publishing.
 
 **Recommended first pick:** iteration-5 **item #2 — WebKit
 harness path**. Cheap and high-leverage: `sudo apt-get install
@@ -618,12 +623,23 @@ deletion; keep the rest with a date-stamped "verified still load-bearing".
    alternative — each developer generates locally — works for
    inner-loop but can't assert "main is correct".
 
-2. **WebKit harness path.** Currently blocked by the `libavif16`
-   system package on Linux. Once installed, regenerate the
-   baseline subdir at `tools/baseline/webkit/`. Cross-engine
-   diffs between WebKit and Chromium will exercise a class of
-   bug (font hinting, MathML rendering edges) that neither
-   browser alone catches.
+2. **WebKit harness path** — **landed 2026-05-15.** After
+   `sudo apt-get install libavif16`, `playwright.webkit` runs
+   out of the same multi-engine path (`--engine=webkit`).
+   Verified by generating ~67 % of a full baseline subdir at
+   `tools/baseline/webkit/` (5491 PNGs across 30 papers) and
+   spot-checking against the Chromium baseline. The
+   highest-leverage cross-engine validation — the 7-mrow MathML
+   workaround retirement (commit `5e0521c`, deferred from
+   Chromium-only verification) — was rechecked on
+   arXiv:1502.04633 chunks p003 and p008 (dense MathML); both
+   engines render justified paragraphs cleanly without the
+   "large whitespace wells" the workaround was for. The
+   deletion stands cross-engine.
+   Baseline regeneration was cut short by host-system memory
+   pressure; the partial 5491 PNGs are still useful for spot
+   inspection. A full WebKit re-baseline should be re-run with
+   `timeout` and `ulimit -v` guards when host bandwidth allows.
 
 3. **Paginated rendering** for Firefox's 32767-px and Chromium's
    ~50000-px screenshot limits — **landed 2026-05-15.**
@@ -668,6 +684,22 @@ calendar-dependent. None block shipping today.
 
 ## Change log
 
+- **2026-05-15 (webkit)** — Iteration-5 item #2 substantively
+  landed. With `libavif16` installed on the host,
+  `playwright.webkit` runs through the existing `--engine=webkit`
+  path with no harness changes needed. A partial baseline
+  (5491 PNGs across 30 papers, ~67 % of full) was generated
+  before host memory pressure cut the unbounded run short.
+  The primary-task validation rationale for landing #2 — the
+  Chromium-only deletion of the 7-mrow MathML workaround
+  (commit `5e0521c`) — was rechecked on arXiv:1502.04633
+  chunks p003 and p008 (dense MathML, displayed equations,
+  observation environments). Both engines justify cleanly;
+  no "large whitespace wells" reappear. The deletion stands
+  cross-engine. `CONTRIBUTING.md` Firefox-screenshot-limit
+  caveat refreshed to reflect the paginated path landed
+  yesterday. Remaining: re-run the full WebKit baseline under
+  `timeout` + `ulimit` guards in a fresh session.
 - **2026-05-15 (audit)** — CSS-quality audit run per the
   user's primary-task reminder. Ten dimensions scanned in
   `css/ar5iv.css` + `css/ar5iv/*.css`: deprecated patterns

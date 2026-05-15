@@ -199,7 +199,7 @@ async function renderAndDiff(browser, demoPath, demoId, view) {
   //     under concurrent contexts trigger memory-pressure "Unable to
   //     capture screenshot" errors. 50000 is a conservative cap.
   //     Hits arXiv:2105.10386 (~400k px at 1280, even taller at 320).
-  //   - WebKit: TBD when libavif16 ships; conservative 32767.
+  //   - WebKit: conservative 32767 (matches Firefox; not stress-tested).
   const heightLimits = { firefox: 32767, chromium: 50000, webkit: 32767 };
   const docHeight = await page.evaluate(() => document.documentElement.scrollHeight);
   const limit = heightLimits[engineName];
