@@ -12,12 +12,13 @@
 
 ## ⏭ Next pickup — 2026-05-16+
 
-**Where we left off (end of 2026-05-15):** ten commits today
+**Where we left off (end of 2026-05-15):** eleven commits today
 on `glowup`. Iteration-5 items #3, #2, #1-phase-1, #4 (bug
 backlog triage) all closed; paper-over audit done; **real
-user-reported bug fixed** (#3642). Iteration-4's "best-in-class
-for CSS substance AND tooling" verdict stands. Zero critical
-CSS issues remaining.
+user-reported bug fixed** (#3642); **three-engine baseline
+coverage** (Chromium + WebKit + Firefox, 47/47 papers each).
+Iteration-4's "best-in-class for CSS substance AND tooling"
+verdict stands. Zero critical CSS issues remaining.
 
 **Today's ten commits:**
 1. `a9d9177` — Item #3: paginated rendering. 28 papers chunked;
@@ -708,6 +709,19 @@ calendar-dependent. None block shipping today.
 
 ## Change log
 
+- **2026-05-15 (three-engine coverage)** — Firefox baseline
+  generated. 47/47 papers covered (3420 snapshots in a
+  10-paper completion run after the first 25-min run hit
+  the `timeout` cap at 37 papers; same pattern as the
+  earlier WebKit completion). `tools/baseline/firefox/`
+  now has 9645 files; combined with Chromium (8151) and
+  WebKit (~7000), the harness has true three-engine cross-
+  validation. Same renderer-crash pattern on
+  arXiv:2105.10386 as Chromium/WebKit (Firefox got further
+  — 1071 chunks at 320 — but didn't complete the paper).
+  This closes the "we tested two engines, not three"
+  caveat on the best-in-class claim. No CSS change; pure
+  baseline addition.
 - **2026-05-15 (bug backlog)** — Iteration-5 item #4 (triage
   user-tracked bug backlog) executed against the 15 GitHub
   issues in `black-on-black-list.md`. **13 of 15 already
