@@ -43,8 +43,7 @@ mjx-container :focus-visible:not(:is(a, button, [tabindex])) {
   IMPORTANT: this only works if LaTeXML emits a focusable element at
   the mark site (e.g. <sup><a>…</a></sup>). If the mark is rendered
   as a non-interactive span, the precondition is missing and the
-  upstream markup must be updated. Tracked as Phase 2.2a in
-  GLOWUP_PROGRESS.md.
+  upstream markup must be updated.
 */
 
 /* Small-screen path: mirrors the (width < 96rem) hover/active rule

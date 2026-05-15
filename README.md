@@ -63,8 +63,6 @@ inversion strategy, or shipping a downstream theme, see
   third `data-theme`, ship a downstream npm package).
 - [Contributor guide](./CONTRIBUTING.md)
 - [CSS custom properties for LaTeX-authored colours](./docs/rfc_latexml_custom_properties.md)
-- [Glow-up wisdom log](./docs/GLOWUP_WISDOM.md) — decisions & surprises
-  from the recent modernisation.
 
 ## Releasing (maintainer notes)
 

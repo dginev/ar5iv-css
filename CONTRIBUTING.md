@@ -1,8 +1,7 @@
 # Contributing to ar5iv-css
 
 Welcome. ar5iv-css styles LaTeXML's HTML output for arXiv articles.
-This file orients new contributors; for the longer story of recent
-architectural decisions, see `docs/GLOWUP_WISDOM.md`.
+This file orients new contributors.
 
 ## Provenance
 
@@ -34,9 +33,7 @@ css/
 docs/
 ├── TOKENS.md            ← reference for every token defined in tokens.css
 ├── THEMING.md           ← downstream-override cookbook (four worked recipes)
-├── GLOWUP_WISDOM.md     ← decisions / surprises uncovered during the modernisation
-├── GLOWUP_AUDIT_START.md← read-only snapshot of the initial audit
-├── GLOWUP_PROGRESS.md   ← living document; what remains to do
+├── BASELINE_AUDIT.md    ← CSS feature inventory + Baseline-availability dates
 ├── rfc_latexml_custom_properties.md ← contract with LaTeXML for inline --ltx-* tokens
 └── ar5iv_colors_report.md           ← background on arXiv's colour distribution
 ```

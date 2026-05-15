@@ -1,4 +1,4 @@
-# Phase-1 CI: lint + build sanity check on every push and PR to main.
+# CI: lint + build sanity check on every push and PR to main.
 #
 # Catches:
 #   - stylelint violations (deprecated `word-wrap`, single-colon
@@ -6,10 +6,11 @@
 #   - TOKENS.md ↔ tokens.css drift via `tools/check-tokens.mjs`
 #   - lightningcss bundle failures (brace mismatch, broken @-rules)
 #
-# Does NOT yet run the visual-regression harness — that requires
-# Playwright browsers + a shared baseline tarball. Deferred per the
-# iteration-5 #1 brief: hosting decision and same-machine AA-drift
-# determinism (see docs/GLOWUP_PROGRESS.md) need to land first.
+# The visual-regression harness in `tools/visual.mjs` is per-developer
+# (Playwright browsers + locally-generated baselines under
+# `tools/baseline/<engine>/`). Wiring it into CI with shared baselines
+# is future work — the AA-drift between runs on the same machine
+# argues for either pinned OS+fonts or a higher pixelTolerance first.
 
 name: CI
 

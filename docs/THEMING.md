@@ -45,8 +45,7 @@ the inner `var(--link-text-color)` references the property being
 defined, the browser detects the cycle, and the entire property
 becomes `unset` — links go currentColor in both modes. There's
 no spec-level "previous value" you can reach for; CSS will get
-this with `@function` (see the deferred wisdom note in
-`GLOWUP_WISDOM.md`), but as of writing it doesn't.
+this with `@function`, but as of writing it doesn't.
 
 **Side-only override pattern (light-only without touching dark).**
 If you really want to leave the dark branch alone, override per
@@ -344,7 +343,5 @@ refactor, and both are interesting to know.
 - [TOKENS.md](./TOKENS.md) — every public token.
 - [rfc_latexml_custom_properties.md](./rfc_latexml_custom_properties.md)
   — the `--ltx-*` contract, OKLCH constants, HSL fallback.
-- [GLOWUP_WISDOM.md](./GLOWUP_WISDOM.md) — decisions and surprises
-  from the modernisation, including why the application uses
-  `[data-theme="dark"]` + `@media` instead of
-  `light-dark(var(), var())`.
+- [BASELINE_AUDIT.md](./BASELINE_AUDIT.md) — CSS feature
+  inventory and Baseline-availability dates.
