@@ -30,13 +30,79 @@
    workaround retirement (commit `5e0521c`) on WebKit — the
    deletion stands cross-engine.
 
-**Recommended first pick:** finish the WebKit baseline with
-`timeout` + `ulimit -v` guards (the run was 67 % done when
-host memory pressure killed it; resume with bounded resources
-during a fresh session). Then iteration-5 **item #1 — CI
-pipeline + release-artifact baseline tarball**, which becomes
-more valuable now that there are two engines' worth of
-baselines worth publishing.
+**Recommended first pick:** finish the WebKit baseline — but
+with a code fix first, *not* a bare re-run. The unguarded
+afternoon run died of host memory pressure at 67 %; a guarded
+retry (ulimit -v 6 GB + timeout + CONCURRENCY=1) hung on the
+first missing paper (`2106.15835`) for 7+ minutes at 0 % CPU
+before being killed. Diagnosis: the page has
+`<meta property="og:image">` and `<meta name="twitter:image">`
+tags pointing at `https://ar5iv.labs.arxiv.org/assets/ar5iv_card.png`.
+WebKit's `waitUntil: 'networkidle'` (in `tools/visual.mjs:175`)
+blocks on the remote fetch indefinitely under headless-no-network.
+Chromium handles social-card image fetching differently and
+completes promptly. So *resuming as-is will hang again.*
+
+**Recovery plan for next pickup (in priority order):**
+
+1. **Root-cause fix — block external URLs via
+   `context.route()`.** The harness renders archived static
+   HTML; any remote fetch is noise. Add to the context setup
+   in `tools/visual.mjs`:
+   ```js
+   await context.route('**/*', (route) => {
+     const url = route.request().url();
+     route[url.startsWith('file:') ? 'continue' : 'abort']();
+   });
+   ```
+   Makes the harness faster, more deterministic, and
+   cross-engine-consistent.
+
+2. **Defensive secondary — switch `waitUntil` from
+   `'networkidle'` to `'load'`.** `'load'` fires when the
+   page's own load event finishes; doesn't wait for the trickle
+   of background requests. For static file:// content,
+   functionally equivalent.
+
+3. **Safety net — add `timeout: 15000` to the `page.goto`
+   call.** If a page still hangs after fixes 1+2 (e.g., infinite
+   redirect, broken HTML), the goto throws and the worker
+   reports ERROR rather than hanging the harness.
+
+4. **Verify on a single short paper first** (CONCURRENCY=1,
+   no `--update`): the goto-options changes are subtle and may
+   shift timing-sensitive pixel content. If pixel-diffs appear
+   against the existing Chromium baseline, treat as the AA-drift
+   playbook from 2026-05-15: visually verify it's edge variance
+   (not layout), then `--update` the Chromium baseline.
+
+5. **Then complete the WebKit baseline** with the 17 missing
+   papers list:
+   ```
+   2106.15835  2108.04810  2109.04981  2110.07681  2111.00396
+   2111.08099  2111.15640  2201.00244  2406.04076  2407.16893
+   2501.11021  2503.09799  2510.11037  astro-ph/0001001
+   cs/0001008  hep-th/0001161  math/0002050
+   ```
+   Run under the same guards
+   (`ulimit -v 6000000; CONCURRENCY=1 timeout 1500 ...`).
+   Restore the full corpus afterward.
+
+6. **Acceptance:** all 47 papers in `tools/baseline/webkit/`,
+   `node tools/visual.mjs --engine=webkit` (no `--update`) shows
+   PASS / SKIP-only across the run.
+
+**Then** move on to iteration-5 **item #1** (CI pipeline +
+release-artifact baseline tarball), which becomes more valuable
+once both engines' worth of baselines exist.
+
+**System-instability caveat (carried forward):** the user
+flagged "some system instability" today. The unbounded WebKit
+run got OOM-killed at ~67 %. The guarded retry hung (not OOM,
+but related symptom). Future harness runs MUST keep `ulimit`,
+`timeout`, and `CONCURRENCY=1` until the host is confirmed
+stable; if hangs persist after fix #1, consider running each
+paper in its own short-lived Node process to isolate state.
 
 **Recommended first pick:** iteration-5 **item #2 — WebKit
 harness path**. Cheap and high-leverage: `sudo apt-get install
@@ -684,6 +750,19 @@ calendar-dependent. None block shipping today.
 
 ## Change log
 
+- **2026-05-15 (eod / commute pause)** — Attempted to finish the
+  WebKit baseline (17 missing papers) under guards (`ulimit -v
+  6 GB`, `CONCURRENCY=1`, `timeout 1500`). The guarded run
+  reached `engine: webkit` and then hung at 0 % CPU on the first
+  missing paper (`2106.15835`) for 7+ minutes before being
+  killed. Root cause identified: the HTML's
+  `<meta property="og:image">` / `<meta name="twitter:image">`
+  point at a remote URL; WebKit's `waitUntil: 'networkidle'`
+  blocks on it indefinitely under headless-no-network. Chromium
+  doesn't share this behaviour. The pickup banner above carries
+  a six-step recovery plan starting from a `context.route()`
+  external-URL block. No code change committed yet — the fix is
+  the first work item next session.
 - **2026-05-15 (webkit)** — Iteration-5 item #2 substantively
   landed. With `libavif16` installed on the host,
   `playwright.webkit` runs through the existing `--engine=webkit`
