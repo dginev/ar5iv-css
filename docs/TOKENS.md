@@ -108,29 +108,49 @@ Motion tokens are honoured only outside `prefers-reduced-motion: reduce`.
 All colour tokens use `light-dark(L, D)` so they switch automatically
 based on resolved `color-scheme`.
 
+Contrast ratios below are computed via the WCAG 2.x formula. AA = 4.5:1
+(normal text) or 3:1 (large/UI); AAA = 7:1. All visible-text tokens
+meet AA on both light and dark; many reach AAA.
+
 | Token | Light | Dark |
 |---|---|---|
 | `--background-color` | `white` | `#0d1117` |
-| `--text-color` | `#292929` | `#c9d1d9` |
-| `--border-color` | `#292929` | `#c9d1d9` |
-| `--border-light-color` | `grey` | `#d4d4d4` |
+| `--text-color` | `#292929` (14.55:1 AAA) | `#c9d1d9` (12.26:1 AAA) |
+| `--border-color` | `#292929` (14.55:1) | `#c9d1d9` (12.26:1) |
+| `--border-light-color` | `grey` (3.95:1 UI) | `#d4d4d4` (12.77:1) |
 | `--image-color` | `black` | `#292929` |
 | `--image-background-color` | `white` | `white` (always — transparent PNGs assume light backdrop) |
-| `--link-text-color` | `#212121` | `#c9d1d9` |
-| `--email-link-color` | `#026ecb` (~5.1:1 on white) | `#009999` (~5.3:1 on #0d1117) |
-| `--note-mark-color` | `#026ecb` | `#daa002` |
-| `--note-highlight-color` | `#ffffd4` | `#231d02` |
-| `--info-text-color` | `#01719d` (~5.5:1 on white) | `#3a9bcc` (~5.9:1 on #0d1117) |
-| `--warning-text-color` | `#8a6800` (~4.8:1 on white) | `#d09e05` |
-| `--error-text-color` | `#d8000c` (~5.4:1 on white) | `#e85a60` (~4.8:1 on #0d1117) |
+| `--link-text-color` | `#212121` (16.10:1 AAA) | `#c9d1d9` (12.26:1 AAA) |
+| `--email-link-color` | `#026ecb` (5.13:1 AA) | `#009999` (5.42:1 AA) |
+| `--note-mark-color` | `#026ecb` (5.13:1 AA) | `#daa002` (8.12:1 AAA) |
+| `--note-highlight-color` | `#ffffd4` (1.13:1 — tint, not text) | `#231d02` (1.39:1 — tint, not text) |
+| `--info-text-color` | `#01719d` (5.45:1 AA) | `#3a9bcc` (6.07:1 AA) |
+| `--warning-text-color` | `#8a6800` (5.17:1 AA) | `#d09e05` (7.73:1 AAA) |
+| `--error-text-color` | `#d8000c` (5.35:1 AA) | `#e85a60` (5.46:1 AA) |
 | `--fatal-text-color` | `var(--error-text-color)` | inherits |
 | `--index-ref-color` | `var(--email-link-color)` | inherits |
 | `--text-color-author-black-dark` | n/a | `#c9d1d9` (the dark-mode value `\color{black}` author text resolves to) |
-| `--surface-subtle` | `whitesmoke` | `#1a1f29` |
+| `--surface-subtle` | `whitesmoke` (1.06:1 — tint) | `#1a1f29` (1.20:1 — tint) |
 
 `prefers-contrast: more` further darkens text/links to pure black/white
 and bumps note-mark and warning saturations — see
-`css/ar5iv/tokens.css` for the exact overrides.
+`css/ar5iv/tokens.css` for the exact overrides. Under high-contrast all
+text tokens reach AAA on both backgrounds (21.00:1 light, 18.92:1 dark).
+
+### Sepia theme
+
+`[data-theme="sepia"]` provides a parchment-tinted light theme.
+Background is `#f4ecd8`; tokens listed are sepia overrides only —
+unstated tokens inherit from the `:root` light values above.
+
+| Token | Sepia |
+|---|---|
+| `--background-color` | `#f4ecd8` |
+| `--text-color` | `#5b4636` (7.51:1 AAA) |
+| `--link-text-color` | `#6b4423` (7.20:1 AAA) |
+| `--border-color` | `#8a7458` (3.78:1 UI) |
+| `--note-highlight-color` | `#ebe0c0` (tint) |
+| `--surface-subtle` | `#ede2c8` (tint) |
 
 ## Focus
 
