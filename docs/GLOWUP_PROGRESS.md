@@ -617,12 +617,21 @@ deletion; keep the rest with a date-stamped "verified still load-bearing".
 
 ## Iteration-5 items
 
-1. **CI pipeline + release-artifact tarball baseline.** Once a
-   GitHub Actions / equivalent pipeline lands, publish a baseline
-   tarball as a release asset. `npm test` downloads if local
-   baseline absent; `--update-from-release` refreshes. The
-   alternative — each developer generates locally — works for
-   inner-loop but can't assert "main is correct".
+1. **CI pipeline + release-artifact tarball baseline.**
+   - **Phase 1 — landed 2026-05-15.** `.github/workflows/ci.yml`
+     runs `npm ci`, `npm run lint`, `npm run build` on push to
+     main and on every PR. Catches stylelint violations,
+     TOKENS.md ↔ tokens.css drift, and lightningcss bundle
+     failures. Uploads the built `dist/` as a 14-day artifact.
+     Concurrent PR runs cancel earlier ones. No browser deps.
+   - **Phase 2 — deferred.** Run the visual harness on CI with
+     shared baselines. Needs (a) a hosting decision for the
+     release-artifact tarball (GitHub Releases attachment vs.
+     equivalent), and (b) the AA-drift determinism question
+     resolved — same-machine drift surfaces 24-85 px page-height
+     variance between `--update` calls, and across CI runners
+     that's likely much larger. Pin OS/fonts in CI, or accept
+     and document the noise floor.
 
 2. **WebKit harness path** — **fully landed 2026-05-15.** After
    `sudo apt-get install libavif16`, `playwright.webkit` runs
@@ -689,6 +698,17 @@ calendar-dependent. None block shipping today.
 
 ## Change log
 
+- **2026-05-15 (CI phase 1)** — Iteration-5 item #1 phase 1
+  landed. `.github/workflows/ci.yml` runs `npm ci`,
+  `npm run lint`, `npm run build` on push to main and PRs.
+  Catches the regressions that need no browser: stylelint
+  violations, TOKENS.md ↔ tokens.css drift, lightningcss bundle
+  failures. Concurrent PR builds cancel-in-progress; built
+  `dist/` uploaded as a 14-day artifact. Phase 2 (visual
+  harness on CI with shared baselines) deferred — needs the
+  hosting decision and the AA-drift determinism story to land
+  first. Repo: `dginev/ar5iv-css` on GitHub; workflow runs
+  on `ubuntu-latest` with Node 22.
 - **2026-05-15 (paper-over audit)** — Cross-engine audit pass
   on the iteration-3 #7 paper-over candidates, now that WebKit
   is wired up. Findings:
