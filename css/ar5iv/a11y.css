@@ -70,8 +70,9 @@ mjx-container :focus-visible:not(:is(a, button, [tabindex])) {
 @media only screen and (width >= 96rem) {
   .ltx_note > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content,
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content,
-  .ltx_author_notes > .ltx_note > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content,
-  .ltx_author_notes > span > .ltx_note > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content {
+  /* descendant combinator tolerates the `.ltx_author_notes_content`
+     wrapper LaTeXML#2767 inserts around the author contacts */
+  .ltx_author_notes .ltx_note > .ltx_note_mark:focus-visible + .ltx_note_outer .ltx_note_content {
     background-color: var(--note-highlight-color);
     z-index: var(--z-popover);
   }

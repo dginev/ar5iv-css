@@ -443,6 +443,15 @@ div.ltx_keywords:empty::before {
   font-weight: bold;
   font-style: normal;
 }
+/* PR brucemiller/LaTeXML#2767 dropped the literal ": " the XSLT used to
+   emit after the keywords/classification label, so the bold label would
+   otherwise butt straight into its content ("Keywordsquantum…").
+   Restore it here; the ::after inherits the label's bold weight, giving
+   the conventional "Keywords: …" / "MSC: …" reading. */
+.ltx_title.ltx_title_keywords::after,
+.ltx_title.ltx_title_classification::after {
+  content: ": ";
+}
 /* Two-column papers may want to choose their break-points in titles,
   yet the browser can manage on its own in single-column ar5iv.
   Example: section headings of 1701.00123 */
@@ -455,6 +464,80 @@ div.ltx_keywords:empty::before {
   text-align: center;
   font-size: 120%;
   margin: 0.5em 0 0.5em 0;
+}
+
+/* Title publication notes — PR brucemiller/LaTeXML#2767.
+   A title \thanks, DOI, arXiv id or preprint number is no longer a
+   `<note role="thanks">` inside `.ltx_title_document`; it is now emitted
+   as `.ltx_pubnotes > .ltx_pubnotes_content > .ltx_pubnote` appended
+   inside the title <h1>. These are secondary metadata — for an ar5iv
+   re-rendering the arXiv id / DOI already live in the surrounding page
+   chrome — so we collapse every pubnote behind one superscript dagger
+   that reveals the content on hover / tap / focus, the same affordance
+   our footnotes use. Keeping the title uncluttered also protects the
+   primary frontmatter (author names + affiliations) that sits below it.
+   A11y caveat: with no focusable marker element in the upstream markup
+   `:focus-within` only engages once a child (e.g. a DOI link) is
+   focusable, which it is not while the popup is `visibility:hidden`, so
+   hover/active is the primary path — matching the base LaTeXML.css
+   behaviour. If LaTeXML later gives the dagger a real focusable mark we
+   get keyboard reveal for free. */
+.ltx_pubnotes {
+  position: relative;
+  display: inline-block;
+  /* reset the inherited 1.7rem centered heading type so the revealed
+     note reads as ordinary prose rather than oversized title text */
+  font-family: var(--text-font-family);
+  font-size: 1rem;
+  font-weight: normal;
+  font-style: normal;
+  text-align: start;
+}
+.ltx_pubnotes::before {
+  content: "\002020"; /* dagger, matching our footnote marker accent */
+  color: var(--note-mark-color);
+  font-size: 0.85em;
+  vertical-align: super;
+  cursor: pointer;
+}
+.ltx_pubnotes_content {
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s;
+  position: absolute;
+  z-index: var(--z-popover);
+  /* Open leftward: the dagger hangs off the end of a centered title, so
+     it sits right-of-centre. Anchoring the popup's trailing edge to the
+     marker lets it grow back toward the page centre instead of off the
+     right viewport edge. */
+  inset-inline-end: 0;
+  top: 1.5em;
+  width: max-content;
+  /* never wider than the viewport on phones; never absurdly wide on
+     a long DOI string on desktop */
+  max-width: min(40rem, 90vw);
+}
+.ltx_pubnotes:hover .ltx_pubnotes_content,
+.ltx_pubnotes:active .ltx_pubnotes_content,
+.ltx_pubnotes:focus-within .ltx_pubnotes_content {
+  visibility: visible;
+  opacity: 1;
+  background-color: var(--background-color);
+  border: 0.1rem solid var(--border-color);
+  border-radius: 0.3rem;
+  box-shadow: 0.2rem 0.2rem 0.5rem rgb(0 0 0 / 30%);
+  padding: 0.6rem 0.8rem;
+}
+.ltx_pubnote {
+  display: block;
+  line-height: var(--line-height-prose);
+}
+/* PR brucemiller/LaTeXML#2767 wraps a contact's / pubnote's @name in a
+   dedicated span; render the label in italic as the base stylesheet
+   does, distinguishing it from the value that follows. */
+.ltx_contact_name,
+.ltx_note_name {
+  font-style: italic;
 }
 
 /* Mainmatter Footnotes */
@@ -524,6 +607,17 @@ div.ltx_keywords:empty::before {
   font-family: var(--text-font-family);
   font-size: 0.9rem;
   padding: 0.2rem;
+}
+/* PR brucemiller/LaTeXML#2767 wraps the author contacts in an extra
+   `<span class="ltx_author_notes_content">` between `.ltx_author_notes`
+   and the `.ltx_contact` children. `display: contents` removes that
+   wrapper's own box so the contacts lay out exactly as they did when
+   they were direct children — `.ltx_author_notes`'s `fit-content`
+   width and block flow are preserved with zero visual change. The
+   note-robustness selectors below reach `.ltx_note` via the descendant
+   combinator, so they keep firing through this extra layer too. */
+.ltx_author_notes_content {
+  display: contents;
 }
 
 /* responsive footnote viewport widths.
@@ -652,9 +746,10 @@ div.ltx_keywords:empty::before {
   /* special case: affiliation in title */
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
   .ltx_title.ltx_title_document > .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer .ltx_note_content,
-  /* special case: badly formatted author notes without inner markup */
-  .ltx_author_notes > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content,
-  .ltx_author_notes > span > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content {
+  /* special case: badly formatted author notes without inner markup.
+     Descendant (not child) combinator so the note is still reached
+     through the `.ltx_author_notes_content` wrapper LaTeXML#2767 adds. */
+  .ltx_author_notes .ltx_note > .ltx_note_mark:hover + .ltx_note_outer .ltx_note_content {
     background-color: var(--note-highlight-color);
     z-index: var(--z-popover);
   }
@@ -687,8 +782,7 @@ div.ltx_keywords:empty::before {
   .ltx_td .ltx_note_outer,
   figcaption .ltx_note_outer,
   .ltx_role_affiliation > .ltx_note_outer,
-  .ltx_author_notes > .ltx_note .ltx_note_outer,
-  .ltx_author_notes > span > .ltx_note .ltx_note_outer {
+  .ltx_author_notes .ltx_note .ltx_note_outer {
     display: none;
     opacity: 0;
   }
@@ -728,12 +822,7 @@ div.ltx_keywords:empty::before {
   .ltx_role_affiliation > .ltx_note_mark:active + .ltx_note_outer,
   .ltx_personname .ltx_role_footnote > .ltx_note_mark:hover + .ltx_note_outer,
   .ltx_personname .ltx_role_footnote > .ltx_note_mark:active + .ltx_note_outer,
-  .ltx_author_notes > .ltx_note > .ltx_note_mark:hover + .ltx_note_outer,
-  .ltx_author_notes
-    > span
-    > .ltx_note
-    > .ltx_note_mark:hover
-    + .ltx_note_outer {
+  .ltx_author_notes .ltx_note > .ltx_note_mark:hover + .ltx_note_outer {
     display: block;
     opacity: 1;
     z-index: var(--z-popover);
@@ -783,8 +872,7 @@ div.ltx_keywords:empty::before {
   .ltx_note.ltx_note_frontmatter > .ltx_note_mark,
   .ltx_note.ltx_note_frontmatter > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
   /* the inner marks on "malformed" author block notes */
-  .ltx_author_notes > .ltx_note  > .ltx_note_outer .ltx_note_mark,
-  .ltx_author_notes > span > .ltx_note > .ltx_note_outer .ltx_note_mark {
+  .ltx_author_notes .ltx_note > .ltx_note_outer .ltx_note_mark {
     display: none;
     opacity: 0;
   }
