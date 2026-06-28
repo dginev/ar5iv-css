@@ -1282,22 +1282,24 @@ span.ltx_font_bold > .ltx_break:last-child {
   line-height: var(--line-height-prose);
 }
 @media only screen and (width <= 52rem) {
-  /* On narrow viewports stack tag-then-blocks in a single column.
-     Reset grid-column/grid-row from the wide-viewport rules so the
-     auto-placement falls through to source order. */
+  /* On narrow viewports the two-column subgrid is too cramped. Drop the grid
+     and let the tag plus every bibblock flow inline, so the [n] tag leads the
+     first content line and the blocks fill the width and wrap naturally rather
+     than stacking one per line. Matches the default theme's mobile
+     bibliography. */
   .ltx_biblist {
-    grid-template-columns: minmax(0, 1fr);
+    display: block;
   }
   .ltx_bibitem {
-    grid-template-columns: minmax(0, 1fr);
+    display: block;
   }
-  .ltx_bibitem .ltx_tag,
-  .ltx_bibitem .ltx_bibblock {
-    grid-column: auto;
-    grid-row: auto;
+  .ltx_bibitem > .ltx_tag {
+    display: inline;
+    line-height: var(--line-height-prose);
+    margin-inline-end: 0.5em;
   }
-  .ltx_bibitem .ltx_tag {
-    padding-bottom: 0.33em;
+  .ltx_bibitem > .ltx_bibblock {
+    display: inline;
   }
 }
 @media only screen and (width > 52rem) {
