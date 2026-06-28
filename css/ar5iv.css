@@ -155,8 +155,12 @@ body {
 }
 /* If a flex figure comes before the para, avoid collisions.
    (note: avoid doing clear:both; for all paragraphs, or it creates needless
-    vertical whitespace in cases where we have footnotes) */
-.ltx_figure + .ltx_para,
+    vertical whitespace in cases where we have footnotes)
+   Exception: a *floated* figure (a wrapfigure, .ltx_align_float{left,right})
+   is meant to have the following text flow alongside it -- clearing it would
+   strand the figure as a standalone block with empty space beside it. So only
+   clear after non-floated (centered/standalone) figures. */
+.ltx_figure:not(.ltx_align_floatleft):not(.ltx_align_floatright) + .ltx_para,
 .ltx_flex_figure + .ltx_para {
   clear: both;
 }
@@ -538,6 +542,14 @@ div.ltx_keywords:empty::before {
 .ltx_contact_name,
 .ltx_note_name {
   font-style: italic;
+}
+/* Adapted from the base LaTeXML.css, which hides the contact label (the @name
+   span, e.g. "Affiliation:" / "E-mail") only in the multiline author layout.
+   ar5iv renders author contacts via .ltx_author_notes in both the single-line
+   (.ltx_authors) and multiline layouts, with each contact on its own line, so
+   the label is redundant in both -- hide it whenever it sits in author notes. */
+.ltx_author_notes .ltx_contact_name {
+  display: none;
 }
 
 /* Mainmatter Footnotes */
@@ -1505,6 +1517,33 @@ blockquote.ltx_epigraph {
 .ltx_align_floatright {
   float: right;
 }
+/* Wrapped (floated) figures: a gutter on the side the text flows past, no top
+   margin (align the figure's top with the adjacent text instead of inheriting
+   the 4rem block-figure margin), zero margin on the column edge it hugs, and a
+   small gap below. These must out-specify the generic
+   `:not(.ltx_flex_cell) > .ltx_figure { margin: var(--space-xl) auto }`
+   centering rule below, so they share its `:not(.ltx_flex_cell) >` context to
+   raise specificity; otherwise that later, equal-specificity rule clobbers the
+   gutter (auto margins collapse to 0 on a float) and re-adds the top margin.
+   Margin order: top right bottom left. */
+:not(.ltx_flex_cell) > .ltx_figure.ltx_align_floatleft {
+  margin: 0 var(--space-md) var(--space-sm) 0;
+}
+:not(.ltx_flex_cell) > .ltx_figure.ltx_align_floatright {
+  margin: 0 0 var(--space-sm) var(--space-md);
+}
+/* Wrapfigures carry a fixed pt width from the source so text can flow beside
+   them. On viewports narrower than the main column that leaves too little room
+   for the text, so un-float and center the figure full width (overriding the
+   inline width:NNpt). Above the breakpoint they keep wrapping as intended. */
+@media only screen and (width <= 52rem) {
+  :not(.ltx_flex_cell) > .ltx_figure.ltx_align_floatleft,
+  :not(.ltx_flex_cell) > .ltx_figure.ltx_align_floatright {
+    float: none;
+    width: auto !important;
+    margin: var(--space-md) auto;
+  }
+}
 
 .ltx_td.ltx_align_left,
 .ltx_th.ltx_align_left,
@@ -1931,6 +1970,16 @@ svg foreignObject > .ltx_foreignobject_container {
   text-align: center;
   margin: var(--space-xl) auto;
 }
+/* A full-width (non-floated) table or figure must not get squeezed into the
+   narrow column left beside a preceding wrapfigure/wraptable float — clear it so
+   it breaks onto its own full-width row (matching the PDF, where such floats are
+   page-width). Witness 2606.19939: Table 4 otherwise renders at ~half width
+   alongside Figure 5. Floated wrap{figure,table} (.ltx_align_float*) are excluded
+   so they keep wrapping. */
+.ltx_table:not(.ltx_align_floatleft):not(.ltx_align_floatright),
+:not(.ltx_flex_cell) > .ltx_figure:not(.ltx_align_floatleft):not(.ltx_align_floatright) {
+  clear: both;
+}
 /* don't use the auto overflow rule in subfigure cases
    see https://arxiv.org/html/2503.09799v1#S2.T2   */
 .ltx_table:not(:has(> .ltx_flex_table)) {
@@ -2091,6 +2140,19 @@ svg foreignObject > .ltx_foreignobject_container {
 }
 .ltx_minipage > .ltx_float {
   margin: 0.2rem auto 0.2rem;
+}
+/* A framed float (e.g. an algorithm) defaults to inline-block shrink-to-fit via
+   .ltx_framed_top, which is right for a single-column listing. But when it holds
+   a multi-panel .ltx_flex_figure (e.g. side-by-side Training / Inference phases),
+   shrink-to-fit collapses the whole box to a single column's width. Let such
+   floats span the content width so the flex row can distribute its panels across
+   the page, and stretch the panels to share that width evenly. */
+.ltx_float.ltx_framed:has(> .ltx_flex_figure) {
+  display: block;
+  width: auto;
+}
+.ltx_float.ltx_framed:has(> .ltx_flex_figure) > .ltx_flex_figure > .ltx_flex_cell {
+  flex: 1 1 0;
 }
 .ltx_float .ltx_caption {
   text-align: justify;
