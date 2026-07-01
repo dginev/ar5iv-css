@@ -27,10 +27,13 @@
     "README.md"
   ],
   "scripts": {
-    "build": "mkdir -p dist && lightningcss --bundle --minify --sourcemap css/ar5iv.css -o dist/ar5iv.min.css",
+    "build": "mkdir -p dist && lightningcss --bundle --minify css/ar5iv.css -o dist/ar5iv.min.css && lightningcss --minify css/ar5iv-fonts.css -o dist/ar5iv-fonts.min.css",
     "lint": "stylelint 'css/**/*.css' && node tools/check-tokens.mjs",
     "test": "node tools/visual.mjs",
-    "prepublishOnly": "npm run build"
+    "prepublishOnly": "npm run build",
+    "preversion": "npm run lint",
+    "version": "npm run build && git add dist",
+    "postversion": "git push origin HEAD --follow-tags"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",

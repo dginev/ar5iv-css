@@ -285,10 +285,15 @@ examples/*
 !examples/fetch.sh
 !examples/fetch-corpus.sh
 
-# Build artefacts — produced by `npm run build`, published to npm on
-# tagged releases and auto-served by jsDelivr / unpkg from there.
-# Gitignored so commits don't churn on every build.
-dist/
+# Build artefacts — produced by `npm run build`. The two distributed
+# bundles are COMMITTED so jsDelivr serves them verbatim from the GH tag:
+# jsDelivr's on-the-fly minifier (clean-css v5.3.3) cannot handle our
+# modern CSS (@layer / light-dark() / :has() / nesting) and falls back to
+# the un-minified original, so we ship a lightningcss build instead.
+# Everything else under dist/ (sourcemaps, scratch) stays ignored.
+dist/*
+!dist/ar5iv.min.css
+!dist/ar5iv-fonts.min.css
 
 # Node tooling
 node_modules/
