@@ -123,6 +123,8 @@ meet AA on both light and dark; many reach AAA.
 | `--link-text-color` | `#212121` (16.10:1 AAA) | `#c9d1d9` (12.26:1 AAA) |
 | `--email-link-color` | `#026ecb` (5.13:1 AA) | `#009999` (5.42:1 AA) |
 | `--note-mark-color` | `#026ecb` (5.13:1 AA) | `#daa002` (8.12:1 AAA) |
+| `--code-font-advance` | `0.600` (unitless — measured advance/em of the code font; update beside `--code-font-family`) | same |
+| `--tex-tt-advance` | `0.525` (unitless — cmtt's advance/em; a TeX constant, not a theme choice) | same |
 | `--note-highlight-color` | `#ffffd4` (1.13:1 — tint, not text) | `#231d02` (1.39:1 — tint, not text) |
 | `--selection-color` | `#ffffd4` (tint, not text) | `#6b5a10` (tint under inherited text; ~4.9:1 vs `--text-color`) |
 | `--info-text-color` | `#01719d` (5.45:1 AA) | `#3a9bcc` (6.07:1 AA) |

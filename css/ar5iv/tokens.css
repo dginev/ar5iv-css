@@ -73,6 +73,15 @@
      e.g. "Lucida Calligraphy","Zapf Chancery","URW Chancery L", TeX Gyre Termes...*/
   --math-caligraphic-font-family: "STIX Two Math", "Cambria Math", math;
   --code-font-family: "Noto Sans Mono", "Noto Sans Mono Fallback", monospace;
+  /* Measured advance width of --code-font-family, as a fraction of
+     font-size (Noto Sans Mono: 0.600em, browser-measured). Paired with
+     the TeX-side constant below so verbatim capacity ratios are
+     calc()-derived — change the code font, update this token beside it.
+     Where supported, font-size-adjust supersedes both (self-calibrating
+     from the real font tables, honoring user-configured fonts). */
+  --code-font-advance: 0.600;
+  /* cmtt's advance width per font-size — a TeX fact, not a theme choice. */
+  --tex-tt-advance: 0.525;
   /* SVG text rendered at this size compensates for Noto Sans metrics
      versus the LaTeXML SVG generator's assumptions. Fragile against
      a font-family change. */
