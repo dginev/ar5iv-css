@@ -100,6 +100,11 @@
   --email-link-color: light-dark(#026ecb, #009999);
   --note-mark-color:  light-dark(#026ecb, #daa002);
   --note-highlight-color: light-dark(#ffffd4, #231d02);
+  /* Text-selection highlight. Light theme shares the note yellow; the
+     dark value is a brighter, saturated gold — the note token's #231d02
+     is near-invisible as a selection on the #0d1117 page, while this
+     mid-tone keeps the (unchanged, inherited) light text readable. */
+  --selection-color: light-dark(#ffffd4, #6b5a10);
   /* Info text: light #01719d is fine (~5.5:1 on white) but the
      same value fails on the dark background (~3.4:1). Split into
      a lighter dark-mode value (~5.9:1). */

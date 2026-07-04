@@ -122,7 +122,7 @@ mjx-container :focus-visible:not(:is(a, button, [tabindex])) {
 
 /* Tokenised so dark theme inherits via the theme overrides. */
 ::selection {
-  background-color: var(--note-highlight-color);
+  background-color: var(--selection-color, var(--note-highlight-color));
   /* keep the underlying text colour — selecting should not change the
      foreground, otherwise readers lose the context they were
      scanning. */

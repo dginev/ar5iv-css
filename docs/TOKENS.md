@@ -124,6 +124,7 @@ meet AA on both light and dark; many reach AAA.
 | `--email-link-color` | `#026ecb` (5.13:1 AA) | `#009999` (5.42:1 AA) |
 | `--note-mark-color` | `#026ecb` (5.13:1 AA) | `#daa002` (8.12:1 AAA) |
 | `--note-highlight-color` | `#ffffd4` (1.13:1 — tint, not text) | `#231d02` (1.39:1 — tint, not text) |
+| `--selection-color` | `#ffffd4` (tint, not text) | `#6b5a10` (tint under inherited text; ~4.9:1 vs `--text-color`) |
 | `--info-text-color` | `#01719d` (5.45:1 AA) | `#3a9bcc` (6.07:1 AA) |
 | `--warning-text-color` | `#8a6800` (5.17:1 AA) | `#d09e05` (7.73:1 AAA) |
 | `--error-text-color` | `#d8000c` (5.35:1 AA) | `#e85a60` (5.46:1 AA) |
