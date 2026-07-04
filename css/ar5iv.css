@@ -1854,6 +1854,23 @@ svg {
   }
 }
 
+/* Block-level pictures scale to the allotted figure column (user,
+   2026-07-04). The viewBox makes this native: the whole coordinate
+   system — strokes, text, foreignObject HTML — zooms proportionally and
+   stays crisp. Scoped to pictures standing ALONE as a paragraph's block
+   (measured boxes, standalone diagrams); inline pictures must keep their
+   natural size or they'd break line layout. height:auto preserves the
+   aspect ratio from the viewBox. NESTED pictures (a measured box inside
+   another box arrives as the same para>inline-block>svg shape inside a
+   foreignObject) are excluded: their width attribute is an exact TeX
+   dimension in the OUTER picture's coordinate system — letting them
+   fill their container re-inflates them past the frame that contains
+   them (arXiv 2605.02240 innercode-in-responsebox, 12px -> 30px). */
+.ltx_para > .ltx_inline-block > svg.ltx_picture:only-child:not(foreignObject *) {
+  width: min(var(--main-width), 100%);
+  height: auto;
+}
+
 /*SVG (pgf/tikz & xy) basics */
 svg text,
 svg .ltx_foreignobject_content {
@@ -1934,8 +1951,17 @@ svg foreignObject > .ltx_foreignobject_container {
        `:not(svg *)` here — ALL fo content descends from the outer
        svg, so that guard would disable the rule entirely.) */
     & *:not(svg, foreignObject, image, rect, use) {
-      width: inherit !important;
       line-height: var(--ltx-fo-line-height, 1);
+    }
+    /* The width cascade additionally excludes the interior of a
+       typewriter verbatim LINE block: fvextra `breaklines` lines carry
+       exact TeX widths on their parts (a 0/21pt break-indent hbox
+       beside a 345pt wrap-parbox summing to the line width) — forcing
+       each part to the full inherited width stacks them into 3-4 line
+       boxes per source line, tripling the box height past the measured
+       frame (arXiv 2605.00468 Prompt 2, +3700px). */
+    & *:not(svg, foreignObject, image, rect, use, .ltx_parbox, .ltx_font_typewriter .ltx_inline-block) {
+      width: inherit !important;
     }
     & .ltx_description,
     & .ltx_itemize,
@@ -1968,13 +1994,17 @@ svg foreignObject > .ltx_foreignobject_container {
     & span.ltx_p:has(> .ltx_text.ltx_font_typewriter.ltx_inline-block:first-child),
     & span.ltx_p:has(> .ltx_text.ltx_inline-block:only-child:empty) {
       margin-bottom: 0;
-      /* One source line, one rendered line — the conversion's height
-         budget counts verbatim SOURCE lines (fancyvrb breaklines is not
-         yet emulated engine-side; see SYNC_STATUS), so any browser
-         re-wrapping exceeds the measured frame. `pre` also preserves
-         leading-space indentation (JSON schemas etc.), which `normal`
-         collapses. Long lines may poke right until the engine emulates
-         breaklines — preferable to vertical frame collisions. */
+    }
+    /* One source line, one rendered line — the conversion's height budget
+       counts each verbatim line box once, so browser re-wrapping would
+       exceed the measured frame. `pre` also preserves leading-space
+       indentation (JSON schemas etc.), which `normal` collapses. A line
+       CONTAINING a wrap-parbox is excluded: there the engine replayed
+       fvextra's breaklines re-typesetting (budget already counts wrapped
+       lines) and `pre` would render the serializer's inter-element
+       newlines as phantom breaks. */
+    & span.ltx_p:has(> .ltx_text.ltx_font_typewriter.ltx_inline-block:first-child):not(:has(.ltx_parbox)),
+    & span.ltx_p:has(> .ltx_text.ltx_inline-block:only-child:empty) {
       white-space: pre;
     }
     /* Monospace capacity calibration under the TeX anchor: scale the
@@ -1998,6 +2028,56 @@ svg foreignObject > .ltx_foreignobject_container {
     & .ltx_para {
       /* see arXiv:2407.16893v1 */
       margin-bottom: 0.2rem;
+    }
+    /* fancyvrb/fvextra `breaklines`: an over-wide verbatim line arrives as
+       a parbox INSIDE the line's typewriter inline-block (the engine
+       replays fvextra's \parbox re-typesetting, so the measured height
+       already counts the wrapped lines). The prose rules above re-style
+       its interior paragraph — serif family, justify, inter-paragraph
+       margins — un-doing the TeX font context and inflating the box far
+       past the measured frame (arXiv 2605.00468 Prompt boxes, +3700px).
+       Restore inheritance and TeX geometry: the paragraph wraps
+       (pre-wrap, keeping verbatim space runs) inside the parbox width,
+       ragged-right as fvextra typesets it. */
+    & .ltx_font_typewriter .ltx_parbox .ltx_para,
+    & .ltx_font_typewriter .ltx_parbox .ltx_p {
+      font-family: inherit;
+      margin-bottom: 0;
+      text-align: left;
+    }
+    /* pre-wrap ONLY on the leaf paragraph (the container .ltx_para holds
+       elements + serializer newlines — see the phantom-break note below) */
+    & .ltx_font_typewriter .ltx_parbox .ltx_p {
+      white-space: pre-wrap;
+    }
+    & .ltx_font_typewriter .ltx_parbox .ltx_para {
+      white-space: normal;
+    }
+    /* `pre`/`pre-wrap` are for LEAF text only: the serializer emits
+       newlines BETWEEN child elements, and under `pre` each renders as a
+       phantom 1-line break (a 2-line wrapped paragraph measured 5 lines
+       tall through its parbox wrappers). Containers whose children are
+       elements revert to normal; the leaf `.ltx_p` above keeps pre-wrap. */
+    & span.ltx_p:has(.ltx_parbox),
+    & .ltx_parbox,
+    & .ltx_parbox .ltx_para {
+      white-space: normal;
+    }
+    /* The wrapped line is TeX's hbox row: break-indent hbox beside the
+       wrap-parbox, widths summing exactly to the line width. Flex
+       reproduces that juxtaposition AND drops the whitespace-only text
+       nodes between the parts (as inline-blocks, the collapsed spaces
+       pushed the parbox onto its own line box). Baseline alignment =
+       \parbox[t]'s first-line baseline. */
+    & .ltx_text:has(> .ltx_parbox) {
+      display: flex;
+      align-items: baseline;
+      white-space: normal;
+    }
+    /* Inner styled runs (bold keywords etc.) hit the global `.ltx_text`
+       serif rule; runs carrying their OWN ltx_font_* class keep it. */
+    & .ltx_font_typewriter .ltx_parbox .ltx_text:not([class*="ltx_font_"]) {
+      font-family: inherit;
     }
   }
 }
