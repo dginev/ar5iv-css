@@ -1854,6 +1854,12 @@ svg .ltx_foreignobject_content {
 foreignObject[style*="font-size"] .ltx_foreignobject_content {
   font-size: 1em;
 }
+/* Under the anchor, TeX budgeted the box height at \baselineskip = 1.2em
+   per line; the compact line-height:1 under-fills tall boxes by ~17%,
+   which reads as excessive frame height. Legacy documents keep 1. */
+foreignObject[style*="font-size"] {
+  --ltx-fo-line-height: 1.2;
+}
 foreignObject {
   /* translate: 0 0.1em; */
   --ltx-fo-width: 100%;
@@ -1884,6 +1890,14 @@ svg foreignObject > .ltx_foreignobject_container {
   &:has(> .ltx_foreignobject_content > :not(:only-child)) {
     width: calc(1.1 * var(--ltx-fo-width));
   }
+  /* A minipage in the content = a measured box's upper part (tcolorbox
+     et al. wrap box content in \minipage; tikz labels never do). TeX
+     fills such boxes from the top; with `end` all estimator slack piles
+     up as a fake empty band ABOVE the text (arXiv 2605.02240
+     Appendix G). */
+  &:has(> .ltx_foreignobject_content > .ltx_minipage) {
+    align-items: start;
+  }
   & > .ltx_foreignobject_content {
     display: block;
     /* foreignObject sizing only works if width cascades to every
@@ -1902,7 +1916,7 @@ svg foreignObject > .ltx_foreignobject_container {
        svg, so that guard would disable the rule entirely.) */
     & *:not(svg, foreignObject, image, rect, use) {
       width: inherit !important;
-      line-height: 1;
+      line-height: var(--ltx-fo-line-height, 1);
     }
     & .ltx_description,
     & .ltx_itemize,
