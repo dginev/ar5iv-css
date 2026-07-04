@@ -2648,6 +2648,19 @@ dl.ltx_description dl.ltx_description dd {
   display: table-cell;
 }
 
+/* LaTeXML translates p{<dim>} tabular columns to fixed-width inline-blocks
+   sized for the AUTHOR'S PDF layout (often a two-column journal). In our
+   single-column layout those widths can be absurdly tight — arXiv 2605.00310
+   Table III carries a 14.2pt "Year" column that renders one letter per line.
+   Floor each block at its longest word (min-content with word integrity):
+   squeezed columns relax to readable, deliberately narrow paragraph columns
+   still wrap at spaces, and nothing ever narrows. */
+.ltx_tabular :is(.ltx_td, .ltx_th) > .ltx_inline-block {
+  min-width: min-content;
+}
+.ltx_tabular :is(.ltx_td, .ltx_th) > .ltx_inline-block .ltx_p {
+  overflow-wrap: normal;
+}
 .ltx_tabular .ltx_td,
 .ltx_tabular .ltx_th {
   padding: 0.1em 0.5em;
