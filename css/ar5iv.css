@@ -661,6 +661,21 @@ div.ltx_keywords:empty::before {
     margin-inline-end: -31rem;
   }
 }
+/* Wide displays render the note in the side margin via the in-flow
+   negative-margin trick above. Being in flow keeps the note riding its
+   carrier line (and its margin-column x), but its box height inflated
+   the carrier — a footnote inside a list item grew the item by the full
+   note height (arXiv 2605.00181). Zero the box height and let the note
+   paint through: the anchor geometry is preserved, the carrier sizes to
+   its own text. (Two notes anchored close together may overlap in the
+   margin — the classic marginpar tradeoff; float containment can't help
+   here since list items establish BFCs.) */
+@media only screen and (width > 96rem) {
+  .ltx_note_outer {
+    height: 0;
+    overflow: visible;
+  }
+}
 
 /* responsive footnote UI */
 
