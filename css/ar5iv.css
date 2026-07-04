@@ -671,7 +671,11 @@ div.ltx_keywords:empty::before {
    margin — the classic marginpar tradeoff; float containment can't help
    here since list items establish BFCs.) */
 @media only screen and (width > 96rem) {
-  .ltx_note_outer {
+  /* :not(:focus-within) — the global keyboard popover rule
+     (`:focus-within > .ltx_note_outer{position:absolute;...}`) turns the
+     margin note into a bordered overlay on Tab-focus; that overlay needs
+     its real height back or its border box collapses. */
+  .ltx_note:not(:focus-within) > .ltx_note_outer {
     height: 0;
     overflow: visible;
   }
