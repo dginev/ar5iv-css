@@ -1845,6 +1845,15 @@ svg .ltx_foreignobject_content {
        to font metrics. This will likely be a subject of future improvements in LaTeXML. */
   font-size: var(--svg-text-size);
   text-align: left; }
+/* Newer LaTeXML emits an exact TeX font anchor (`font-size:<N>pt`)
+   inline on each foreignObject; the `--svg-text-size: 0.82em`
+   heuristic above approximated that anchor when it was absent
+   (16px * 0.82 = 13.1px = ~10pt) and would double-shrink on top of
+   it. When the anchor is present, defer to it exactly; documents
+   from older conversions keep the heuristic. */
+foreignObject[style*="font-size"] .ltx_foreignobject_content {
+  font-size: 1em;
+}
 foreignObject {
   /* translate: 0 0.1em; */
   --ltx-fo-width: 100%;
@@ -1879,8 +1888,19 @@ svg foreignObject > .ltx_foreignobject_container {
     display: block;
     /* foreignObject sizing only works if width cascades to every
        descendant; the !important defeats author-supplied inline
-       widths that LaTeXML would otherwise inject. */
-    & * {
+       widths that LaTeXML would otherwise inject.
+       EXCEPT SVG geometry elements: a tcolorbox/pgf box measured
+       inside another box arrives as a nested <svg class="ltx_picture">
+       whose width/height attributes are exact TeX dimensions —
+       width:inherit on the nested svg/foreignObject collapses the
+       inner box to 0 and shreds the layout (arXiv 2605.02240
+       innercode-in-responsebox). Excluding the geometry-bearing SVG
+       tags keeps their presentation attributes authoritative while
+       the HTML text inside (at any nesting depth) still gets the
+       width cascade and compact line-height. (Do NOT write
+       `:not(svg *)` here — ALL fo content descends from the outer
+       svg, so that guard would disable the rule entirely.) */
+    & *:not(svg, foreignObject, image, rect, use) {
       width: inherit !important;
       line-height: 1;
     }
