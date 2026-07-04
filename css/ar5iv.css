@@ -1951,6 +1951,36 @@ svg foreignObject > .ltx_foreignobject_container {
     & span.ltx_p:not(:last-child) {
       margin-bottom: 0.3em;
     }
+    /* Verbatim blocks arrive as one ltx_p PER LINE whose only child is a
+       typewriter inline-block. TeX spaces those lines by \baselineskip
+       alone — the prose inter-paragraph margin above does not exist there,
+       and at ~50 lines per box it inflated content ~200px past the
+       TeX-measured frame (arXiv 2605.00468 Prompt boxes). First-child, not
+       only-child: a verbatim line with quotes/dashes splits into several
+       sibling spans, but always LEADS with the typewriter block. */
+    /* Blank verbatim lines arrive as EMPTY ltx_p's — same no-margin rule
+       (they carry no typewriter child for the :has() below to match). */
+    & span.ltx_p:empty {
+      margin-bottom: 0;
+    }
+    /* ...and a BLANK verbatim line is an ltx_p whose only child is an EMPTY
+       inline-block (no text -> no font attribute -> no typewriter class). */
+    & span.ltx_p:has(> .ltx_text.ltx_font_typewriter.ltx_inline-block:first-child),
+    & span.ltx_p:has(> .ltx_text.ltx_inline-block:only-child:empty) {
+      margin-bottom: 0;
+      /* TeX (fancyvrb breaklines) already broke these lines to fit the
+         measured width — re-wrapping at the browser's mono metrics
+         desynchronizes the line count from the TeX height budget. One
+         source line, one rendered line. */
+      white-space: nowrap;
+    }
+    /* Monospace calibration under the TeX anchor: cmtt's advance width is
+       0.525em vs ~0.60em for web monos (Noto Sans Mono), so TeX-fitted
+       verbatim lines re-wrap in the browser. 0.875em ~ (0.525/0.60) makes
+       the browser line capacity match TeX's. */
+    & .ltx_text.ltx_font_typewriter {
+      font-size: 0.875em;
+    }
     & .ltx_para {
       /* see arXiv:2407.16893v1 */
       margin-bottom: 0.2rem;
