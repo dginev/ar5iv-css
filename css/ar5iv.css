@@ -679,6 +679,19 @@ div.ltx_keywords:empty::before {
     height: 0;
     overflow: visible;
   }
+  /* ...EXCEPT in CROWDED paragraphs (2+ footnotes): zero-height notes
+     cannot push each other apart, so near-anchored notes painted on top
+     of each other in the margin (arXiv 2605.00501 footnotes 2/3, one
+     text line apart — user-flagged). Notes there keep their real height:
+     the margin floats' `clear: both` then stacks the second note BELOW
+     the first, marginpar-style (user, 2026-07-05). The zero-height
+     carrier protection above was only ever needed for BFC carriers
+     (the 2605.00181 list item), which stay covered by the default. */
+  .ltx_p:has(.ltx_note.ltx_role_footnote ~ .ltx_note.ltx_role_footnote)
+    .ltx_note:not(:focus-within)
+    > .ltx_note_outer {
+    height: auto;
+  }
 }
 
 /* responsive footnote UI */
