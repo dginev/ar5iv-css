@@ -27,7 +27,8 @@ First public npm/CDN release of the "glowup" rework. Highlights:
 - **Print styles** — forced light theme, inline footnote content,
   external-URL expansion, block-integrity hints.
 - **Minified bundle** — `dist/ar5iv.min.css`, committed and served via
-  jsDelivr/unpkg; verified against a fresh build in CI on tag push.
+  jsDelivr's `/gh/` endpoint straight from the tag; verified against a
+  fresh build in CI on tag push.
 - Docs: `THEMING.md`, `TOKENS.md`, `BASELINE_AUDIT.md`, `SVG_BOXES.md`;
   `CONTRIBUTING.md`; stylelint config; visual-regression harness.
 
