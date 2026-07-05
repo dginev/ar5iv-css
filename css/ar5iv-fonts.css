@@ -1,6 +1,21 @@
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@400..700');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400..700;1,400..700');
-@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400..700;1,400..700');
+/*
+  Remote font sources.
+
+  `display=swap` is appended to the body fonts (Noto Sans / Serif / Mono)
+  so first paint isn't blocked while waiting on Google Fonts —
+  fallbacks below render until the real fonts swap in. Math is
+  different: STIX Two Math has glyph forms (integrals, large operators,
+  proper subscript metrics) that Cambria Math / system math fall back
+  to imperfectly. Showing fallback math during the load window can
+  produce mis-aligned formulas, which is worse than a short paint
+  delay. So no `display=swap` on the math import.
+
+  For air-gapped / CDN-blocked environments, the @font-face local()
+  fallbacks below let the page render with locally-installed Noto.
+*/
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Mono:wght@400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:ital,wght@0,400..700;1,400..700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif:ital,wght@0,400..700;1,400..700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=STIX+Two+Math');
 
 /*======================================================================

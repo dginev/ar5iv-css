@@ -1,0 +1,51 @@
+# CI: lint + build sanity check on every push and PR to main.
+#
+# Catches:
+#   - stylelint violations (deprecated `word-wrap`, single-colon
+#     pseudo-elements, etc.)
+#   - TOKENS.md ↔ tokens.css drift via `tools/check-tokens.mjs`
+#   - lightningcss bundle failures (brace mismatch, broken @-rules)
+#
+# The visual-regression harness in `tools/visual.mjs` is per-developer
+# (Playwright browsers + locally-generated baselines under
+# `tools/baseline/<engine>/`). Wiring it into CI with shared baselines
+# is future work — the AA-drift between runs on the same machine
+# argues for either pinned OS+fonts or a higher pixelTolerance first.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  lint-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: stylelint + TOKENS.md drift check
+        run: npm run lint
+
+      - name: lightningcss bundle build
+        run: npm run build
+
+      - name: Upload dist artefact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ar5iv-css-dist
+          path: dist/
+          retention-days: 14

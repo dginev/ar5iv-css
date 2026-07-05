@@ -274,3 +274,35 @@ TSWLatexianTemp*
 
 # Makeindex log files
 *.lpz
+
+# Local examples directory — fetched arXiv pages for manual inspection
+# (gitignored), but the fetch driver scripts themselves are tracked.
+# (gitignore note: blanket-ignoring `examples/` prevents !exceptions
+# from working; use `examples/*` to ignore the contents but leave the
+# directory itself unignored, so the !exceptions for specific files
+# resolve correctly.)
+examples/*
+!examples/fetch.sh
+!examples/fetch-corpus.sh
+
+# Build artefacts — produced by `npm run build`. The two distributed
+# bundles are COMMITTED so jsDelivr serves them verbatim from the GH tag:
+# jsDelivr's on-the-fly minifier (clean-css v5.3.3) cannot handle our
+# modern CSS (@layer / light-dark() / :has() / nesting) and falls back to
+# the un-minified original, so we ship a lightningcss build instead.
+# Everything else under dist/ (sourcemaps, scratch) stays ignored.
+dist/*
+!dist/ar5iv.min.css
+!dist/ar5iv-fonts.min.css
+
+# Node tooling
+node_modules/
+
+# Visual-regression harness scratch (fresh renders + diff PNGs)
+# and the developer-local baseline. fullPage rendering of the full
+# 47-paper corpus is ~400 MB; too large to commit. A shared baseline
+# for CI is planned via release-artifact tarball at
+# tools/snapshots-baseline.tar.zst (deferred). For now every dev
+# generates locally with `node tools/visual.mjs --update`.
+tools/.cache/
+tools/baseline/

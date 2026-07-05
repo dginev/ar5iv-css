@@ -1,0 +1,222 @@
+/*
+  Theme-aware behavioural rules — the ones that `light-dark()` on a
+  token can't express (transforms, image filters, padding).
+
+  Public override surface (per RFC at docs/rfc_latexml_custom_properties.md):
+    --fn-fg-color-to-dark-mode
+    --fn-bg-color-to-dark-mode
+    --fn-border-color-to-dark-mode
+    --fn-fill-color-to-dark-mode
+    --fn-stroke-color-to-dark-mode
+  Downstream themes redefine any of these on the matching
+  `[style*="--ltx-*-color:"]` selector and the application rules below
+  pick the new value up automatically — no need to fork ar5iv.css.
+
+  Constants (documented in the RFC):
+  - Background scale 0.8237 = 1 − 0.1763, where 0.1763 is the OKLCH
+    lightness of the dark-mode background #0d1117.
+  - Foreground / border scale 0.7 caps inverted lightness at L=0.3 so
+    coloured author text doesn't wash out to pure white.
+  - HSL fallback uses 107 for backgrounds and 100 for foregrounds,
+    chosen to approximate the OKLCH targets in older browsers.
+
+  Why two application contexts (`[data-theme="dark"]` AND `@media
+  (prefers-color-scheme: dark)`):
+  We deliberately don't use `light-dark(var(--a), var(--b))` for the
+  application, even though it would collapse the duplication.
+  Browser support for `var()` arguments inside `light-dark()` is
+  spec-allowed but unverified in our test path, while the
+  `[data-theme="dark"]` selector pattern is proven by the existing
+  shipping code. Some duplication is a small price for confidence.
+
+  Imported into `ar5iv.css` un-layered (sits in the implicit highest
+  layer alongside the bulk of the file).
+*/
+
+/* ----- Image dark-mode filter -----
+   `.ltx_no_dark_filter` is the opt-out for figures that already
+   match the theme (e.g. user-rendered plots). */
+[data-theme="dark"] img:not(.ltx_no_dark_filter) {
+  filter: brightness(0.8) contrast(1.2);
+  background-color: var(--image-background-color);
+  color: var(--image-color);
+}
+[data-theme="dark"] svg.ltx_picture {
+  /* keep the original SVG background colour; pad to avoid hard edge */
+  padding: 0.33rem;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) img:not(.ltx_no_dark_filter) {
+    filter: brightness(0.8) contrast(1.2);
+    background-color: var(--image-background-color);
+    color: var(--image-color);
+  }
+  :root:not([data-theme]) svg.ltx_picture {
+    padding: 0.33rem;
+  }
+}
+
+/* ----- Default --fn-* transforms (per-element, theme-independent) -----
+   These declare the transform on every element carrying an inline
+   --ltx-*-color custom property, regardless of current theme. The
+   transforms are only consumed by the application rules below under
+   dark-mode conditions. Defining them unconditionally is what lets a
+   downstream theme override the transform without re-asserting the
+   theme gate. */
+@supports (color: oklch(from white l c h)) {
+  [style*="--ltx-fg-color:"] {
+    --fn-fg-color-to-dark-mode:
+      oklch(from var(--ltx-fg-color) calc(1 - 0.7 * l) c h);
+  }
+  [style*="--ltx-bg-color:"] {
+    --fn-bg-color-to-dark-mode:
+      oklch(from var(--ltx-bg-color) calc(1 - 0.8237 * l) c h);
+  }
+  [style*="--ltx-border-color:"] {
+    --fn-border-color-to-dark-mode:
+      oklch(from var(--ltx-border-color) calc(1 - 0.7 * l) c h);
+  }
+  /* SVG fill behaves like a background — share the 0.8237 scale.
+     SVG stroke behaves like a foreground/border — share the 0.7
+     scale. (The pre-iteration-2 code left these as HSL even in the
+     OKLCH-supports branch; that asymmetry served no purpose now
+     that relative oklch is Baseline.) */
+  [style*="--ltx-fill-color:"] {
+    --fn-fill-color-to-dark-mode:
+      oklch(from var(--ltx-fill-color) calc(1 - 0.8237 * l) c h);
+  }
+  [style*="--ltx-stroke-color:"] {
+    --fn-stroke-color-to-dark-mode:
+      oklch(from var(--ltx-stroke-color) calc(1 - 0.7 * l) c h);
+  }
+}
+@supports not (color: oklch(from white l c h)) {
+  [style*="--ltx-fg-color:"] {
+    --fn-fg-color-to-dark-mode:
+      hsl(from var(--ltx-fg-color) h s calc(100 - l));
+  }
+  [style*="--ltx-bg-color:"] {
+    --fn-bg-color-to-dark-mode:
+      hsl(from var(--ltx-bg-color) h s calc(107 - l));
+  }
+  [style*="--ltx-border-color:"] {
+    --fn-border-color-to-dark-mode:
+      hsl(from var(--ltx-border-color) h s calc(100 - l));
+  }
+  [style*="--ltx-fill-color:"] {
+    --fn-fill-color-to-dark-mode:
+      hsl(from var(--ltx-fill-color) h s calc(107 - l));
+  }
+  [style*="--ltx-stroke-color:"] {
+    --fn-stroke-color-to-dark-mode:
+      hsl(from var(--ltx-stroke-color) h s calc(100 - l));
+  }
+}
+
+/* ----- Apply --fn-* under explicit data-theme="dark" ----- */
+[data-theme="dark"] [style*="--ltx-fg-color:"] {
+  --text-color: var(--fn-fg-color-to-dark-mode);
+  color: var(--text-color);
+}
+[data-theme="dark"] [style*="--ltx-bg-color:"] {
+  --background-color: var(--fn-bg-color-to-dark-mode);
+  background-color: var(--background-color);
+}
+[data-theme="dark"] [style*="--ltx-border-color:"] {
+  --border-color: var(--fn-border-color-to-dark-mode);
+  border-color: var(--border-color);
+}
+[data-theme="dark"] [style*="--ltx-fill-color:"] {
+  fill: var(--fn-fill-color-to-dark-mode);
+}
+[data-theme="dark"] [style*="--ltx-stroke-color:"] {
+  stroke: var(--fn-stroke-color-to-dark-mode);
+}
+
+/* ----- Apply --fn-* under OS-preference dark (no JS data-theme) ----- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) [style*="--ltx-fg-color:"] {
+    --text-color: var(--fn-fg-color-to-dark-mode);
+    color: var(--text-color);
+  }
+  :root:not([data-theme]) [style*="--ltx-bg-color:"] {
+    --background-color: var(--fn-bg-color-to-dark-mode);
+    background-color: var(--background-color);
+  }
+  :root:not([data-theme]) [style*="--ltx-border-color:"] {
+    --border-color: var(--fn-border-color-to-dark-mode);
+    border-color: var(--border-color);
+  }
+  :root:not([data-theme]) [style*="--ltx-fill-color:"] {
+    fill: var(--fn-fill-color-to-dark-mode);
+  }
+  :root:not([data-theme]) [style*="--ltx-stroke-color:"] {
+    stroke: var(--fn-stroke-color-to-dark-mode);
+  }
+}
+
+/* ----- Author-black rescue -----
+   \color{black} is the most common author colour by a wide margin.
+   In dark mode we pin it to the theme's default text colour rather
+   than running it through the formula. */
+[data-theme="dark"] [style*="--ltx-fg-color:#000000;"] {
+  --text-color: var(--text-color-author-black-dark);
+  color: var(--text-color);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) [style*="--ltx-fg-color:#000000;"] {
+    --text-color: var(--text-color-author-black-dark);
+    color: var(--text-color);
+  }
+}
+
+/* ----- Legacy-form author-black rescue -----
+
+   Catches the older inline-color form (`style="color:#000000;"`)
+   that LaTeXML still emits in places where the modern
+   `--ltx-fg-color` custom property isn't reached. Without this
+   rule, author-black text renders black-on-dark and becomes
+   invisible.
+
+   Reproducible cases in the corpus:
+   - arXiv:2403.11784 Table 3 headers ("Component", "Manufacturer",
+     "Model") — reported as arXiv/html_feedback issue #3642.
+   - arXiv:2409.12111 reference numbers (4173 legacy emissions in
+     the ar5iv-labs HTML) — reported as #3461.
+   - 1909.02255: 69, 1910.06706: 17, 2105.00613: 2.
+
+   The previous disabling of this rule (2026 audit) was based on
+   the assumption that arxiv-browse's downstream pipeline rescued
+   the legacy form. Verified 2026-05-15 by inspection of
+   `arxiv-html-papers-theme-{20250131,20250916}.css`: arxiv-browse
+   only rescues the *modern* `--ltx-fg-color:#000000` form, not
+   the legacy `color:#000000` form. So legacy emissions fall
+   through both layers and render black-on-dark. Re-enabled here.
+
+   Two attribute-selector forms because the `color:` declaration
+   may sit at the start of `style` (no preceding `;`) or
+   mid-style. The bare `[style*="color:#000000"]` would match
+   `background-color:#000000` and `border-color:#000000` too —
+   the `;`-anchored and `^`-anchored forms together catch only
+   the `color:` property without false positives. */
+
+[data-theme="dark"] :is(
+  [style^="color:#000000"],
+  [style*=";color:#000000"]
+) {
+  color: var(--text-color-author-black-dark) !important;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) :is(
+    [style^="color:#000000"],
+    [style*=";color:#000000"]
+  ) {
+    color: var(--text-color-author-black-dark) !important;
+  }
+}
+
+/* Note: SVG foreignObject colour propagation lives un-gated in
+   `ar5iv.css` (the `.ltx_foreignobject_content { color: var(--text-color) }`
+   rule). It applies under both themes because `--text-color` is
+   already theme-aware via `tokens.css`. No dark-mode-specific
+   variant is needed here. */

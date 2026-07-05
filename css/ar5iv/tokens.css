@@ -1,0 +1,194 @@
+/*
+  Design tokens for the ar5iv theme.
+
+  This file is imported into the `tokens` cascade layer from ar5iv.css.
+  Token reference: see docs/TOKENS.md and the RFC at
+  docs/rfc_latexml_custom_properties.md for the --ltx-* public surface
+  exposed by LaTeXML.
+
+  Theme switching:
+    - Default: `color-scheme: light dark`. `light-dark()` resolves to
+      the OS-preferred branch automatically.
+    - Forced light: `<html data-theme="light">`.
+    - Forced dark:  `<html data-theme="dark">`.
+  See docs/rfc_latexml_custom_properties.md for the OKLCH inversion
+  strategy used for author-supplied colours (those still need
+  [data-theme="dark"] as their behavioural gate; light-dark() can
+  express token values but not arbitrary transforms).
+*/
+
+:root {
+  color-scheme: light dark;
+
+  /* ----- Layout ----- */
+  --main-width: 52rem;
+  --main-width-margin: 54rem;
+
+  /* ----- Spacing scale -----
+     The dominant ladder in margin declarations: 0.5 / 1 / 1.5 / 2 / 4 rem
+     account for ~70 % of margin sites in ar5iv.css. Long-tail values
+     (0.1, 0.2, 0.25, 0.3, 0.66, 0.75 rem) stay as literals — each was
+     hand-tuned for a specific typographic context and shouldn't snap
+     to a scale step retroactively. Zero is also a literal: `margin: 0`
+     is clearer than `margin: var(--space-none)`.
+     Property-agnostic — same anchors apply to padding, gap, and inset
+     when the value matches. */
+  --space-xs: 0.5rem;
+  --space-sm: 1rem;
+  --space-md: 1.5rem;
+  --space-lg: 2rem;
+  --space-xl: 4rem;
+
+  /* ----- Line-height -----
+     `1.5rem` dominates the line-height histogram (7 uses) at the body's
+     1rem font-size — a 1.5 ratio that comfortably accommodates
+     descenders and ascenders of Noto Serif. Other line-height values
+     in the file (`1rem` for compact contexts, `1.1rem`/`1.15rem`/`1.4rem`
+     for one-off cases) stay as literals. */
+  --line-height-prose: 1.5rem;
+
+  /* ----- Borders & rules ----- */
+  /* Hairline used by hundreds of single-pixel separators across the theme.
+     Matches LaTeXML's default \rule width within a percent. */
+  --border-hairline: 0.063rem;
+  /* Double-line variant for table headers and decorative rules. */
+  --border-double: 0.188rem;
+
+  /* ----- Motion ----- */
+  /* Used by the figure-zoom magnifier (and any future hover/active
+     transition). Tap-and-hold timing should stay short. */
+  --duration-fast: 0.2s;
+  --ease-out: ease;
+
+  /* ----- Stacking ----- */
+  --z-below: -1;
+  --z-page: 0;
+  --z-popover: 100;
+
+  /* ----- Typography ----- */
+  --headings-font-family: "Noto Sans", "Noto Sans Fallback", sans-serif;
+  --text-font-family: "Noto Serif", "Noto Serif Fallback", serif;
+  --math-font-family: "STIX Two Math", "Cambria Math", math;
+  /* Should we do anything special for caligraphic?
+     e.g. "Lucida Calligraphy","Zapf Chancery","URW Chancery L", TeX Gyre Termes...*/
+  --math-caligraphic-font-family: "STIX Two Math", "Cambria Math", math;
+  --code-font-family: "Noto Sans Mono", "Noto Sans Mono Fallback", monospace;
+  /* Measured advance width of --code-font-family, as a fraction of
+     font-size (Noto Sans Mono: 0.600em, browser-measured). Paired with
+     the TeX-side constant below so verbatim capacity ratios are
+     calc()-derived — change the code font, update this token beside it.
+     Where supported, font-size-adjust supersedes both (self-calibrating
+     from the real font tables, honoring user-configured fonts). */
+  --code-font-advance: 0.600;
+  /* cmtt's advance width per font-size — a TeX fact, not a theme choice. */
+  --tex-tt-advance: 0.525;
+  /* SVG text rendered at this size compensates for Noto Sans metrics
+     versus the LaTeXML SVG generator's assumptions. Fragile against
+     a font-family change. */
+  --svg-text-size: 0.82em;
+
+  /* ----- Colours: theme-aware via light-dark() -----
+     Each entry is light-dark(<light>, <dark>). The dark side is
+     applied when the resolved color-scheme is dark — driven by OS
+     preference, by `[data-theme="dark"]`, or by an explicit
+     `color-scheme: dark` cascading from an ancestor.
+  */
+  --background-color: light-dark(white, #0d1117);
+  --text-color:       light-dark(#292929, #c9d1d9);
+  --border-color:     light-dark(#292929, #c9d1d9);
+  --border-light-color: light-dark(grey, #d4d4d4);
+  /* Images keep their light-theme rendering in dark mode (transparent
+     PNGs from LaTeXML expect a light backdrop); the brightness/contrast
+     compensation is applied separately in ar5iv.css under [data-theme="dark"]. */
+  --image-color: light-dark(black, #292929);
+  --image-background-color: white;
+  --link-text-color:  light-dark(#212121, #c9d1d9);
+  /* Email link: light #026ecb is fine (~5.1:1 on white). Dark
+     mode was `darkcyan` (#008b8b) at ~4.48:1 on #0d1117 — just
+     below WCAG AA 4.5:1 — bumped to #009999 (~5.3:1). */
+  --email-link-color: light-dark(#026ecb, #009999);
+  --note-mark-color:  light-dark(#026ecb, #daa002);
+  --note-highlight-color: light-dark(#ffffd4, #231d02);
+  /* Text-selection highlight. Light theme shares the note yellow; the
+     dark value is a brighter, saturated gold — the note token's #231d02
+     is near-invisible as a selection on the #0d1117 page, while this
+     mid-tone keeps the (unchanged, inherited) light text readable. */
+  --selection-color: light-dark(#ffffd4, #6b5a10);
+  /* Info text: light #01719d is fine (~5.5:1 on white) but the
+     same value fails on the dark background (~3.4:1). Split into
+     a lighter dark-mode value (~5.9:1). */
+  --info-text-color:  light-dark(#01719d, #3a9bcc);
+  /* Light: was #d09e05 (~2.46:1 on white, fails WCAG AA Large).
+     #8a6800 is the darkest goldenrod that still reads as "warning yellow"
+     and gives ≈4.8:1 on white. Dark: the original #d09e05 is fine on the
+     dark background. */
+  --warning-text-color: light-dark(#8a6800, #d09e05);
+  /* Error text: light #d8000c is fine (~5.4:1 on white). Dark was
+     #d52f36 at ~3.77:1 on #0d1117 — below AA 4.5:1 — lightened to
+     #e85a60 (~4.8:1). */
+  --error-text-color:   light-dark(#d8000c, #e85a60);
+  --fatal-text-color: var(--error-text-color);
+  --index-ref-color:  var(--email-link-color);
+
+  /* The "stuck on dark" rescue colour for author-supplied black text
+     in dark mode. Same value as --text-color in dark, captured as its
+     own name so the rescue rule in ar5iv.css doesn't hard-code the
+     hex. */
+  --text-color-author-black-dark: #c9d1d9;
+
+  /* Subtle surface tint — used by the conversion-report panel and
+     any future inline-notice. Slightly off-canvas in both themes. */
+  --surface-subtle: light-dark(whitesmoke, #1a1f29);
+
+  /* ----- Focus & feedback ----- */
+  /* Focus ring sits two visual notches from currentColor so it's
+     visible on both light and dark backgrounds.
+     `color-mix` is used here because it is supported wherever
+     `:focus-visible` is supported. */
+  --focus-ring: color-mix(in oklch, currentColor 65%, var(--background-color));
+  --focus-ring-offset: 0.125rem;
+  --focus-ring-width: 0.125rem;
+}
+
+/* Explicit user choice overrides the OS preference. */
+:root[data-theme="light"] { color-scheme: only light; }
+:root[data-theme="dark"]  { color-scheme: only dark; }
+
+/* Sepia — first-party reference for the cookbook recipe-3 pattern
+   (`docs/THEMING.md`). A warm light theme; doubles as proof that
+   the token surface generalises beyond the light/dark pair.
+
+   Contrast on the cream background (#f4ecd8), per the WCAG 2.x
+   relative-luminance formula (sRGB linearised, weights
+   0.2126/0.7152/0.0722, `(L_max + 0.05) / (L_min + 0.05)`):
+   - text   #5b4636 — 7.48:1 (WCAG AAA for body)
+   - link   #6b4423 — 7.19:1 (WCAG AAA for body)
+   - border #8a7458 — decorative; not a contrast surface
+
+   No `--fn-*` overrides: the per-element dark-mode application
+   rules are gated on `[data-theme="dark"]` and on
+   `:root:not([data-theme])` inside
+   `@media (prefers-color-scheme: dark)`, so any explicitly-named
+   theme — `data-theme="sepia"` included — is excluded from the
+   OS-dark inversion. Author-supplied colours render
+   as-is on the sepia background. */
+:root[data-theme="sepia"] {
+  color-scheme: only light;
+  --background-color: #f4ecd8;
+  --text-color: #5b4636;
+  --border-color: #8a7458;
+  --link-text-color: #6b4423;
+  --note-highlight-color: #ebe0c0;
+  --surface-subtle: #ede2c8;
+}
+
+/* Bumped contrast for users who request it. */
+@media (prefers-contrast: more) {
+  :root {
+    --text-color:       light-dark(#000000, #ffffff);
+    --link-text-color:  light-dark(#000000, #ffffff);
+    --border-color:     light-dark(#000000, #ffffff);
+    --note-mark-color:  light-dark(#01497a, #ffd17a);
+    --warning-text-color: light-dark(#5a4400, #ffd17a);
+  }
+}

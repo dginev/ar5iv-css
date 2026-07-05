@@ -81,18 +81,32 @@ The following act as our author-provided custom "design tokens" over which desig
 --ltx-stroke-color
 ```
 
-As a sample dark mode approach, we added the HSL lightness-inverting color map mentioned above.
-With gratitude to Erin Aster from arXiv who contributed the concept:
+ar5iv-css implements a layered indirection so themes don't need to fork the stylesheet. Each `--ltx-*-color` has a companion `--fn-*-color-to-dark-mode` token; the default transforms are defined per-element by ar5iv-css and consumed only under dark-mode conditions. A theme overrides the transform by redefining the `--fn-*` token; the application rule is untouched.
+
+The selector must match what LaTeXML emits — the `--ltx-fg-color` custom property — not a generic `color:` substring that would also match `background-color:` and `border-color:` declarations. The five gates are independent:
 
 ```css
-[style*="color:"] {
+[style*="--ltx-fg-color:"] {
   --fn-fg-color-to-dark-mode:
-      hsl(from var(--ltx-fg-color) h s calc(100 - l));
+      oklch(from var(--ltx-fg-color) calc(1 - 0.7 * l) c h);
+}
+[style*="--ltx-bg-color:"] {
+  --fn-bg-color-to-dark-mode:
+      oklch(from var(--ltx-bg-color) calc(1 - 0.8237 * l) c h);
+}
+/* …and similarly for --ltx-border-color, --ltx-fill-color, --ltx-stroke-color. */
+```
+
+A downstream theme overrides any of the five tokens on the same selector, without touching the application rules:
+
+```css
+/* Example downstream override: pass author colours through unchanged in dark mode. */
+[style*="--ltx-fg-color:"] {
+  --fn-fg-color-to-dark-mode: var(--ltx-fg-color);
 }
 ```
 
-A theme would then needs to only redefine the `--fn-*` rules in the single `[style*="color:"]` selector rule
- to a different color mapping, while keeping all other selector rules as-is.
+Gratitude to Erin Aster from arXiv who contributed the original concept of the lightness-inverting colour map.
 
 ## Color spaces in CSS
 
@@ -104,10 +118,35 @@ The other complication is the limitations in using calc() functions, such as min
 as well as clamp() in the color conversion from() rules. They have little if any support,
 which limits the appeal for creating mapping functions.
 
-Why clamping?
+### Background scale (0.8237)
 
-The current ar5iv dark mode background has OKLCH lightness 0.1763, so we could want that as our "darkest" bound.
-Then for older browsers, adding an HSL fallback (lightness 7.06%).
-Whether this actually achieves the perception we hope it does can only be validated by extensive testing,
-and that is biased by the screen and set of eyes looking... So the best strategy may be to keep things very
-simple and working on the obvious common tests.
+The dark-mode background `#0d1117` has OKLCH lightness 0.1763. The
+background transform `calc(1 - 0.8237 * l)` therefore maps input
+lightness `l ∈ [0, 1]` to output `[0.1763, 1]` — i.e. an author-supplied
+white background lands at the theme's dark background, and other
+backgrounds interpolate between it and white. `0.8237 = 1 − 0.1763`.
+
+### Foreground / border scale (0.7)
+
+The foreground (and border) transform `calc(1 - 0.7 * l)` maps input
+`l ∈ [0, 1]` to output `[0.3, 1]`. The 0.3 floor is a design choice:
+it keeps coloured author text from washing out to near-white in dark
+mode while preserving enough perceived contrast to distinguish hues.
+A value closer to 1 would invert more aggressively but also collapse
+distinct author colours into similar-looking pale shades.
+
+### HSL fallback asymmetry (100 vs 107)
+
+The HSL fallback uses `calc(107 - l)` for backgrounds and `calc(100 - l)`
+for foregrounds. The +7 offset on backgrounds approximates the OKLCH
+target — HSL lightness isn't perceptually uniform, so a flat
+`100 - l` would invert a 95 % white background to 5 % nearly-black,
+slightly darker than the OKLCH branch. The +7 keeps the HSL output
+closer to the OKLCH path's `[0.1763, 1]` range for representative
+inputs. The foreground stays at the flat `100 - l` because the text
+range we care about (mostly near-black inputs) already maps acceptably.
+
+Whether these constants achieve the perception we hope they do can
+only be validated by extensive testing — and that is biased by the
+screen and set of eyes looking. The best strategy is to keep things
+simple and lean on the obvious common-paper tests.

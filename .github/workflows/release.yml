@@ -1,0 +1,61 @@
+# Release automation, triggered by pushing an unprefixed version tag
+# (e.g. `0.9.0`). jsDelivr serves the committed `dist/*.min.css` from the
+# tag automatically — there is no "publish to jsDelivr" step — so this
+# workflow only VERIFIES and WARMS:
+#
+#   1. verify — rebuild dist with lightningcss and fail if it differs from
+#      what was committed at the tag. This catches the one failure mode of
+#      the committed-dist model: tagging a release whose dist/ was never
+#      rebuilt (stale minified CSS shipped to the CDN). The recommended
+#      release path — `npm version <patch|minor|major>` — runs the build in
+#      its `version` lifecycle and stages dist into the version commit, so a
+#      correctly-cut release always passes; this job is the backstop for a
+#      hand-made tag.
+#   2. warm — fetch the new tag's bundles through jsDelivr so it fetches +
+#      caches them from GitHub immediately, instead of the first real
+#      visitor paying the cold-origin latency.
+#
+# Read-only: no repo write / no secrets. The tag must already contain the
+# built dist (a tag-triggered job cannot add files to its own tag).
+
+name: Release
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+*'
+
+jobs:
+  verify-and-warm:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - name: Verify committed dist matches a fresh lightningcss build
+        run: |
+          npm run build
+          if ! git diff --exit-code -- dist/; then
+            echo "::error::Committed dist/ is stale for tag ${GITHUB_REF_NAME}."
+            echo "Run 'npm version <patch|minor|major>' (which rebuilds + stages dist)"
+            echo "or 'npm run build && git add dist' before tagging."
+            exit 1
+          fi
+
+      - name: Warm jsDelivr cache for this tag
+        run: |
+          T="${GITHUB_REF_NAME}"
+          for f in ar5iv.min.css; do
+            url="https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@${T}/dist/${f}"
+            if curl -fsSL "$url" -o /dev/null; then
+              echo "warmed $url"
+            else
+              echo "::warning::could not warm $url (jsDelivr may still be indexing the tag)"
+            fi
+          done

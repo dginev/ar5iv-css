@@ -1,0 +1,104 @@
+/*
+  Print styles for ar5iv. Scholarly articles get printed.
+
+  Goals:
+    1. Always print as light theme — dark backgrounds waste toner and
+       fight greyscale rendering.
+    2. Surface footnote content where it sits, not in popovers.
+    3. Show external URLs after their link text.
+    4. Keep figures, theorems, tables, and listings from breaking
+       across pages where possible.
+    5. Sensible page margins.
+
+  Imported under `@media print` from ar5iv.css.
+*/
+
+@media print {
+  /* Force light tokens regardless of data-theme / OS preference. */
+  :root,
+  :root[data-theme="dark"],
+  :root[data-theme="light"] {
+    color-scheme: only light;
+  }
+
+  /* Avoid printing decorative backgrounds. */
+  body,
+  .ltx_page_content,
+  blockquote.ltx_quote {
+    background: white !important;
+    color: black !important;
+  }
+
+  /* Show full URLs for external links; keep internal anchors clean. */
+  a[href^="http"]::after,
+  a[href^="mailto:"]::after {
+    content: " (" attr(href) ")";
+    font-size: 0.85em;
+    word-break: break-all;
+  }
+  a[href^="#"]::after,
+  .ltx_ref::after {
+    /* Internal anchors: don't pollute body text. */
+    content: "";
+  }
+
+  /* Reveal sidenote content inline. The popover positioning is for
+     screens; on paper, the content belongs flush with the footnote
+     mark. */
+  .ltx_note_outer {
+    display: inline !important;
+    opacity: 1 !important;
+    position: static !important;
+    float: none !important;
+    width: auto !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: transparent !important;
+    border: none !important;
+  }
+  .ltx_note_content {
+    display: inline !important;
+    margin: 0 0.25rem !important;
+    padding: 0 !important;
+    border: none !important;
+    font-size: 0.85em;
+  }
+  /* Suppress the small-screen "hidden by default" rule. */
+  .ltx_note_content::before {
+    content: " [";
+  }
+  .ltx_note_content::after {
+    content: "] ";
+  }
+
+  /* Keep blocks together where possible. */
+  .ltx_figure,
+  .ltx_table,
+  .ltx_theorem,
+  .ltx_proof,
+  .ltx_listing,
+  blockquote.ltx_epigraph,
+  blockquote.ltx_quote {
+    break-inside: avoid;
+  }
+  /* Don't orphan a heading at the bottom of a page. */
+  .ltx_title_section,
+  .ltx_title_subsection,
+  .ltx_title_subsubsection,
+  .ltx_title_part,
+  .ltx_title_chapter,
+  .ltx_title_appendix {
+    break-after: avoid;
+  }
+
+  /* No animations on paper. */
+  *, *::before, *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  /* Page setup. User-agent picks paper size from the print dialog. */
+  @page {
+    margin: 2cm;
+  }
+}
