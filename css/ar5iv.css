@@ -15,14 +15,18 @@
 
 /* Cascade layer order. Tokens land in `tokens`, a11y in `base`, the
    bulk of this file in `components`, B-fixes in `fixes`. The
-   transformed-wrappers feature flag stays un-layered so its
-   !important rules keep maximum priority. `reset`, `structure`,
+   transformed-wrappers feature flag stays un-layered (its
+   !important rules only need to beat LaTeXML inline styles, not
+   other layers — see Subtlety below). `reset`, `structure`,
    `math` are declared but currently empty — reserved for future
    sub-divisions and for downstream themes that want to slot their
    own rules between ours.
    Subtlety: !important inverts the layer order, so an !important
-   inside `fixes` LOSES to an !important inside `base`. Un-layered
-   !important beats every layered !important. */
+   inside `fixes` LOSES to an !important inside `base`. And un-layered
+   !important is the WEAKEST author-important — it loses to every
+   layered !important (CSS Cascade 5). The un-layered transform block
+   below wins its battle anyway: it only needs to outrank LaTeXML's
+   inline (normal) `style="transform:…"`, which any !important does. */
 @layer reset, tokens, base, structure, components, math, fixes;
 
 /* Design tokens (light theme defaults). */
@@ -44,9 +48,9 @@
    The bulk of ar5iv.css now sits inside `@layer components`.
    Two regions remain un-layered:
    - the transformed-wrappers feature flag near the middle of the
-     file, whose !important rules need maximum priority to defeat
-     LaTeXML's inline `style="transform:…"` (per the !important
-     cross-layer inversion, un-layered !important beats layered);
+     file, whose !important rules defeat LaTeXML's inline
+     `style="transform:…"` — a normal declaration, so any author
+     !important beats it and the layer placement isn't load-bearing;
    - nothing else; the imports above and the closing `@layer fixes`
      near the end are deliberate placements.
    ============================================================ */
@@ -735,7 +739,6 @@ div.ltx_keywords:empty::before {
      get a standalone line in small-screen mode. */
   .ltx_note.ltx_note_frontmatter {
     display: block;
-    opacity: 1;
     opacity: inherit;
     text-align: start;
   }
@@ -745,7 +748,6 @@ div.ltx_keywords:empty::before {
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_outer {
     display: block;
-    opacity: 1;
     opacity: inherit;
   }
   .ltx_note.ltx_note_frontmatter .ltx_note_content {
@@ -1343,11 +1345,10 @@ span.ltx_font_bold > .ltx_break:last-child {
     overflow-wrap: break-word;
   }
 }
-/*.bibitem-tag + div { display:inline; }*/
 .ltx_bib_title {
   font-style: italic;
 }
-.ltx_bib_article .bib-title {
+.ltx_bib_article .ltx_bib_title {
   font-style: normal !important;
 }
 .ltx_bib_journal {
@@ -1780,8 +1781,7 @@ mtext > .ltx_graphics,
   max-width: calc(0.33 * var(--main-width));
 }
 
-.ltx_flex_figure.ltx_flex_table .ltx_flex_size_4,
-.ltx_flex_figure.ltx_flex_table .ltx_flex_size_many {
+.ltx_flex_figure.ltx_flex_table .ltx_flex_size_4 {
   max-width: calc(0.25 * var(--main-width));
 }
 
@@ -2503,15 +2503,15 @@ span.ltx_transformed_inner {
 .ltx_mathvariant_sans-serif {
   font-family: sans-serif;
 }
-.ltx_mathvariant-bold-sans-serif {
+.ltx_mathvariant_bold-sans-serif {
   font-family: sans-serif;
   font-weight: bold;
 }
-.ltx_mathvariant-sans-serif-italic {
+.ltx_mathvariant_sans-serif-italic {
   font-family: sans-serif;
   font-style: italic;
 }
-.ltx_mathvariant-bold-sans-serif-italic {
+.ltx_mathvariant_bold-sans-serif-italic {
   font-family: sans-serif;
   font-style: italic;
   font-weight: bold;
@@ -2986,9 +2986,6 @@ span.ltx_framed {
 .ltx_missing,
 .ltx_nounicode {
   color: var(--error-text-color);
-}
-.ltx_nodisplay {
-  display: none;
 }
 .ltx_missing_label {
   color: var(--warning-text-color);

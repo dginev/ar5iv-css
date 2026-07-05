@@ -40,9 +40,11 @@ npm install
 npm run build
 ```
 
-Produces `dist/ar5iv.min.css` + `dist/ar5iv.min.css.map`. The build
-inlines all local `@import`s into a single file via
-[lightningcss](https://lightningcss.dev/) and minifies.
+Produces `dist/ar5iv.min.css`. The build inlines all local
+`@import`s into a single file via
+[lightningcss](https://lightningcss.dev/) and minifies. (Fonts are
+served separately from the unminified `css/ar5iv-fonts.css` — it is
+mostly `@import` + `@font-face`, so minifying it saves nothing.)
 
 ## Theming
 
@@ -55,6 +57,18 @@ override example. For recipes on overriding tokens, changing the
 inversion strategy, or shipping a downstream theme, see
 `docs/THEMING.md`.
 
+## Browser support
+
+The theme targets **modern evergreen browsers** — roughly mid-2024
+onward (Chrome/Edge 123+, Firefox 120+, Safari 17.5+). The gating
+feature is `light-dark()`; the theme also uses relative-colour
+syntax, `:has()`, `subgrid`, and cascade layers. On older engines the
+document still renders and stays readable, but theme colours fall
+back to the browser's default light/dark canvas (accents, link
+colours, and highlights are lost). See
+[`docs/BASELINE_AUDIT.md`](./docs/BASELINE_AUDIT.md) for the
+feature-by-feature baseline.
+
 ## Docs
 
 - [Design tokens reference](./docs/TOKENS.md)
@@ -66,14 +80,29 @@ inversion strategy, or shipping a downstream theme, see
 
 ## Releasing (maintainer notes)
 
-Manual `npm publish` while the build pipeline settles:
+Release tags are **unprefixed** (`0.9.0`, not `v0.9.0`) to match the
+tag history, the `release.yml` trigger, and `.npmrc`
+(`tag-version-prefix=""`). A `v`-prefixed tag will silently *not*
+trigger the release workflow.
+
+When `package.json` is already at the target version (as for the
+initial `0.9.0`), tag it directly:
 
 ```bash
-git tag v0.9.0
-git push --tags
-npm publish      # `prepublishOnly` runs `npm run build` automatically
+npm run lint                          # stylelint + TOKENS.md drift (the preversion gate)
+npm run build                         # refresh dist/
+git add -A && git commit -m "release: 0.9.0"
+git tag 0.9.0                         # UNPREFIXED
+git push origin HEAD --follow-tags
+npm publish                           # prepublishOnly re-runs the build
 ```
 
+For subsequent releases, prefer `npm version <patch|minor|major>`:
+its `version` lifecycle rebuilds and stages `dist/`, and `postversion`
+pushes the commit and tag; then `npm publish`.
+
 The published artefact contains both the unminified source (`css/`)
-and the minified bundle (`dist/`). jsDelivr and unpkg mirror it
+and the minified bundle (`dist/`). Pushing the tag runs `release.yml`,
+which re-verifies the committed `dist/` against a fresh build and
+warms the jsDelivr cache. jsDelivr and unpkg mirror the npm release
 within minutes — no further action required.

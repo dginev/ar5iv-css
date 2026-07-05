@@ -2,7 +2,7 @@
   Design tokens for the ar5iv theme.
 
   This file is imported into the `tokens` cascade layer from ar5iv.css.
-  Token reference: see docs/TOKENS.md (planned) and the RFC at
+  Token reference: see docs/TOKENS.md and the RFC at
   docs/rfc_latexml_custom_properties.md for the --ltx-* public surface
   exposed by LaTeXML.
 
@@ -167,9 +167,10 @@
 
    No `--fn-*` overrides: the per-element dark-mode application
    rules are gated on `[data-theme="dark"]` and on
-   `:root:not([data-theme="light"])` inside
-   `@media (prefers-color-scheme: dark)`, so `data-theme="sepia"`
-   doesn't trigger any inversion. Author-supplied colours render
+   `:root:not([data-theme])` inside
+   `@media (prefers-color-scheme: dark)`, so any explicitly-named
+   theme — `data-theme="sepia"` included — is excluded from the
+   OS-dark inversion. Author-supplied colours render
    as-is on the sepia background. */
 :root[data-theme="sepia"] {
   color-scheme: only light;

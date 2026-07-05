@@ -51,7 +51,7 @@ jobs:
       - name: Warm jsDelivr cache for this tag
         run: |
           T="${GITHUB_REF_NAME}"
-          for f in ar5iv.min.css ar5iv-fonts.min.css; do
+          for f in ar5iv.min.css; do
             url="https://cdn.jsdelivr.net/gh/${GITHUB_REPOSITORY}@${T}/dist/${f}"
             if curl -fsSL "$url" -o /dev/null; then
               echo "warmed $url"

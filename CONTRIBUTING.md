@@ -28,12 +28,14 @@ css/
 └── ar5iv/
     ├── tokens.css       ← design tokens (single source of truth)
     ├── a11y.css         ← focus, :target, ::selection, reduced-motion, forced-colors
+    ├── dark-mode.css    ← theme-aware image filter + author-colour inversion
     └── print.css        ← @media print overrides
 
 docs/
 ├── TOKENS.md            ← reference for every token defined in tokens.css
 ├── THEMING.md           ← downstream-override cookbook (four worked recipes)
 ├── BASELINE_AUDIT.md    ← CSS feature inventory + Baseline-availability dates
+├── SVG_BOXES.md         ← anchored-foreignObject sizing rationale
 ├── rfc_latexml_custom_properties.md ← contract with LaTeXML for inline --ltx-* tokens
 └── ar5iv_colors_report.md           ← background on arXiv's colour distribution
 ```

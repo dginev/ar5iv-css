@@ -46,12 +46,12 @@
   padding: 0.33rem;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) img:not(.ltx_no_dark_filter) {
+  :root:not([data-theme]) img:not(.ltx_no_dark_filter) {
     filter: brightness(0.8) contrast(1.2);
     background-color: var(--image-background-color);
     color: var(--image-color);
   }
-  :root:not([data-theme="light"]) svg.ltx_picture {
+  :root:not([data-theme]) svg.ltx_picture {
     padding: 0.33rem;
   }
 }
@@ -135,22 +135,22 @@
 
 /* ----- Apply --fn-* under OS-preference dark (no JS data-theme) ----- */
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) [style*="--ltx-fg-color:"] {
+  :root:not([data-theme]) [style*="--ltx-fg-color:"] {
     --text-color: var(--fn-fg-color-to-dark-mode);
     color: var(--text-color);
   }
-  :root:not([data-theme="light"]) [style*="--ltx-bg-color:"] {
+  :root:not([data-theme]) [style*="--ltx-bg-color:"] {
     --background-color: var(--fn-bg-color-to-dark-mode);
     background-color: var(--background-color);
   }
-  :root:not([data-theme="light"]) [style*="--ltx-border-color:"] {
+  :root:not([data-theme]) [style*="--ltx-border-color:"] {
     --border-color: var(--fn-border-color-to-dark-mode);
     border-color: var(--border-color);
   }
-  :root:not([data-theme="light"]) [style*="--ltx-fill-color:"] {
+  :root:not([data-theme]) [style*="--ltx-fill-color:"] {
     fill: var(--fn-fill-color-to-dark-mode);
   }
-  :root:not([data-theme="light"]) [style*="--ltx-stroke-color:"] {
+  :root:not([data-theme]) [style*="--ltx-stroke-color:"] {
     stroke: var(--fn-stroke-color-to-dark-mode);
   }
 }
@@ -164,7 +164,7 @@
   color: var(--text-color);
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) [style*="--ltx-fg-color:#000000;"] {
+  :root:not([data-theme]) [style*="--ltx-fg-color:#000000;"] {
     --text-color: var(--text-color-author-black-dark);
     color: var(--text-color);
   }
@@ -207,7 +207,7 @@
   color: var(--text-color-author-black-dark) !important;
 }
 @media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) :is(
+  :root:not([data-theme]) :is(
     [style^="color:#000000"],
     [style*=";color:#000000"]
   ) {
