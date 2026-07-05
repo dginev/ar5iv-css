@@ -277,7 +277,7 @@ non-emergency overrides.
 
 ```html
 <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/ar5iv-css@0.9.0/dist/ar5iv.min.css">
+      href="https://cdn.jsdelivr.net/gh/dginev/ar5iv-css@0.9.0/dist/ar5iv.min.css">
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@your-org/ar5iv-sepia@0.1.0/css/index.css">
 ```

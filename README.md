@@ -6,22 +6,25 @@ The "ar5iv theme" for arXiv HTML documents converted via LaTeXML.
 
 ### CDN (recommended for production)
 
-After a tagged release lands on npm, jsDelivr and unpkg auto-serve
-the built minified bundle. No CDN sign-up or configuration needed.
+jsDelivr serves the built bundle directly from the git release tag via
+its GitHub endpoint — no npm publish, CDN sign-up, or configuration
+needed.
 
 ```html
 <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/ar5iv-css@0.9.0/css/ar5iv-fonts.css">
+      href="https://cdn.jsdelivr.net/gh/dginev/ar5iv-css@0.9.0/css/ar5iv-fonts.css">
 <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/ar5iv-css@0.9.0/dist/ar5iv.min.css">
+      href="https://cdn.jsdelivr.net/gh/dginev/ar5iv-css@0.9.0/dist/ar5iv.min.css">
 ```
 
-unpkg is a drop-in alternative:
-`https://unpkg.com/ar5iv-css@0.9.0/dist/ar5iv.min.css`.
-
 Pin the version (`@0.9.0`) for reproducibility. Use `@0.9` for the
-latest patch within a minor or `@latest` if you want the bleeding
-edge — at the cost of cache poisoning on version bumps.
+latest patch within a minor, or `@latest` for the newest tag — at the
+cost of cache poisoning on version bumps.
+
+> The `/gh/` endpoint is served straight from the tagged commit, so it
+> works the moment the tag is pushed. Publishing to npm is optional; if
+> done, the `/npm/` mirror (`cdn.jsdelivr.net/npm/ar5iv-css@…`), unpkg,
+> and `npm install ar5iv-css` become available too.
 
 ### Self-hosted from a git checkout
 
@@ -93,16 +96,21 @@ npm run lint                          # stylelint + TOKENS.md drift (the prevers
 npm run build                         # refresh dist/
 git add -A && git commit -m "release: 0.9.0"
 git tag 0.9.0                         # UNPREFIXED
-git push origin HEAD --follow-tags
-npm publish                           # prepublishOnly re-runs the build
+git push origin HEAD --follow-tags    # tag push -> /gh/ CDN goes live via release.yml
+# npm publish                         # OPTIONAL: also enables /npm/ + unpkg + npm install
 ```
 
 For subsequent releases, prefer `npm version <patch|minor|major>`:
 its `version` lifecycle rebuilds and stages `dist/`, and `postversion`
-pushes the commit and tag; then `npm publish`.
+pushes the commit and tag.
 
-The published artefact contains both the unminified source (`css/`)
-and the minified bundle (`dist/`). Pushing the tag runs `release.yml`,
-which re-verifies the committed `dist/` against a fresh build and
-warms the jsDelivr cache. jsDelivr and unpkg mirror the npm release
-within minutes — no further action required.
+Pushing the tag runs `release.yml`, which re-verifies the committed
+`dist/` against a fresh build and warms jsDelivr's `/gh/` cache — so
+the CDN URLs above go live directly from the tag, no npm publish
+required.
+
+Publishing to npm is optional and additive: `npm publish` (which the
+`prepublishOnly` script builds for) also enables the `/npm/` jsDelivr
+mirror, unpkg, and `npm install ar5iv-css`. The published artefact
+contains both the unminified source (`css/`) and the minified bundle
+(`dist/`).
