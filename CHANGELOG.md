@@ -12,6 +12,13 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
+- **fancyvrb framed verbatim is responsive.** A `frame=single` box (an
+  `ltx_framed_rectangle` carrying the new `.ltx_framed_verbatim` class)
+  spans the print `\linewidth` and, being a shrink-to-fit inline-block of
+  non-wrapping verbatim lines, would push its border off-screen and scroll
+  the whole page on a phone. It is now capped at the viewport with over-long
+  lines scrolling within the box (`max-width:100%; overflow-x:auto;
+  box-sizing:border-box`). Mirrors latexml-oxide #525 (OXIDIZED_DESIGN #110).
 - **Display math no longer escapes a width-constrained box.** A
   `.ltx_eqn_table` (`display:table; width:100%`) inside a `p{}` cell /
   `\parbox` / `minipage` (`.ltx_inline-block`) or a table cell (`.ltx_td`)
