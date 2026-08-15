@@ -556,6 +556,55 @@ div.ltx_keywords:empty::before {
   display: none;
 }
 
+/* Publication-metadata pubnotes (conference / booktitle / DOI / ISBN / …).
+   Our maketitle XSLT lifts these OUT of the title <h1> into a sibling
+   `.ltx_pubnotes_meta` block so they stop polluting the heading
+   (arXiv/html_feedback#6886). Presentation is viewport-responsive, matching
+   how the mainmatter footnotes behave:
+   - NARROW (< 96rem, phones/tablets): inherit the base dagger hover-popup
+     above — no margin exists to spend, so the metadata stays tucked behind
+     the marker and reveals on hover/tap. (No rule needed; the base applies.)
+   - WIDE (>= 96rem, the same threshold `.ltx_note_outer` uses): a real side
+     margin exists, so promote the metadata into the right margin, always
+     visible — drop the dagger and float the content out beside the title
+     rather than hiding it behind a marker.
+   Unlike the footnotes' FIXED negative-margin trick (which overflows the
+   viewport in the narrow band just past its breakpoint), the offset here is
+   sized from the ACTUAL available margin, `(100vw - --main-width)/2`, so the
+   note always keeps a 1rem gap on both sides and never triggers horizontal
+   scroll at any viewport (WCAG 1.4.10 reflow). */
+@media only screen and (width >= 96rem) {
+  .ltx_pubnotes.ltx_pubnotes_meta {
+    display: block;
+  }
+  .ltx_pubnotes.ltx_pubnotes_meta::before {
+    content: none; /* the note is shown, not toggled — no marker */
+  }
+  .ltx_pubnotes.ltx_pubnotes_meta .ltx_pubnotes_content {
+    visibility: visible;
+    opacity: 1;
+    /* override the base popup: statically float into the right margin
+       (the block collapses to 0 height around the float, so the title and
+       body flow are untouched — the `.ltx_note_outer` marginalia trick) */
+    position: static;
+    float: inline-end;
+    clear: both;
+    box-sizing: border-box;
+    /* fill the side margin, capped at a readable width and always leaving
+       a 1rem gap each side so it can never overflow the viewport */
+    width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
+    margin-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
+    max-width: none;
+    padding-inline: 1rem 0.75rem;
+    border-inline-start: 0.1rem solid var(--border-color);
+    text-align: start;
+    font-family: var(--text-font-family);
+    font-size: 0.85rem;
+    line-height: var(--line-height-prose);
+    color: var(--text-color);
+  }
+}
+
 /* Mainmatter Footnotes */
 .ltx_note {
   position: relative;
