@@ -4,6 +4,34 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+Mirrors of latexml-oxide surpass-Perl CSS deltas (each fixes a rendering
+gap shared with vanilla LaTeXML.css). Tracked here so a future re-sync
+does not silently drop them; the engine side carries the matching
+`OXIDIZED_DESIGN` divergence and a guard test.
+
+### Fixed
+- **Display math no longer escapes a width-constrained box.** A
+  `.ltx_eqn_table` (`display:table; width:100%`) inside a `p{}` cell /
+  `\parbox` / `minipage` (`.ltx_inline-block`) or a table cell (`.ltx_td`)
+  could overflow the box and scatter across the page, because `overflow`
+  is ignored on `display:table`. It is now re-boxed as a block scroll
+  container under a constrained ancestor
+  (`.ltx_inline-block .ltx_eqn_table, .ltx_td .ltx_eqn_table`), so it
+  stays within its cell and scrolls horizontally when too wide; the
+  `.ltx_eqn_row/cell` children regenerate an anonymous table so centering
+  and eqno columns still lay out. Normal full-width display math is
+  untouched. Mirrors latexml-oxide #533 (OXIDIZED_DESIGN #108).
+
+### Added
+- **enumitem `leftmargin` theming surface consumed.** `leftmargin=*`
+  arrives as the `.ltx_leftmargin_flush` class (a boolean flush toggle)
+  and `leftmargin=<dim>` as the `--ltx-enum-leftmargin` custom property
+  (per the `--ltx-*` public surface, `docs/rfc_latexml_custom_properties.md`);
+  both drop the list's UA left padding and set the left inset from the
+  property. Mirrors latexml-oxide #559 (OXIDIZED_DESIGN #105).
+
 ## 0.9.0 — 2026-07-05
 
 First public npm/CDN release of the "glowup" rework. Highlights:
