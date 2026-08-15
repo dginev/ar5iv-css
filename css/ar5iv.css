@@ -2603,6 +2603,20 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 .ltx_description {
   display: block;
 }
+/* enumitem leftmargin (latexml-oxide #559): consume the theming surface the
+   LaTeXML binding now emits. leftmargin=* arrives as the .ltx_leftmargin_flush
+   class (a boolean flush toggle); leftmargin=<dim> arrives as the
+   --ltx-enum-leftmargin custom property (inline style, per the --ltx-* public
+   surface in docs/rfc_latexml_custom_properties.md). Both drop the list's UA
+   left padding and set the left inset from the property (0 for the flush class,
+   via its var() fallback). A plain list has neither and is unchanged;
+   .ltx_enumerate is already flush via its grid below, so this mainly affects
+   itemize/description and explicit lengths. */
+.ltx_leftmargin_flush,
+[style*="--ltx-enum-leftmargin:"] {
+  padding-inline-start: 0;
+  margin-inline-start: var(--ltx-enum-leftmargin, 0);
+}
 .ltx_item > .ltx_para > .ltx_description,
 .ltx_item > .ltx_para > .ltx_itemize,
 .ltx_item > .ltx_para > .ltx_enumerate {
