@@ -2275,6 +2275,18 @@ svg foreignObject > .ltx_foreignobject_container {
 .ltx_framed > .ltx_listing {
   margin-bottom: 0rem;
 }
+/* latexml-oxide #525: a fancyvrb frame=single box (an ltx_framed_rectangle
+   carrying this class) spans the print \linewidth. Being a shrink-to-fit
+   inline-block of non-wrapping verbatim lines, on a phone it would push its
+   border off-screen and scroll the whole page. Cap it at the viewport and
+   scroll over-long lines within the box (the containment .ltx_listing uses for
+   code); border-box keeps border+padding inside the cap. Mirrors the bundled
+   LaTeXML.css delta (OXIDIZED_DESIGN #110). */
+.ltx_framed_verbatim {
+  max-width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
+}
 .ltx_listing > .ltx_framed_rectangle {
   /* download arrow has a glitchy border, disable it. */
   border-style: none;
