@@ -2548,6 +2548,22 @@ span.ltx_transformed_inner {
   border-collapse: collapse;
   margin: 0.65rem auto 0.65rem;
 }
+/* latexml-oxide #533: display math is a display:table with 50% center-pads, and
+   inside a width-constrained box (a p{} cell / \parbox / minipage
+   = .ltx_inline-block, or a table cell = .ltx_td) its intrinsic width exceeds
+   the box. Since overflow is ignored on display:table, the equation escapes the
+   cell and scatters across the page (matches the same gap in vanilla LaTeXML.css;
+   lualatex keeps it in the cell). Re-box it as a block scroll container so it
+   stays inside the cell and scrolls horizontally when too wide — the containment
+   .ltx_listing already uses. The .ltx_eqn_row/cell children regenerate an
+   anonymous table, so centering + eqno columns still lay out. Normal full-width
+   display math keeps display:table (untouched). */
+.ltx_inline-block .ltx_eqn_table,
+.ltx_td .ltx_eqn_table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
 .ltx_eqn_row {
   display: table-row;
 }
