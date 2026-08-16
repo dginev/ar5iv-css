@@ -12,6 +12,22 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
+- **Inline pictures scaled to text height stay small.** The transform
+  reset that reverts figures/tables to natural sizing
+  (`.ltx_transformed_outer{width:auto}` + `transform:none`) also caught a
+  `\scalerel`-scaled inline `ltx_picture` — e.g. a custom `\orcidicon` tikz
+  logo — whose only size came from that transform, so reverting ballooned it
+  to the unscaled SVG viewport (a multi-line green ORCID "iD" in
+  arXiv:2608.12272). Inline-block transform boxes whose content is an
+  `ltx_picture` and not a figure/table
+  (`:has(.ltx_picture):not(:has(.ltx_tabular,.ltx_figure,.ltx_table))`) are
+  now excluded from the reset, and the picture fills its computed box, so the
+  icon renders as a text-height inline glyph. Figures and tables are
+  untouched — the reset's own witness papers (1504.02179, 2110.07681,
+  0901.0489, 2006.13760, 1909.02255, 2111.15640, 2111.00396) have zero
+  matches for the new selector. This is an ar5iv-css-native fix (the
+  over-reach was in this file, not the engine), reported as
+  arXiv/html_feedback#6895.
 - **fancyvrb framed verbatim is responsive.** A `frame=single` box (an
   `ltx_framed_rectangle` carrying the new `.ltx_framed_verbatim` class)
   spans the print `\linewidth` and, being a shrink-to-fit inline-block of

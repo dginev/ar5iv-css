@@ -2451,7 +2451,14 @@ svg foreignObject > .ltx_foreignobject_container {
    transform), 2006.13760, 1504.02179, 1909.02255, 2110.07681,
    2111.15640, 2111.00396 for the live test cases.
    =================================================================== */
-.ltx_transformed_outer {
+/* Exclude inline pictures scaled to text height (e.g. a \scalerel-wrapped
+   ORCID / academicon: an inline-block transform box whose only content is an
+   `ltx_picture`, not a figure/table). Their size comes *only* from the
+   author's transform, so reverting to natural sizing balloons them to the
+   unscaled SVG viewport — the multi-line green ORCID "iD" in arXiv:2608.12272.
+   Figures and tables (self or descendant) still get the reset, since that is
+   where LaTeXML's declared transform sizes were found unreliable. */
+.ltx_transformed_outer:not(.ltx_inline-block:not(.ltx_figure):not(.ltx_table):has(.ltx_picture):not(:has(.ltx_tabular, .ltx_figure, .ltx_table))) {
   width: auto !important;
   height: auto !important;
   vertical-align: initial !important;
@@ -2480,6 +2487,18 @@ svg foreignObject > .ltx_foreignobject_container {
 .ltx_para > .ltx_inline-block:only-child.ltx_transformed_outer > .ltx_transformed_inner {
   transform: none !important;
   width: initial !important;
+}
+
+/* Counterpart to the transformed_outer exclusion above: for an inline scaled
+   picture (ORCID / academicon), the transform box carries LaTeXML's computed
+   size, so fill the picture to that box instead of leaving it at the unscaled
+   SVG viewport. Keeps the icon a text-height inline glyph (arXiv:2608.12272). */
+.ltx_inline-block.ltx_transformed_outer:not(.ltx_figure):not(.ltx_table):has(.ltx_picture):not(:has(.ltx_tabular, .ltx_figure, .ltx_table)) {
+  overflow: hidden;
+}
+.ltx_inline-block.ltx_transformed_outer:not(.ltx_figure):not(.ltx_table):has(.ltx_picture):not(:has(.ltx_tabular, .ltx_figure, .ltx_table)) .ltx_picture {
+  width: 100% !important;
+  height: 100% !important;
 }
 
 span.ltx_transformed_inner {
