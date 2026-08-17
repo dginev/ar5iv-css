@@ -28,6 +28,20 @@ does not silently drop them; the engine side carries the matching
   matches for the new selector. This is an ar5iv-css-native fix (the
   over-reach was in this file, not the engine), reported as
   arXiv/html_feedback#6895.
+- **Code in listings keeps its indentation and line breaks.** arXiv's papers
+  bundle imports this file into `layer(ar5iv)` and then
+  `arxiv-html-papers-theme` into a *later* cascade layer that carries bare
+  `.ltx_listingline{white-space:normal}` and `.ltx_text{white-space:normal}`
+  resets. By cascade-layer order a later layer beats an earlier one regardless
+  of specificity, so those resets silently overrode ar5iv's code-layout rules:
+  every listing (`lstlisting`/`minted`) lost its leading-space indentation and
+  wrapped its long lines (`arXiv:2605.03143`, especially inside figures). The
+  `.ltx_listing .ltx_listingline` and `.ltx_lst_space` `white-space` rules are
+  now `!important`, which inverts layer precedence so ar5iv wins and code
+  renders `pre` again (`.ltx_listing` still scrolls over-long lines via
+  `overflow-x`). This is an ar5iv-css-native defensive fix (the engine markup is
+  correct; the over-reach is in arXiv's theme layer, not this file or the
+  converter), reported as arXiv/html_feedback#6632.
 - **fancyvrb framed verbatim is responsive.** A `frame=single` box (an
   `ltx_framed_rectangle` carrying the new `.ltx_framed_verbatim` class)
   spans the print `\linewidth` and, being a shrink-to-fit inline-block of
