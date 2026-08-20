@@ -42,6 +42,15 @@ does not silently drop them; the engine side carries the matching
   `overflow-x`). This is an ar5iv-css-native defensive fix (the engine markup is
   correct; the over-reach is in arXiv's theme layer, not this file or the
   converter), reported as arXiv/html_feedback#6632.
+- **Minipages don't overflow narrow viewports.** A `{minipage}` carries an
+  absolute inline width from its `{width}` argument, so on a viewport narrower
+  than that width the box overflowed its container and scrolled the whole page
+  (the "impedance mismatch" of brucemiller/LaTeXML#1797). `.ltx_minipage` is now
+  capped at its container (`max-width:100%`): a narrow screen shrinks the box and
+  reflows its content, while wide viewports keep the intended print width, and
+  flex-figure panels (already forced to `width:100%`) are unaffected. Witness:
+  quant-ph/0510032 (51 of 53 minipages overflowed their container at 430px).
+  Addresses the minipage-overflow case of ar5iv#83.
 - **fancyvrb framed verbatim is responsive.** A `frame=single` box (an
   `ltx_framed_rectangle` carrying the new `.ltx_framed_verbatim` class)
   spans the print `\linewidth` and, being a shrink-to-fit inline-block of
