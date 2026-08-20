@@ -2343,8 +2343,16 @@ svg foreignObject > .ltx_foreignobject_container {
 /* ensure that listingline rules have a listing ancestor,
    as e.g. 1403.1525 currently has listinglines inside ltx_theorem */
 .ltx_listing .ltx_listingline {
-  /* listings never wrap, so text-align has nothing to act on — omit. */
-  white-space: nowrap;
+  /* Preserve code layout: `pre` keeps both the leading-space indentation and the
+     line integrity (listings never wrap; `.ltx_listing` scrolls via overflow-x).
+     `!important` is required defensively: arXiv's papers bundle imports this file
+     into `layer(ar5iv)` and then `arxiv-html-papers-theme` into a LATER layer that
+     carries a bare `.ltx_listingline{white-space:normal}`. By cascade-layer order a
+     later layer beats an earlier one regardless of specificity, so a non-important
+     rule here loses and code collapses (lost indentation + wrapping); an important
+     declaration inverts layer precedence so ar5iv wins. Witness html_feedback#6632
+     (arXiv:2605.03143). */
+  white-space: pre !important;
   min-height: 1rem;
   display: block;
   /* default font-size for a listing line, as sometimes text doesn't have a wrapper,
@@ -2369,7 +2377,15 @@ svg foreignObject > .ltx_foreignobject_container {
   }
 }
 .ltx_lst_space {
-  white-space: pre;
+  /* Preserve leading-space indentation inside code. `!important` for the same
+     reason as `.ltx_listing .ltx_listingline` above: arXiv's later
+     `arxiv-html-papers-theme` layer carries a bare `.ltx_text{white-space:normal}`,
+     and these indent spans are `<span class="ltx_text ltx_lst_space">`, so by
+     cascade-layer order that normal rule would collapse the indentation. Both
+     the listingline (against wrapping) and this (against indent collapse) are
+     needed — arXiv's theme resets `.ltx_listingline` and `.ltx_text` alike.
+     Witness html_feedback#6632. */
+  white-space: pre !important;
 }
 /* for now hide the download button for listings,
    needs some styling thought and also ensuring it works. */
