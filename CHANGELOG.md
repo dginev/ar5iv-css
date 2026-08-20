@@ -12,6 +12,13 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
+- **`\scalerel` inline icons render at text height.** latexml-oxide now binds the
+  `scalerel` package (previously `\scalerel` was undefined, so a `\scalerel*` icon —
+  e.g. the ORCID logo of arXiv:2608.12272 — rendered its picture unscaled, covering
+  several lines). `\scalerel*{obj}{ref}` now wraps `obj` in `.ltx_scalerel`; this
+  sizes that box to the line height and fills it with the picture/image child, so the
+  icon is a text-height glyph. Mirrors the latexml-oxide `.ltx_scalerel` rule
+  (KNOWN_PERL_ERRORS #103); reported as arXiv/html_feedback#6895.
 - **Inline pictures scaled to text height stay small.** The transform
   reset that reverts figures/tables to natural sizing
   (`.ltx_transformed_outer{width:auto}` + `transform:none`) also caught a

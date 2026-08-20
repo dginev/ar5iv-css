@@ -2528,6 +2528,26 @@ svg foreignObject > .ltx_foreignobject_container {
   height: 100% !important;
 }
 
+/* arXiv/html_feedback#6895: latexml-oxide now binds `\scalerel` (the `scalerel`
+   package was previously undefined, so a `\scalerel*` inline icon rendered
+   unscaled). `\scalerel*{obj}{ref}` wraps `obj` in `.ltx_scalerel`; size that box
+   to the line height and let its picture/image child fill it, so a scaled inline
+   icon (e.g. `\orcidicon`) is a text-height glyph. Mirrors the latexml-oxide
+   `.ltx_scalerel` rule; witness arXiv:2608.12272. */
+.ltx_scalerel {
+  display: inline-block;
+  height: 1em;
+  vertical-align: -0.1em;
+}
+.ltx_scalerel .ltx_inline-block {
+  height: 100%;
+}
+.ltx_scalerel svg,
+.ltx_scalerel img {
+  height: 100%;
+  width: auto;
+}
+
 span.ltx_transformed_inner {
   display: inline-block;
 }
