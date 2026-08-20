@@ -2259,6 +2259,17 @@ svg foreignObject > .ltx_foreignobject_container {
    previous explicit `normal` for non-flex parents. */
 .ltx_minipage {
   display: inline-block;
+  /* A minipage carries an absolute inline width from its `{width}` argument
+     (\linewidth-relative in print). On a viewport narrower than that width the
+     box overflows its container and pushes the page into horizontal scroll —
+     the "impedance mismatch" of brucemiller/LaTeXML#1797. Cap it at the
+     container so the box (and its reflowable content) shrinks to fit on narrow
+     screens, while keeping the intended width wherever the viewport is wide
+     enough (a minipage never exceeds its container at desktop width, so this
+     never changes the wide layout). Flex-figure panels are already forced to
+     `width:100%` above, so this is a no-op there. Witness: quant-ph/0510032
+     (51 of 53 minipages overflowed their container at 430px; ar5iv#83). */
+  max-width: 100%;
 }
 .ltx_minipage.ltx_align_center {
   align-self: center;
