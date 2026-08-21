@@ -12,6 +12,14 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
+- **Author name and ORCID iD badge share one line.** latexml-oxide's frontmatter now
+  wraps an author's `ltx:personname` and its `ltx:contact[role=orcid]` iD badge in a
+  `.ltx_annotated_personname` span, so the clickable iD sits right after the name
+  instead of flushing onto its own line. This mirror sizes that wrapper as a
+  baseline-aligned inline flex row (the name shrinks to its text, a `0.35em` gap before
+  the badge) so the "Name  iD" pairing holds under ar5iv's block author layout. Mirrors
+  the latexml-oxide `.ltx_annotated_personname` LaTeXML.css rule (PR #737); reported as
+  arXiv/html_feedback#6571.
 - **`\scalerel` inline icons render at text height.** latexml-oxide now binds the
   `scalerel` package (previously `\scalerel` was undefined, so a `\scalerel*` icon —
   e.g. the ORCID logo of arXiv:2608.12272 — rendered its picture unscaled, covering
