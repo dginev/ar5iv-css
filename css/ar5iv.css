@@ -427,6 +427,19 @@ span.ltx_role_orcid + span.ltx_role_affiliation:not(.ltx_note) {
   margin-top: var(--space-xs);
   display: block;
 }
+/* Author name + ORCID iD badge on one line ("Name  iD"): the badge is a sibling of
+   the name inside a thin inline wrapper (not the author-notes group). The name
+   shrinks to its text so the badge sits right after it. (latexml-oxide #6571) */
+.ltx_annotated_personname {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: center;
+  column-gap: 0.35em;
+}
+.ltx_annotated_personname > .ltx_personname {
+  min-width: 0;
+}
 
 /* sometimes ltx_keywords only contains a single text node */
 /* and we can't write a selector for ".ltx_keywords that only has text" via CSS...
