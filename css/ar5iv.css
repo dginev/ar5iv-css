@@ -2383,6 +2383,38 @@ svg foreignObject > .ltx_foreignobject_container {
      e.g. see the leading "#" in 2109.04981, figure 5 */
   font-size: 0.7rem;
 }
+/* Algorithm listings (algorithmicx / algpseudocode in an `algorithm` float →
+   `.ltx_float_algorithm`; algorithm2e → `.ltx_algorithm`) lay out with MARKUP — a
+   line-number tag, math, `\State` text, parboxes, per-line indentation — not with
+   significant leading whitespace the way code listings do. The `white-space: pre`
+   above (needed to preserve code indentation, #6632) therefore MISreads the
+   LaTeXML pretty-printer's newlines between a line's number tag and its statement
+   as real line breaks: every "N:" stacks onto its own line above wildly-spaced
+   content. That is the commonly-reported "algorithm displayed wrongly / whitespace
+   and indentation messed up" class — html_feedback#6080 (arXiv:2602.20153), #6236
+   (arXiv:2512.24601), #5492 (arXiv:2511.21969), #3450 (arXiv:2406.08374); witness
+   arXiv:2501.13598 Algorithm 1.
+
+   `nowrap` (NOT `normal`): collapse the pretty-printer's formatting whitespace so
+   the number sits inline with its statement, while keeping each line intact. An
+   algorithm is a fixed layout the author designed for the page — its incremental
+   indentation carries meaning — so reflow would void that intent. Over-long lines
+   scroll horizontally within the box (`overflow-x:auto` below), exactly as code
+   listings do, instead of wrapping. Markup indentation survives the whitespace
+   collapse, so nothing is lost. `!important` + the extra float-class specificity so
+   it beats the layered `pre` rule (same @layer, higher specificity wins); code
+   listings are untouched. */
+.ltx_float_algorithm .ltx_listing .ltx_listingline,
+.ltx_algorithm .ltx_listing .ltx_listingline {
+  white-space: nowrap !important;
+}
+.ltx_float_algorithm .ltx_listing,
+.ltx_algorithm .ltx_listing {
+  /* the base `.ltx_listing` doesn't set overflow (only `.ltx_table` /
+     `.ltx_framed_verbatim` do), so a too-wide algorithm would push the page into
+     horizontal scroll; contain it in the box. */
+  overflow-x: auto;
+}
 .ltx_listing .ltx_tag_listingline {
   padding-right: 0.3rem;
   /* gutter rule between line-number tag and code: hairline, currentColor */

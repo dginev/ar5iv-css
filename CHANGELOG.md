@@ -12,6 +12,25 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
+- **Algorithm listings no longer collapse into stacked lines.** An `algorithm`
+  float — algorithmicx / algpseudocode (`.ltx_float_algorithm`) or algorithm2e
+  (`.ltx_algorithm`) — is laid out with markup (a line-number tag, math, statement
+  text, per-line indentation), not the leading whitespace a code listing uses. The
+  `.ltx_listingline{white-space:pre}` rule added for code (#6632) MISread the
+  LaTeXML pretty-printer's newlines between a line's number and its statement as
+  real breaks, stacking every "N:" onto its own line above wildly-spaced content —
+  the commonly-reported "algorithm displayed wrongly / whitespace and indentation
+  messed up" class (html_feedback#6080, #6236, #5492, #3450; witnesses
+  arXiv:2501.13598 Algorithm 1, arXiv:2602.20153). Algorithm listinglines now use
+  `white-space:nowrap`: the formatting whitespace collapses so the number sits
+  inline with its statement while each line stays intact — an algorithm is a fixed,
+  incrementally-indented layout the author designed for the page, so reflow would
+  void that intent; over-long lines scroll horizontally within the box
+  (`overflow-x:auto`) exactly as code listings do. ar5iv-css-native fix: the bundled
+  LaTeXML.css default already uses `nowrap`, so only this file's code-listing rule
+  over-reached. (algorithm2e `\Input`/`\Output` header lines still carry their number
+  on a separate line — a structural quirk shared with vanilla LaTeXML, out of scope
+  for this CSS fix.)
 - **Author name and ORCID iD badge share one line.** latexml-oxide's frontmatter now
   wraps an author's `ltx:personname` and its `ltx:contact[role=orcid]` iD badge in a
   `.ltx_annotated_personname` span, so the clickable iD sits right after the name
