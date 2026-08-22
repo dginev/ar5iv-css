@@ -538,6 +538,18 @@ div.ltx_keywords:empty::before {
      a long DOI string on desktop */
   max-width: min(40rem, 90vw);
 }
+/* The `_meta` pubnotes are lifted OUT of the centered title into a left-aligned
+   sibling block (`<span class="ltx_pubnotes ltx_pubnotes_meta">` after the <h1>), so
+   their dagger sits at the LEFT edge of the content column, not right-of-centre. The
+   base `inset-inline-end: 0` then opens the popup LEFTWARD, pushing a max-content-wide
+   box off the left of the viewport — only a clipped fragment shows on hover (arXiv
+   2605.03143, narrow viewport). Anchor this variant to the START edge so it grows
+   rightward, on-screen (the inherited max-width:min(40rem,90vw) keeps it bounded). On
+   wide viewports the `width >= 96rem` rule makes it position:static, so these are inert. */
+.ltx_pubnotes.ltx_pubnotes_meta .ltx_pubnotes_content {
+  inset-inline-end: auto;
+  inset-inline-start: 0;
+}
 .ltx_pubnotes:hover .ltx_pubnotes_content,
 .ltx_pubnotes:active .ltx_pubnotes_content,
 .ltx_pubnotes:focus-within .ltx_pubnotes_content {
@@ -737,26 +749,27 @@ div.ltx_keywords:empty::before {
    margin — the classic marginpar tradeoff; float containment can't help
    here since list items establish BFCs.) */
 @media only screen and (width > 96rem) {
-  /* :not(:focus-within) — the global keyboard popover rule
-     (`:focus-within > .ltx_note_outer{position:absolute;...}`) turns the
-     margin note into a bordered overlay on Tab-focus; that overlay needs
-     its real height back or its border box collapses. */
-  .ltx_note:not(:focus-within) > .ltx_note_outer {
+  /* Margin notes keep their REAL height by default so `clear: both` (set on
+     .ltx_note_outer above) stacks any two that would collide into a marginpar
+     column, while well-separated notes still ride their own carrier line —
+     clearance only pushes a float below a PRIOR float whose bottom overlaps it.
+     Fixes adjacent-paragraph notes overlapping in the right margin (arXiv
+     2511.21969, footnotes 3 & 4 in SIBLING paragraphs, which the old
+     same-paragraph `:has()` exception never matched) and keeps same-paragraph
+     notes stacked (arXiv 2605.00501, footnotes 2 & 3).
+
+     Zero the height ONLY inside a BFC carrier — a list item or a minipage
+     (display:inline-block) — where a real-height float inflates the carrier by
+     the full note height (arXiv 2605.00181: a footnote inside <li> grew the item).
+     There the note paints through a zero-height box and near-anchored notes may
+     overlap: the classic marginpar tradeoff, unavoidable because the carrier
+     establishes its own BFC. :not(:focus-within) is preserved — it pairs with the
+     small-screen a11y focus overlay (css/ar5iv/a11y.css) and is inert on wide. */
+  .ltx_item .ltx_note:not(:focus-within) > .ltx_note_outer,
+  li .ltx_note:not(:focus-within) > .ltx_note_outer,
+  .ltx_minipage .ltx_note:not(:focus-within) > .ltx_note_outer {
     height: 0;
     overflow: visible;
-  }
-  /* ...EXCEPT in CROWDED paragraphs (2+ footnotes): zero-height notes
-     cannot push each other apart, so near-anchored notes painted on top
-     of each other in the margin (arXiv 2605.00501 footnotes 2/3, one
-     text line apart — user-flagged). Notes there keep their real height:
-     the margin floats' `clear: both` then stacks the second note BELOW
-     the first, marginpar-style (user, 2026-07-05). The zero-height
-     carrier protection above was only ever needed for BFC carriers
-     (the 2605.00181 list item), which stay covered by the default. */
-  .ltx_p:has(.ltx_note.ltx_role_footnote ~ .ltx_note.ltx_role_footnote)
-    .ltx_note:not(:focus-within)
-    > .ltx_note_outer {
-    height: auto;
   }
 }
 
@@ -2456,6 +2469,15 @@ svg foreignObject > .ltx_foreignobject_container {
      rules trip a phantom VERTICAL scrollbar. Pin overflow-y like `.ltx_table` does.
      Witness arXiv 2002.09766 Algorithm 1. */
   overflow-y: hidden;
+}
+/* A full-line leader-fill separator (`\hbox to \hsize{\dashfill\hfil}`) is a width:100%
+   inline-block wrapping an `.ltx_leader`; latexml-oxide marks it `.ltx_leaderfill`. Two of
+   them flank a centered label on ONE `nowrap` listingline; as inline-blocks they lay
+   side-by-side and sum to >200% width, overflowing the listing (witness arXiv 1510.02728
+   "Modified ellipsoid method"). Make each own its line so they stack like the
+   pdflatex golden. latexml-oxide OXIDIZED_DESIGN #152. */
+.ltx_inline-block.ltx_leaderfill {
+  display: block;
 }
 /* Code listings (lstlisting/minted, `.ltx_lstlisting`) are excluded from the
    algorithm containment above because their `white-space:pre` leading whitespace is

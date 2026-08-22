@@ -12,6 +12,23 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
+- **Full-line `\dashfill`/`\hrulefill` separators stack instead of overflowing.**
+  Two `\hbox to \hsize{\dashfill}` separators flanking a centered label sit on one
+  `nowrap` listingline; as `width:100%` inline-blocks laid side-by-side they summed to
+  >200% and pushed the algorithm into a very wide horizontal scroll. The engine marks
+  each `.ltx_leaderfill`; `.ltx_inline-block.ltx_leaderfill{display:block}` makes each
+  own its line so they stack like the PDF. Witness arXiv 1510.02728.
+- **A left-anchored pubnote popup no longer clips off the left edge on narrow viewports.**
+  A `_meta` pubnote (e.g. a "Conference:" note lifted out of the title into a left-aligned
+  block) sits at the left of the content column; the base `inset-inline-end:0` opened its
+  hover popup leftward, off-screen, so only a fragment showed. `.ltx_pubnotes_meta` popups
+  now anchor to the start edge and open rightward (still viewport-bounded). Witness arXiv
+  2605.03143.
+- **Adjacent-paragraph footnotes no longer overlap in the right margin on wide viewports.**
+  Margin notes now keep their real height by default so `clear:both` stacks any two that
+  would collide (footnotes in sibling paragraphs, arXiv 2511.21969), with `height:0` scoped
+  to BFC carriers (list items, minipages) where a real-height float would inflate the
+  carrier (arXiv 2605.00181). Same-paragraph stacking (arXiv 2605.00501) preserved.
 - **Algorithm listings no longer collapse into stacked lines.** An algorithm
   listing — algorithmicx / algpseudocode in an `algorithm` float
   (`.ltx_float_algorithm`), algorithm2e (`.ltx_algorithm`), OR authored **outside a
