@@ -12,6 +12,42 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
+- **Author `\thanks` funding/pubnote renders as a side-margin note, not an affiliation.**
+  A title/author `\thanks` (funding, grants, prior-presentation, corresponding-author) is
+  document-level footnote metadata that the engine now emits as `<ltx:note role="thanks">`
+  carrying `ltx_role_thanks` + `ltx_thanks_{funding,correspondence,contribution,address,note}`
+  hooks. It shares the `.ltx_pubnotes_meta` responsive theme: an always-on block below the
+  authors at narrow, and at ≥96rem a right-margin note (absolute-anchored to `.ltx_authors`,
+  pushed out with the same `(100vw − --main-width)/2` calc, mark hidden, `.ltx_note_type`
+  "thanks:" label hidden). Multiple notes stack into fixed 10rem slots via a `:has()`+`~`
+  chain counting preceding thanks-bearing creators (no top:0 pile-up). Witness arXiv
+  1510.02728 (NSF grant note stranded on the 2nd author), 2512.24601 ("Correspondence to").
+- **Inline `\lstinline` no longer forces a line break.** `.ltx_lstlisting{display:block}`
+  (added to contain block listings) also hit the inline `\lstinline` span
+  (`.ltx_text.ltx_lstlisting`, e.g. an email typeset as code mid-sentence), breaking the
+  line. The block rule is now scoped `:not(.ltx_text)` and the inline variant is explicit
+  `display:inline`. Witness arXiv 2511.21969 (author-contact email `research@blocky.rocks`).
+- **Side-by-side minipages split by `\hfill\vrule\hfill` align and separate correctly.**
+  LaTeXML emits the inter-column `\vrule` as a dimensionless `.ltx_rule` trapped at the tail
+  of the preceding minipage, so it rendered as a stray short bar below that column, and the
+  default `align-items:flex-end` (which contradicts the source `[t]` minipages) dropped the
+  last column lower. Gated on that exact trapped-rule pattern (`:has()`), the flex figure now
+  top-aligns via `align-items:stretch`, hides the stray rule, and paints the `\vrule` as a
+  real full-height inter-column border. Witness arXiv 2605.03143 Fig 1 (Choreography|Buyer|Seller).
+- **`\hfill` leaders inside algorithm listings no longer trip a spurious horizontal scrollbar.**
+  A `\hfill`/`\rule{W}{0pt}` leader (e.g. right-aligning a comment marker) is emitted as a
+  fixed-width (TeX pt) zero-height inline-block calibrated to TeX's wider `\linewidth`, so in
+  the narrower HTML column it overran and the listing's `overflow-x:auto` showed a scrollbar
+  even though the visible code fit. Zero-height fillers are now capped `max-width:100%` — the
+  leader fills only the available space (correct `\hfill` behavior). Witness arXiv 2511.21969
+  Algorithms 2 & 3.
+- **enumitem `leftmargin=<dim>` no longer mis-indents lists under a changed font.** The #559
+  theming surface consumed both `leftmargin=*` (the `.ltx_leftmargin_flush` boolean, font-
+  independent — kept) and `leftmargin=<dim>` (the `--ltx-enum-leftmargin` absolute length).
+  Forcing an absolute TeX dimension as `margin-inline-start` under ar5iv's font mis-placed the
+  marker and looked worse than the browser's natural list indent, so we no longer consume the
+  explicit-length property (it stays on the surface for other themes; ar5iv defers to the UA
+  default). Witness arXiv 2605.03143.
 - **Full-line `\dashfill`/`\hrulefill` separators stack instead of overflowing.**
   Two `\hbox to \hsize{\dashfill}` separators flanking a centered label sit on one
   `nowrap` listingline; as `width:100%` inline-blocks laid side-by-side they summed to
