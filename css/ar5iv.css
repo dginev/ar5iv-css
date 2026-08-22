@@ -538,6 +538,18 @@ div.ltx_keywords:empty::before {
      a long DOI string on desktop */
   max-width: min(40rem, 90vw);
 }
+/* The `_meta` pubnotes are lifted OUT of the centered title into a left-aligned
+   sibling block (`<span class="ltx_pubnotes ltx_pubnotes_meta">` after the <h1>), so
+   their dagger sits at the LEFT edge of the content column, not right-of-centre. The
+   base `inset-inline-end: 0` then opens the popup LEFTWARD, pushing a max-content-wide
+   box off the left of the viewport — only a clipped fragment shows on hover (arXiv
+   2605.03143, narrow viewport). Anchor this variant to the START edge so it grows
+   rightward, on-screen (the inherited max-width:min(40rem,90vw) keeps it bounded). On
+   wide viewports the `width >= 96rem` rule makes it position:static, so these are inert. */
+.ltx_pubnotes.ltx_pubnotes_meta .ltx_pubnotes_content {
+  inset-inline-end: auto;
+  inset-inline-start: 0;
+}
 .ltx_pubnotes:hover .ltx_pubnotes_content,
 .ltx_pubnotes:active .ltx_pubnotes_content,
 .ltx_pubnotes:focus-within .ltx_pubnotes_content {
@@ -609,7 +621,119 @@ div.ltx_keywords:empty::before {
     margin-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
     max-width: none;
     padding-inline: 1rem 0.75rem;
-    border-inline-start: 0.1rem solid var(--border-color);
+    text-align: start;
+    font-family: var(--text-font-family);
+    font-size: 0.85rem;
+    line-height: var(--line-height-prose);
+    color: var(--text-color);
+  }
+}
+
+/* Frontmatter \thanks notes (funding / grants / prior-presentation /
+   corresponding-author / equal-contribution). These carry the `ltx_role_thanks`
+   hook, sub-typed `ltx_thanks_{funding,correspondence,contribution,address,note}`
+   so a theme can style each kind. Semantically they are the SAME class as the
+   `.ltx_pubnotes_meta` block above -- document-level footnote metadata attached
+   to the title/author area, NOT identifying info about the one author they
+   happened to follow in the source. So they share the pubnotes responsive theme:
+   - NARROW (< 96rem): inherit the frontmatter always-on block below the authors
+     (handled in the footnote media block below). No margin to spend, and
+     funding/contact must not hide behind a hover on touch, so it stays in flow.
+   - WIDE (>= 96rem): a real side margin exists -> place the note in the right
+     margin beside the author block, always visible. Stops a long funding
+     paragraph from rendering under one author as if it were an affiliation (arXiv
+     1510.02728: NSF grant note stranded on the second author). Sized from the
+     ACTUAL available margin, `(100vw - --main-width)/2`, so it keeps a gap each
+     side and never triggers horizontal scroll at any viewport (WCAG 1.4.10),
+     exactly like the pubnotes rule.
+   IMPLEMENTATION NOTE: a plain `float:inline-end` does NOT work here. `.ltx_creator`
+   is `display:flex`, so the note is a blockified flex item only ~6px wide (just its
+   mark) sitting at the author's x -- a float/negative-margin would reference that
+   tiny box, not the text column, and the dagger would render on its own line below
+   the name. Instead anchor the note absolutely to `.ltx_authors` (main-width and
+   centered, so its right edge IS the text-column edge), lifting it out of the
+   creator flex flow entirely, and push it into the margin with the same calc. The
+   anchor dagger is dropped (the always-visible margin note is its own cue), so
+   nothing renders on a stray line by the author. */
+/* The "thanks:" type label (`.ltx_note_type`) is a LaTeX-ism with no reader
+   value -- the note content stands on its own -- so hide it for thanks notes in
+   every layout (narrow block and wide margin alike). */
+.ltx_note.ltx_note_frontmatter.ltx_role_thanks .ltx_note_type {
+  display: none;
+}
+
+@media only screen and (width >= 96rem) {
+  .ltx_authors {
+    position: relative;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    position: absolute;
+    top: 0;
+    /* fixed vertical slot for stacking multiple notes (~7 lines + gap) */
+    --thanks-slot: 10rem;
+    inset-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
+    width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
+    box-sizing: border-box;
+    margin: 0;
+    text-align: start;
+  }
+  /* Multiple \thanks notes (several authors each with one, or title + author)
+     would all anchor at top:0 and pile up. CSS can't read sibling heights, so
+     stack them into FIXED vertical slots: the notes live in sibling
+     `.ltx_creator`s, so count how many PRECEDING creators contain a thanks note
+     via a `:has()` + `~` chain and offset by that many slots. Specificity rises
+     with each `~` link, so a note with N preceding thanks-creators matches every
+     rule up to N and the highest (N) wins. Covers up to 5 notes; a 6th reuses
+     slot 4 (papers with 6+ distinct author \thanks are essentially unheard of). A
+     note taller than a slot spills into the next -- the accepted tradeoff for a
+     heightless CSS stack. */
+  .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    top: var(--thanks-slot);
+  }
+  .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    top: calc(2 * var(--thanks-slot));
+  }
+  .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    top: calc(3 * var(--thanks-slot));
+  }
+  .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator:has(.ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    top: calc(4 * var(--thanks-slot));
+  }
+  /* the note now lives wholly in the margin; drop every dagger (the anchor one,
+     which would otherwise sit on its own line in the creator flex column, and the
+     duplicate inside the content) -- the margin block is its own visual cue. */
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks .ltx_note_mark {
+    display: none;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks > .ltx_note_outer {
+    display: block;
+    opacity: 1;
+    position: static;
+    float: none;
+    width: auto;
+    max-width: none;
+    margin: 0;
+    padding: 0;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks .ltx_note_content {
+    position: static;
+    margin: 0;
+    padding-inline: 1rem 0.75rem;
+    border: none;
     text-align: start;
     font-family: var(--text-font-family);
     font-size: 0.85rem;
@@ -737,26 +861,27 @@ div.ltx_keywords:empty::before {
    margin — the classic marginpar tradeoff; float containment can't help
    here since list items establish BFCs.) */
 @media only screen and (width > 96rem) {
-  /* :not(:focus-within) — the global keyboard popover rule
-     (`:focus-within > .ltx_note_outer{position:absolute;...}`) turns the
-     margin note into a bordered overlay on Tab-focus; that overlay needs
-     its real height back or its border box collapses. */
-  .ltx_note:not(:focus-within) > .ltx_note_outer {
+  /* Margin notes keep their REAL height by default so `clear: both` (set on
+     .ltx_note_outer above) stacks any two that would collide into a marginpar
+     column, while well-separated notes still ride their own carrier line —
+     clearance only pushes a float below a PRIOR float whose bottom overlaps it.
+     Fixes adjacent-paragraph notes overlapping in the right margin (arXiv
+     2511.21969, footnotes 3 & 4 in SIBLING paragraphs, which the old
+     same-paragraph `:has()` exception never matched) and keeps same-paragraph
+     notes stacked (arXiv 2605.00501, footnotes 2 & 3).
+
+     Zero the height ONLY inside a BFC carrier — a list item or a minipage
+     (display:inline-block) — where a real-height float inflates the carrier by
+     the full note height (arXiv 2605.00181: a footnote inside <li> grew the item).
+     There the note paints through a zero-height box and near-anchored notes may
+     overlap: the classic marginpar tradeoff, unavoidable because the carrier
+     establishes its own BFC. :not(:focus-within) is preserved — it pairs with the
+     small-screen a11y focus overlay (css/ar5iv/a11y.css) and is inert on wide. */
+  .ltx_item .ltx_note:not(:focus-within) > .ltx_note_outer,
+  li .ltx_note:not(:focus-within) > .ltx_note_outer,
+  .ltx_minipage .ltx_note:not(:focus-within) > .ltx_note_outer {
     height: 0;
     overflow: visible;
-  }
-  /* ...EXCEPT in CROWDED paragraphs (2+ footnotes): zero-height notes
-     cannot push each other apart, so near-anchored notes painted on top
-     of each other in the margin (arXiv 2605.00501 footnotes 2/3, one
-     text line apart — user-flagged). Notes there keep their real height:
-     the margin floats' `clear: both` then stacks the second note BELOW
-     the first, marginpar-style (user, 2026-07-05). The zero-height
-     carrier protection above was only ever needed for BFC carriers
-     (the 2605.00181 list item), which stay covered by the default. */
-  .ltx_p:has(.ltx_note.ltx_role_footnote ~ .ltx_note.ltx_role_footnote)
-    .ltx_note:not(:focus-within)
-    > .ltx_note_outer {
-    height: auto;
   }
 }
 
@@ -1775,6 +1900,29 @@ mtext > .ltx_graphics,
   object-fit: contain;
   margin-bottom: var(--space-sm);
 }
+/* Side-by-side minipages separated in TeX by `\hfill\vrule\hfill` (e.g. a 3-column
+   code figure: arXiv 2605.03143 Fig 1, Choreography|Buyer|Seller). LaTeXML emits
+   the inter-column `\vrule` as a DIMENSIONLESS `.ltx_rule` span trapped at the tail
+   of the PRECEDING minipage (after its block content), not as a separator between
+   the cells — so it renders as a stray short bar BELOW that column, and (because the
+   default `align-items:flex-end` bottom-aligns the cells) the extra ~1 line of
+   height it adds lifts every column that HAS a trailing rule, dropping the last
+   column (which has none) lower. Both are one defect. Reconstruct the intended
+   layout, gated by `:has()` on that exact trapped-rule pattern so ordinary image
+   galleries (which rely on flex-end) are untouched: top-align the columns (honoring
+   the source `[t]` minipages), hide the stray bars, and paint the `\vrule` as a real
+   full-height inter-column border on each cell that carried one. Engine-structural
+   at root (shared with Perl); this is the theme-layer remedy. */
+.ltx_flex_figure:has(> .ltx_flex_cell > .ltx_minipage > .ltx_rule) {
+  align-items: stretch;
+}
+.ltx_flex_figure > .ltx_flex_cell > .ltx_minipage > .ltx_rule {
+  /* `!important` overrides the element's own inline `style="display:inline-block"` */
+  display: none !important;
+}
+.ltx_flex_figure > .ltx_flex_cell:has(> .ltx_minipage > .ltx_rule) {
+  border-inline-end: var(--border-hairline, 0.4pt) solid var(--border-color);
+}
 .ltx_flex_figure > .ltx_flex_cell > .ltx_graphics,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_figure,
 .ltx_flex_figure > .ltx_flex_cell > .ltx_float,
@@ -1797,6 +1945,28 @@ mtext > .ltx_graphics,
   .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_1 {
     min-width: 25rem;
   }
+}
+/* Wrap floats (\begin{wrapfigure}{r}{0.33\columnwidth}) are intentionally NARROW —
+   the source width (e.g. 33%) reaches the <figure> as style="width:33%". The
+   min-width:20/25rem above is meant for centered, full-width-context single-panel
+   figures; inside a wrap float it forces the inner flex cell far wider than the float
+   box, so the content (e.g. a minted listing) overflows LEFTWARD out of the float and
+   paints over the wrapped paragraph. Confine the cell to the float and let over-long
+   code scroll within it. Witness arXiv 2605.03143 §2.1/§2.2. */
+.ltx_figure.ltx_align_floatleft > .ltx_flex_figure,
+.ltx_figure.ltx_align_floatright > .ltx_flex_figure {
+  flex-flow: column;
+  align-items: stretch;
+}
+.ltx_figure.ltx_align_floatleft .ltx_flex_cell.ltx_flex_size_1,
+.ltx_figure.ltx_align_floatright .ltx_flex_cell.ltx_flex_size_1 {
+  min-width: 0;
+  max-width: 100%;
+}
+.ltx_figure.ltx_align_floatleft .ltx_listing,
+.ltx_figure.ltx_align_floatright .ltx_listing {
+  max-width: 100%;
+  overflow-x: auto;
 }
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_2 img.ltx_graphics {
   min-width: 20rem;
@@ -2297,7 +2467,13 @@ svg foreignObject > .ltx_foreignobject_container {
 }
 /* often minipages are inline-blocks, for which "vertical-align" is inactive */
 /* so we also default to an auto margin in order to center */
-.ltx_minipage.ltx_align_middle {
+/* BUT only when the minipage has no AUTHORED width: `width:auto !important` otherwise
+   strips a real `\begin{minipage}{0.48\textwidth}` width (style="width:165.6pt"),
+   collapsing side-by-side algorithm minipages to content width so they jam into the
+   running paragraph instead of sitting on their own row. `ltx_align_middle` is a
+   VERTICAL alignment; keep the horizontal auto-center only for width-less minipages.
+   Witness arXiv 2402.19043 (two 0.48\textwidth algorithms side by side). */
+.ltx_minipage.ltx_align_middle:not([style*="width"]) {
   margin: auto;
   width: auto !important;
 }
@@ -2404,16 +2580,57 @@ svg foreignObject > .ltx_foreignobject_container {
    collapse, so nothing is lost. `!important` + the extra float-class specificity so
    it beats the layered `pre` rule (same @layer, higher specificity wins); code
    listings are untouched. */
-.ltx_float_algorithm .ltx_listing .ltx_listingline,
-.ltx_algorithm .ltx_listing .ltx_listingline {
+/* `.ltx_listing:not(.ltx_lstlisting)` covers algorithms whether or not they sit in
+   an `algorithm` float: algorithmicx/algpseudocode in an `algorithm` float →
+   `.ltx_float_algorithm`; algorithm2e → `.ltx_algorithm`; BUT an algorithm authored
+   outside a float — the popular `breakablealgorithm` recipe wraps `\begin{algorithmic}`
+   in a bare `center` — emits a bare `.ltx_listing` with NEITHER wrapper class and so
+   missed the nowrap rule, falling through to code's `white-space:pre` and rendering
+   broken (numbers stacked above wildly-spaced content). Witness arXiv:2408.07803
+   (html_feedback#1998). Code listings carry `.ltx_lstlisting` (lstlisting AND minted,
+   verified), so `:not(.ltx_lstlisting)` excludes them — their significant leading
+   whitespace stays `pre`. Interim fix; the robust version is a shared algorithm marker
+   class + generic CSS for both LaTeXML.css and ar5iv.css, scheduled latexml-oxide 0.7.7. */
+.ltx_listing:not(.ltx_lstlisting) .ltx_listingline {
   white-space: nowrap !important;
 }
-.ltx_float_algorithm .ltx_listing,
-.ltx_algorithm .ltx_listing {
+.ltx_listing:not(.ltx_lstlisting) {
   /* the base `.ltx_listing` doesn't set overflow (only `.ltx_table` /
      `.ltx_framed_verbatim` do), so a too-wide algorithm would push the page into
      horizontal scroll; contain it in the box. */
   overflow-x: auto;
+  /* A scrolling overflow-x with overflow-y left `visible` is promoted by the CSS
+     Overflow spec to `auto` on BOTH axes, so tall inline math / full-height vline
+     rules trip a phantom VERTICAL scrollbar. Pin overflow-y like `.ltx_table` does.
+     Witness arXiv 2002.09766 Algorithm 1. */
+  overflow-y: hidden;
+}
+/* A full-line leader-fill separator (`\hbox to \hsize{\dashfill\hfil}`) is a width:100%
+   inline-block wrapping an `.ltx_leader`; latexml-oxide marks it `.ltx_leaderfill`. Two of
+   them flank a centered label on ONE `nowrap` listingline; as inline-blocks they lay
+   side-by-side and sum to >200% width, overflowing the listing (witness arXiv 1510.02728
+   "Modified ellipsoid method"). Make each own its line so they stack like the
+   pdflatex golden. latexml-oxide OXIDIZED_DESIGN #152. */
+.ltx_inline-block.ltx_leaderfill {
+  display: block;
+}
+/* Code listings (lstlisting/minted, `.ltx_lstlisting`) are excluded from the
+   algorithm containment above because their `white-space:pre` leading whitespace is
+   significant. But a `frame=single` lstlisting is boxed in a shrink-to-fit
+   `.ltx_framed_rectangle` (display:inline-block) sized to its LONGEST unwrapped line,
+   so a long line pushes the whole PAGE into horizontal scroll. Contain the listing to
+   the column and let over-long lines scroll WITHIN the box (markup unchanged — this is
+   purely the box layout). Witness arXiv 2512.24601.
+   `:not(.ltx_text)` restricts this to BLOCK listings. An inline `\lstinline` emits
+   `<span class="ltx_text … ltx_lstlisting">` (has `ltx_text`, never `ltx_listing`),
+   e.g. an email typeset as code mid-line; `display:block` there would break the line.
+   The inline variant keeps its default inline flow (its whitespace handled by
+   `.ltx_lstlisting.ltx_text` below). Witness arXiv 2511.21969 (author-contact email). */
+.ltx_lstlisting:not(.ltx_text) {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
 }
 .ltx_listing .ltx_tag_listingline {
   padding-right: 0.3rem;
@@ -2432,6 +2649,25 @@ svg foreignObject > .ltx_foreignobject_container {
     font-size: 0.7rem !important;
   }
 }
+/* algorithm2e (`.ltx_algorithm`, `numbers_left`) emits the line-number tag at the
+   END of the listingline in the DOM, yet the numbers belong in a LEFT gutter — the
+   pdflatex golden, and what `ltx_lst_numbers_left` means. Reserve a gutter on each
+   line and pull the tag into it (absolutely positioned) so the number sits left of
+   the indented, `vlined` statement regardless of DOM order; mirrors the bundled
+   LaTeXML.css `.ltx_lst_numbers_left … position:absolute` approach, responsive-safe.
+   Scoped to `.ltx_algorithm` so code listings (which also use `numbers_left`, with a
+   DOM-leading tag) are untouched. Witness arXiv:2602.20153 Algorithm 1. */
+.ltx_algorithm .ltx_lst_numbers_left .ltx_listingline {
+  position: relative;
+  padding-left: 2rem;
+}
+.ltx_algorithm .ltx_lst_numbers_left .ltx_tag_listingline {
+  position: absolute;
+  left: 0;
+  width: 1.6rem;
+  margin-right: 0;
+  border-right: none;
+}
 .ltx_lst_space {
   /* Preserve leading-space indentation inside code. `!important` for the same
      reason as `.ltx_listing .ltx_listingline` above: arXiv's later
@@ -2449,9 +2685,24 @@ svg foreignObject > .ltx_foreignobject_container {
   display: none;
 }
 /* keep listings spaced as-is in justified paragraphs
-   example: 2111.08099, end of Intro */
+   example: 2111.08099, end of Intro. `display:inline` keeps an inline `\lstinline`
+   flowing mid-line (e.g. an email typeset as code) rather than breaking — the
+   block rule above is scoped `:not(.ltx_text)`, but state it explicitly here so a
+   later cascade layer (arXiv's theme) can't blockify it. Witness 2511.21969. */
 .ltx_lstlisting.ltx_text {
+  display: inline;
   white-space: break-spaces;
+}
+/* `\hfill` / `\rule{W}{0pt}` leaders inside a listing are emitted as a fixed-width
+   (TeX pt) ZERO-height inline-block. That width is calibrated to TeX's wider
+   \linewidth, so in the narrower HTML column it overruns and trips the listing's
+   `overflow-x:auto` into a spurious scrollbar even though the visible code fits
+   (arXiv 2511.21969 Algorithms 2 & 3: a right-aligned comment marker `⊲` pushed
+   out by a 480pt leader). Cap the zero-height fillers to the column — the leader
+   then fills only the space actually available (the correct `\hfill` behavior) and
+   the scrollbar disappears. Real vertical rules (height > 0) are untouched. */
+.ltx_listing .ltx_rule[style*="height:0.0pt"] {
+  max-width: 100%;
 }
 /* also, keep listings left-aligned,
    even if the author wanted them centered in TeX.
@@ -2791,19 +3042,21 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 .ltx_description {
   display: block;
 }
-/* enumitem leftmargin (latexml-oxide #559): consume the theming surface the
-   LaTeXML binding now emits. leftmargin=* arrives as the .ltx_leftmargin_flush
-   class (a boolean flush toggle); leftmargin=<dim> arrives as the
-   --ltx-enum-leftmargin custom property (inline style, per the --ltx-* public
-   surface in docs/rfc_latexml_custom_properties.md). Both drop the list's UA
-   left padding and set the left inset from the property (0 for the flush class,
-   via its var() fallback). A plain list has neither and is unchanged;
-   .ltx_enumerate is already flush via its grid below, so this mainly affects
-   itemize/description and explicit lengths. */
-.ltx_leftmargin_flush,
-[style*="--ltx-enum-leftmargin:"] {
+/* enumitem leftmargin (latexml-oxide #559): the LaTeXML binding emits a theming
+   surface for enumitem's leftmargin. `leftmargin=*` (auto/flush) arrives as the
+   .ltx_leftmargin_flush class -- a font-INDEPENDENT boolean toggle -- which we
+   honor by dropping the list's UA left indent.
+   `leftmargin=<dim>` arrives as the --ltx-enum-leftmargin custom property, but we
+   deliberately do NOT consume it: an ABSOLUTE TeX dimension is calibrated to
+   TeX's font and box model and does not translate to ar5iv's font, so forcing it
+   as margin-inline-start mis-indents the list (the marker lands wrong) and looks
+   worse than the browser's natural list indent. The property stays on the public
+   surface for other themes; ar5iv defers to the UA default for explicit lengths.
+   Witness arXiv 2605.03143, whose itemize looked correct only once the absolute
+   honoring was removed. */
+.ltx_leftmargin_flush {
   padding-inline-start: 0;
-  margin-inline-start: var(--ltx-enum-leftmargin, 0);
+  margin-inline-start: 0;
 }
 .ltx_item > .ltx_para > .ltx_description,
 .ltx_item > .ltx_para > .ltx_itemize,

@@ -12,25 +12,109 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
-- **Algorithm listings no longer collapse into stacked lines.** An `algorithm`
-  float — algorithmicx / algpseudocode (`.ltx_float_algorithm`) or algorithm2e
-  (`.ltx_algorithm`) — is laid out with markup (a line-number tag, math, statement
-  text, per-line indentation), not the leading whitespace a code listing uses. The
+- **Author `\thanks` funding/pubnote renders as a side-margin note, not an affiliation.**
+  A title/author `\thanks` (funding, grants, prior-presentation, corresponding-author) is
+  document-level footnote metadata that the engine now emits as `<ltx:note role="thanks">`
+  carrying `ltx_role_thanks` + `ltx_thanks_{funding,correspondence,contribution,address,note}`
+  hooks. It shares the `.ltx_pubnotes_meta` responsive theme: an always-on block below the
+  authors at narrow, and at ≥96rem a right-margin note (absolute-anchored to `.ltx_authors`,
+  pushed out with the same `(100vw − --main-width)/2` calc, mark hidden, `.ltx_note_type`
+  "thanks:" label hidden). Multiple notes stack into fixed 10rem slots via a `:has()`+`~`
+  chain counting preceding thanks-bearing creators (no top:0 pile-up). Witness arXiv
+  1510.02728 (NSF grant note stranded on the 2nd author), 2512.24601 ("Correspondence to").
+- **Inline `\lstinline` no longer forces a line break.** `.ltx_lstlisting{display:block}`
+  (added to contain block listings) also hit the inline `\lstinline` span
+  (`.ltx_text.ltx_lstlisting`, e.g. an email typeset as code mid-sentence), breaking the
+  line. The block rule is now scoped `:not(.ltx_text)` and the inline variant is explicit
+  `display:inline`. Witness arXiv 2511.21969 (author-contact email `research@blocky.rocks`).
+- **Side-by-side minipages split by `\hfill\vrule\hfill` align and separate correctly.**
+  LaTeXML emits the inter-column `\vrule` as a dimensionless `.ltx_rule` trapped at the tail
+  of the preceding minipage, so it rendered as a stray short bar below that column, and the
+  default `align-items:flex-end` (which contradicts the source `[t]` minipages) dropped the
+  last column lower. Gated on that exact trapped-rule pattern (`:has()`), the flex figure now
+  top-aligns via `align-items:stretch`, hides the stray rule, and paints the `\vrule` as a
+  real full-height inter-column border. Witness arXiv 2605.03143 Fig 1 (Choreography|Buyer|Seller).
+- **`\hfill` leaders inside algorithm listings no longer trip a spurious horizontal scrollbar.**
+  A `\hfill`/`\rule{W}{0pt}` leader (e.g. right-aligning a comment marker) is emitted as a
+  fixed-width (TeX pt) zero-height inline-block calibrated to TeX's wider `\linewidth`, so in
+  the narrower HTML column it overran and the listing's `overflow-x:auto` showed a scrollbar
+  even though the visible code fit. Zero-height fillers are now capped `max-width:100%` — the
+  leader fills only the available space (correct `\hfill` behavior). Witness arXiv 2511.21969
+  Algorithms 2 & 3.
+- **enumitem `leftmargin=<dim>` no longer mis-indents lists under a changed font.** The #559
+  theming surface consumed both `leftmargin=*` (the `.ltx_leftmargin_flush` boolean, font-
+  independent — kept) and `leftmargin=<dim>` (the `--ltx-enum-leftmargin` absolute length).
+  Forcing an absolute TeX dimension as `margin-inline-start` under ar5iv's font mis-placed the
+  marker and looked worse than the browser's natural list indent, so we no longer consume the
+  explicit-length property (it stays on the surface for other themes; ar5iv defers to the UA
+  default). Witness arXiv 2605.03143.
+- **Full-line `\dashfill`/`\hrulefill` separators stack instead of overflowing.**
+  Two `\hbox to \hsize{\dashfill}` separators flanking a centered label sit on one
+  `nowrap` listingline; as `width:100%` inline-blocks laid side-by-side they summed to
+  >200% and pushed the algorithm into a very wide horizontal scroll. The engine marks
+  each `.ltx_leaderfill`; `.ltx_inline-block.ltx_leaderfill{display:block}` makes each
+  own its line so they stack like the PDF. Witness arXiv 1510.02728.
+- **A left-anchored pubnote popup no longer clips off the left edge on narrow viewports.**
+  A `_meta` pubnote (e.g. a "Conference:" note lifted out of the title into a left-aligned
+  block) sits at the left of the content column; the base `inset-inline-end:0` opened its
+  hover popup leftward, off-screen, so only a fragment showed. `.ltx_pubnotes_meta` popups
+  now anchor to the start edge and open rightward (still viewport-bounded). Witness arXiv
+  2605.03143.
+- **Adjacent-paragraph footnotes no longer overlap in the right margin on wide viewports.**
+  Margin notes now keep their real height by default so `clear:both` stacks any two that
+  would collide (footnotes in sibling paragraphs, arXiv 2511.21969), with `height:0` scoped
+  to BFC carriers (list items, minipages) where a real-height float would inflate the
+  carrier (arXiv 2605.00181). Same-paragraph stacking (arXiv 2605.00501) preserved.
+- **Algorithm listings no longer collapse into stacked lines.** An algorithm
+  listing — algorithmicx / algpseudocode in an `algorithm` float
+  (`.ltx_float_algorithm`), algorithm2e (`.ltx_algorithm`), OR authored **outside a
+  float** (e.g. the popular `breakablealgorithm` recipe, which wraps
+  `\begin{algorithmic}` in a bare `center` → a bare `.ltx_listing` with neither
+  wrapper class) — is laid out with markup (a line-number tag, math, statement text,
+  per-line indentation), not the leading whitespace a code listing uses. The
   `.ltx_listingline{white-space:pre}` rule added for code (#6632) MISread the
   LaTeXML pretty-printer's newlines between a line's number and its statement as
   real breaks, stacking every "N:" onto its own line above wildly-spaced content —
   the commonly-reported "algorithm displayed wrongly / whitespace and indentation
-  messed up" class (html_feedback#6080, #6236, #5492, #3450; witnesses
-  arXiv:2501.13598 Algorithm 1, arXiv:2602.20153). Algorithm listinglines now use
-  `white-space:nowrap`: the formatting whitespace collapses so the number sits
-  inline with its statement while each line stays intact — an algorithm is a fixed,
-  incrementally-indented layout the author designed for the page, so reflow would
-  void that intent; over-long lines scroll horizontally within the box
-  (`overflow-x:auto`) exactly as code listings do. ar5iv-css-native fix: the bundled
-  LaTeXML.css default already uses `nowrap`, so only this file's code-listing rule
-  over-reached. (algorithm2e `\Input`/`\Output` header lines still carry their number
-  on a separate line — a structural quirk shared with vanilla LaTeXML, out of scope
-  for this CSS fix.)
+  messed up" class (html_feedback#6080, #6236, #5492, #3450, #1998; witnesses
+  arXiv:2501.13598 Algorithm 1, arXiv:2602.20153, arXiv:2408.07803). Algorithm
+  listinglines now use `white-space:nowrap`: the formatting whitespace collapses so
+  the number sits inline with its statement while each line stays intact — an
+  algorithm is a fixed, incrementally-indented layout the author designed for the
+  page, so reflow would void that intent; over-long lines scroll horizontally within
+  the box (`overflow-x:auto`) exactly as code listings do. The selector is
+  `.ltx_listing:not(.ltx_lstlisting)` — so it reaches bare algorithm listings
+  regardless of wrapper class while excluding code listings, which carry
+  `.ltx_lstlisting` (both lstlisting AND minted, verified). ar5iv-css-native fix: the
+  bundled LaTeXML.css default already uses `nowrap`, so only this file's code-listing
+  rule over-reached. Interim discriminator; the robust fix is a shared algorithm
+  marker class + generic CSS for both LaTeXML.css and ar5iv.css, scheduled
+  latexml-oxide 0.7.7. (algorithm2e `\Input`/`\Output` header lines still carry their
+  number on a separate line — a structural quirk shared with vanilla LaTeXML, out of
+  scope for this CSS fix.)
+- **Wrapped floats no longer overlap the wrapped paragraph.** A `wrapfigure`
+  (`.ltx_figure.ltx_align_float{left,right}`, e.g. `{r}{0.33\columnwidth}`) is
+  intentionally narrow, but the `min-width:20/25rem` on `.ltx_flex_size_1` cells (meant
+  for centered full-width figures) forced the inner content far wider than the 33% float
+  box, so a minted/code panel overflowed leftward and painted over the body text. Float
+  figures now stack their flex cells in a column and cap them at `max-width:100%` of the
+  float, scrolling over-long code within the box. Witness arXiv:2605.03143 §2.1/§2.2.
+- **Algorithm listings no longer show a phantom vertical scrollbar.** The
+  `.ltx_listing:not(.ltx_lstlisting){overflow-x:auto}` containment left `overflow-y`
+  visible, which the CSS Overflow spec promotes to `auto` on both axes, so tall inline
+  math / full-height vline rules tripped an unwanted vertical scrollbar. Pinned
+  `overflow-y:hidden` (as `.ltx_table` already does). Witness arXiv:2002.09766 Alg 1.
+- **Side-by-side minipages keep their authored width.** `.ltx_align_middle` is a
+  VERTICAL alignment, but the rule also forced `width:auto !important`, stripping a real
+  `\begin{minipage}{0.48\textwidth}` width so paired algorithm minipages collapsed to
+  content width and jammed into the running paragraph. The auto-center is now scoped to
+  width-less minipages (`:not([style*="width"])`). Witness arXiv:2402.19043.
+- **Framed code listings no longer push the page into horizontal scroll.** A
+  `frame=single` `lstlisting` is boxed in a shrink-to-fit `.ltx_framed_rectangle` sized
+  to its longest unwrapped line; a long line scrolled the whole page. `.ltx_lstlisting`
+  is now `display:block; max-width:100%; overflow-x:auto` so over-long lines scroll
+  within the box (markup unchanged). Witness arXiv:2512.24601. (The compounded
+  `\tiny`×`0.7rem` font size is a separate, still-open item.)
 - **Author name and ORCID iD badge share one line.** latexml-oxide's frontmatter now
   wraps an author's `ltx:personname` and its `ltx:contact[role=orcid]` iD badge in a
   `.ltx_annotated_personname` span, so the clickable iD sits right after the name
