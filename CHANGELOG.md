@@ -12,25 +12,56 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
-- **Algorithm listings no longer collapse into stacked lines.** An `algorithm`
-  float — algorithmicx / algpseudocode (`.ltx_float_algorithm`) or algorithm2e
-  (`.ltx_algorithm`) — is laid out with markup (a line-number tag, math, statement
-  text, per-line indentation), not the leading whitespace a code listing uses. The
+- **Algorithm listings no longer collapse into stacked lines.** An algorithm
+  listing — algorithmicx / algpseudocode in an `algorithm` float
+  (`.ltx_float_algorithm`), algorithm2e (`.ltx_algorithm`), OR authored **outside a
+  float** (e.g. the popular `breakablealgorithm` recipe, which wraps
+  `\begin{algorithmic}` in a bare `center` → a bare `.ltx_listing` with neither
+  wrapper class) — is laid out with markup (a line-number tag, math, statement text,
+  per-line indentation), not the leading whitespace a code listing uses. The
   `.ltx_listingline{white-space:pre}` rule added for code (#6632) MISread the
   LaTeXML pretty-printer's newlines between a line's number and its statement as
   real breaks, stacking every "N:" onto its own line above wildly-spaced content —
   the commonly-reported "algorithm displayed wrongly / whitespace and indentation
-  messed up" class (html_feedback#6080, #6236, #5492, #3450; witnesses
-  arXiv:2501.13598 Algorithm 1, arXiv:2602.20153). Algorithm listinglines now use
-  `white-space:nowrap`: the formatting whitespace collapses so the number sits
-  inline with its statement while each line stays intact — an algorithm is a fixed,
-  incrementally-indented layout the author designed for the page, so reflow would
-  void that intent; over-long lines scroll horizontally within the box
-  (`overflow-x:auto`) exactly as code listings do. ar5iv-css-native fix: the bundled
-  LaTeXML.css default already uses `nowrap`, so only this file's code-listing rule
-  over-reached. (algorithm2e `\Input`/`\Output` header lines still carry their number
-  on a separate line — a structural quirk shared with vanilla LaTeXML, out of scope
-  for this CSS fix.)
+  messed up" class (html_feedback#6080, #6236, #5492, #3450, #1998; witnesses
+  arXiv:2501.13598 Algorithm 1, arXiv:2602.20153, arXiv:2408.07803). Algorithm
+  listinglines now use `white-space:nowrap`: the formatting whitespace collapses so
+  the number sits inline with its statement while each line stays intact — an
+  algorithm is a fixed, incrementally-indented layout the author designed for the
+  page, so reflow would void that intent; over-long lines scroll horizontally within
+  the box (`overflow-x:auto`) exactly as code listings do. The selector is
+  `.ltx_listing:not(.ltx_lstlisting)` — so it reaches bare algorithm listings
+  regardless of wrapper class while excluding code listings, which carry
+  `.ltx_lstlisting` (both lstlisting AND minted, verified). ar5iv-css-native fix: the
+  bundled LaTeXML.css default already uses `nowrap`, so only this file's code-listing
+  rule over-reached. Interim discriminator; the robust fix is a shared algorithm
+  marker class + generic CSS for both LaTeXML.css and ar5iv.css, scheduled
+  latexml-oxide 0.7.7. (algorithm2e `\Input`/`\Output` header lines still carry their
+  number on a separate line — a structural quirk shared with vanilla LaTeXML, out of
+  scope for this CSS fix.)
+- **Wrapped floats no longer overlap the wrapped paragraph.** A `wrapfigure`
+  (`.ltx_figure.ltx_align_float{left,right}`, e.g. `{r}{0.33\columnwidth}`) is
+  intentionally narrow, but the `min-width:20/25rem` on `.ltx_flex_size_1` cells (meant
+  for centered full-width figures) forced the inner content far wider than the 33% float
+  box, so a minted/code panel overflowed leftward and painted over the body text. Float
+  figures now stack their flex cells in a column and cap them at `max-width:100%` of the
+  float, scrolling over-long code within the box. Witness arXiv:2605.03143 §2.1/§2.2.
+- **Algorithm listings no longer show a phantom vertical scrollbar.** The
+  `.ltx_listing:not(.ltx_lstlisting){overflow-x:auto}` containment left `overflow-y`
+  visible, which the CSS Overflow spec promotes to `auto` on both axes, so tall inline
+  math / full-height vline rules tripped an unwanted vertical scrollbar. Pinned
+  `overflow-y:hidden` (as `.ltx_table` already does). Witness arXiv:2002.09766 Alg 1.
+- **Side-by-side minipages keep their authored width.** `.ltx_align_middle` is a
+  VERTICAL alignment, but the rule also forced `width:auto !important`, stripping a real
+  `\begin{minipage}{0.48\textwidth}` width so paired algorithm minipages collapsed to
+  content width and jammed into the running paragraph. The auto-center is now scoped to
+  width-less minipages (`:not([style*="width"])`). Witness arXiv:2402.19043.
+- **Framed code listings no longer push the page into horizontal scroll.** A
+  `frame=single` `lstlisting` is boxed in a shrink-to-fit `.ltx_framed_rectangle` sized
+  to its longest unwrapped line; a long line scrolled the whole page. `.ltx_lstlisting`
+  is now `display:block; max-width:100%; overflow-x:auto` so over-long lines scroll
+  within the box (markup unchanged). Witness arXiv:2512.24601. (The compounded
+  `\tiny`×`0.7rem` font size is a separate, still-open item.)
 - **Author name and ORCID iD badge share one line.** latexml-oxide's frontmatter now
   wraps an author's `ltx:personname` and its `ltx:contact[role=orcid]` iD badge in a
   `.ltx_annotated_personname` span, so the clickable iD sits right after the name

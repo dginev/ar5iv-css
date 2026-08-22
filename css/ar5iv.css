@@ -1798,6 +1798,28 @@ mtext > .ltx_graphics,
     min-width: 25rem;
   }
 }
+/* Wrap floats (\begin{wrapfigure}{r}{0.33\columnwidth}) are intentionally NARROW —
+   the source width (e.g. 33%) reaches the <figure> as style="width:33%". The
+   min-width:20/25rem above is meant for centered, full-width-context single-panel
+   figures; inside a wrap float it forces the inner flex cell far wider than the float
+   box, so the content (e.g. a minted listing) overflows LEFTWARD out of the float and
+   paints over the wrapped paragraph. Confine the cell to the float and let over-long
+   code scroll within it. Witness arXiv 2605.03143 §2.1/§2.2. */
+.ltx_figure.ltx_align_floatleft > .ltx_flex_figure,
+.ltx_figure.ltx_align_floatright > .ltx_flex_figure {
+  flex-flow: column;
+  align-items: stretch;
+}
+.ltx_figure.ltx_align_floatleft .ltx_flex_cell.ltx_flex_size_1,
+.ltx_figure.ltx_align_floatright .ltx_flex_cell.ltx_flex_size_1 {
+  min-width: 0;
+  max-width: 100%;
+}
+.ltx_figure.ltx_align_floatleft .ltx_listing,
+.ltx_figure.ltx_align_floatright .ltx_listing {
+  max-width: 100%;
+  overflow-x: auto;
+}
 .ltx_flex_figure > .ltx_flex_cell.ltx_flex_size_2 img.ltx_graphics {
   min-width: 20rem;
 }
@@ -2297,7 +2319,13 @@ svg foreignObject > .ltx_foreignobject_container {
 }
 /* often minipages are inline-blocks, for which "vertical-align" is inactive */
 /* so we also default to an auto margin in order to center */
-.ltx_minipage.ltx_align_middle {
+/* BUT only when the minipage has no AUTHORED width: `width:auto !important` otherwise
+   strips a real `\begin{minipage}{0.48\textwidth}` width (style="width:165.6pt"),
+   collapsing side-by-side algorithm minipages to content width so they jam into the
+   running paragraph instead of sitting on their own row. `ltx_align_middle` is a
+   VERTICAL alignment; keep the horizontal auto-center only for width-less minipages.
+   Witness arXiv 2402.19043 (two 0.48\textwidth algorithms side by side). */
+.ltx_minipage.ltx_align_middle:not([style*="width"]) {
   margin: auto;
   width: auto !important;
 }
@@ -2404,16 +2432,43 @@ svg foreignObject > .ltx_foreignobject_container {
    collapse, so nothing is lost. `!important` + the extra float-class specificity so
    it beats the layered `pre` rule (same @layer, higher specificity wins); code
    listings are untouched. */
-.ltx_float_algorithm .ltx_listing .ltx_listingline,
-.ltx_algorithm .ltx_listing .ltx_listingline {
+/* `.ltx_listing:not(.ltx_lstlisting)` covers algorithms whether or not they sit in
+   an `algorithm` float: algorithmicx/algpseudocode in an `algorithm` float →
+   `.ltx_float_algorithm`; algorithm2e → `.ltx_algorithm`; BUT an algorithm authored
+   outside a float — the popular `breakablealgorithm` recipe wraps `\begin{algorithmic}`
+   in a bare `center` — emits a bare `.ltx_listing` with NEITHER wrapper class and so
+   missed the nowrap rule, falling through to code's `white-space:pre` and rendering
+   broken (numbers stacked above wildly-spaced content). Witness arXiv:2408.07803
+   (html_feedback#1998). Code listings carry `.ltx_lstlisting` (lstlisting AND minted,
+   verified), so `:not(.ltx_lstlisting)` excludes them — their significant leading
+   whitespace stays `pre`. Interim fix; the robust version is a shared algorithm marker
+   class + generic CSS for both LaTeXML.css and ar5iv.css, scheduled latexml-oxide 0.7.7. */
+.ltx_listing:not(.ltx_lstlisting) .ltx_listingline {
   white-space: nowrap !important;
 }
-.ltx_float_algorithm .ltx_listing,
-.ltx_algorithm .ltx_listing {
+.ltx_listing:not(.ltx_lstlisting) {
   /* the base `.ltx_listing` doesn't set overflow (only `.ltx_table` /
      `.ltx_framed_verbatim` do), so a too-wide algorithm would push the page into
      horizontal scroll; contain it in the box. */
   overflow-x: auto;
+  /* A scrolling overflow-x with overflow-y left `visible` is promoted by the CSS
+     Overflow spec to `auto` on BOTH axes, so tall inline math / full-height vline
+     rules trip a phantom VERTICAL scrollbar. Pin overflow-y like `.ltx_table` does.
+     Witness arXiv 2002.09766 Algorithm 1. */
+  overflow-y: hidden;
+}
+/* Code listings (lstlisting/minted, `.ltx_lstlisting`) are excluded from the
+   algorithm containment above because their `white-space:pre` leading whitespace is
+   significant. But a `frame=single` lstlisting is boxed in a shrink-to-fit
+   `.ltx_framed_rectangle` (display:inline-block) sized to its LONGEST unwrapped line,
+   so a long line pushes the whole PAGE into horizontal scroll. Contain the listing to
+   the column and let over-long lines scroll WITHIN the box (markup unchanged — this is
+   purely the box layout). Witness arXiv 2512.24601. */
+.ltx_lstlisting {
+  display: block;
+  max-width: 100%;
+  overflow-x: auto;
+  box-sizing: border-box;
 }
 .ltx_listing .ltx_tag_listingline {
   padding-right: 0.3rem;
@@ -2431,6 +2486,25 @@ svg foreignObject > .ltx_foreignobject_container {
     /* Sometimes the 80% downscale is too much, 0.7rem is a good pragmatic constant */
     font-size: 0.7rem !important;
   }
+}
+/* algorithm2e (`.ltx_algorithm`, `numbers_left`) emits the line-number tag at the
+   END of the listingline in the DOM, yet the numbers belong in a LEFT gutter — the
+   pdflatex golden, and what `ltx_lst_numbers_left` means. Reserve a gutter on each
+   line and pull the tag into it (absolutely positioned) so the number sits left of
+   the indented, `vlined` statement regardless of DOM order; mirrors the bundled
+   LaTeXML.css `.ltx_lst_numbers_left … position:absolute` approach, responsive-safe.
+   Scoped to `.ltx_algorithm` so code listings (which also use `numbers_left`, with a
+   DOM-leading tag) are untouched. Witness arXiv:2602.20153 Algorithm 1. */
+.ltx_algorithm .ltx_lst_numbers_left .ltx_listingline {
+  position: relative;
+  padding-left: 2rem;
+}
+.ltx_algorithm .ltx_lst_numbers_left .ltx_tag_listingline {
+  position: absolute;
+  left: 0;
+  width: 1.6rem;
+  margin-right: 0;
+  border-right: none;
 }
 .ltx_lst_space {
   /* Preserve leading-space indentation inside code. `!important` for the same
