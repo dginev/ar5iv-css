@@ -12,6 +12,19 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
+- **A single affiliation shared by all authors renders once, below the author row.**
+  latexml-oxide (OXIDIZED_DESIGN #159) normalizes a shared affiliation (LLNCS `\institute`
+  with no per-author `\inst`) into one trailing name-less `.ltx_creator` instead of stranding
+  it under the first author. This mirror breaks that trailing name-less creator out to full
+  width, centered, below the authors — order-independent (so it carries a trailing shared
+  `\email` along), unlike the pre-existing `:last-child .ltx_role_affiliation` rule which
+  misses when an email follows the affiliation. Witness arXiv 2402.19043 (WDM, 5 authors).
+- **acmart affiliation sub-entries no longer show a stray space before the comma.** The
+  `.ltx_affiliation_institution/department/country` parts carried `margin-inline: 0.25rem`,
+  whose right margin put a gap before the separator comma ("Basis Research Institute ,").
+  latexml-oxide now joins the parts with a `, ` separator (OXIDIZED_DESIGN #158), so that
+  margin is redundant and dropped; `white-space: nowrap` (keeping a part from breaking
+  mid-phrase) is retained. Witness arXiv 2605.03143.
 - **Author `\thanks` funding/pubnote renders as a side-margin note, not an affiliation.**
   A title/author `\thanks` (funding, grants, prior-presentation, corresponding-author) is
   document-level footnote metadata that the engine now emits as `<ltx:note role="thanks">`

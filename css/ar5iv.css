@@ -383,11 +383,14 @@ span.ltx_personname > .ltx_break + .ltx_break {
 .ltx_role_author + .ltx_role_author {
   margin-inline-start: var(--space-lg);
 }
-/* space out affiliation sub-entries */
+/* Keep each affiliation sub-entry (institution / department / country) from
+   wrapping mid-phrase. Part spacing now comes from the acmart `, ` separator
+   (latexml-oxide OXIDIZED_DESIGN #158); the former `margin-inline: 0.25rem` here
+   added a stray gap BEFORE the separator comma ("Basis Research Institute ,"),
+   so it is dropped — the comma now sits tight against the preceding part. */
 .ltx_affiliation_institution,
 .ltx_affiliation_department,
 .ltx_affiliation_country {
-  margin-inline: 0.25rem;
   white-space: nowrap;
 }
 
@@ -416,6 +419,22 @@ span.ltx_personname > .ltx_break + .ltx_break {
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_address)):has( :last-child.ltx_role_address),
 .ltx_authors:has(> :nth-child(2)):not(:has(> *:not(:last-child) .ltx_role_affiliation)):has( :last-child.ltx_role_affiliation) {
   margin-bottom: var(--space-xl);
+}
+
+/* latexml-oxide (OXIDIZED_DESIGN #159) now normalizes a single affiliation shared by
+   ALL authors (e.g. LLNCS `\institute` with no per-author `\inst`) into ONE trailing
+   name-LESS `.ltx_creator` (holding the affiliation + any shared email), appended last
+   after the named authors — the "differently organized markup" the block above
+   anticipated. Break that creator out to full width, centered, below the author row.
+   Order-independent (keys on the name-less trailing creator, not `:last-child
+   .ltx_role_affiliation`), so it also carries a trailing shared `\email` along and does
+   not miss when the email follows the affiliation. Witness arXiv 2402.19043 (WDM). */
+.ltx_authors:has(> :nth-child(2)) > .ltx_creator:last-child:not(:has(.ltx_personname)) {
+  flex-basis: 100%;
+  order: 2;
+  margin-top: var(--space-lg, 1rem);
+  text-align: center;
+  align-items: center;
 }
 
 /* in multi-affiliation markup, e.g. produced by authblk.sty,
