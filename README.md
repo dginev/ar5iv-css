@@ -12,12 +12,12 @@ needed.
 
 ```html
 <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/dginev/ar5iv-css@0.9.0/css/ar5iv-fonts.css">
+      href="https://cdn.jsdelivr.net/gh/dginev/ar5iv-css@0.9.1/css/ar5iv-fonts.css">
 <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/dginev/ar5iv-css@0.9.0/dist/ar5iv.min.css">
+      href="https://cdn.jsdelivr.net/gh/dginev/ar5iv-css@0.9.1/dist/ar5iv.min.css">
 ```
 
-Pin the version (`@0.9.0`) for reproducibility. Use `@0.9` for the
+Pin the version (`@0.9.1`) for reproducibility. Use `@0.9` for the
 latest patch within a minor, or `@latest` for the newest tag — at the
 cost of cache poisoning on version bumps.
 
