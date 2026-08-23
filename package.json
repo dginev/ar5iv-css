@@ -1,6 +1,6 @@
 {
   "name": "ar5iv-css",
-  "version": "0.9.0",
+  "version": "0.9.1",
   "description": "CSS theme for arXiv articles converted with LaTeXML",
   "main": "css/ar5iv.css",
   "style": "css/ar5iv.css",
