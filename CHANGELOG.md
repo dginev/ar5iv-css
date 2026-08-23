@@ -4,9 +4,13 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
-## Unreleased
+## 0.9.1 — 2026-08-23
 
-Mirrors of latexml-oxide surpass-Perl CSS deltas (each fixes a rendering
+A fix-focused patch release: frontmatter layout (shared affiliations,
+ORCID iD badges, `\thanks` margin notes), algorithm & code-listing
+layout (nowrap, indentation, scrollbars, `\hfill` leaders), and
+containment of minipages, wrapped floats, and display math on narrow
+viewports. Many entries are mirrors of latexml-oxide surpass-Perl CSS deltas (each fixes a rendering
 gap shared with vanilla LaTeXML.css). Tracked here so a future re-sync
 does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
