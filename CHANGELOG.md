@@ -4,6 +4,18 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+### Fixed
+- **Flush itemize bullets stay inside their container.** `itemize[leftmargin=*]`
+  (`.ltx_itemize.ltx_leftmargin_flush`) zeroed the padding its hanging tag relies on, so bullets
+  sat 2.5rem outside the text edge, and off-screen with clipped text on phones (arXiv 2610.06709).
+  Bullets now land on the edge, as `leftmargin=*` does in LaTeX. Enumerate and description lists
+  are unchanged.
+- **`\thanks` notes in one creator no longer overprint in the wide margin.** Stacking counted only
+  preceding creators, so several notes in one creator all landed in the same slot (one person with
+  several `\thanks`, or `\author{A\thanks{} \qquad B\thanks{}}`; arXiv 2610.06709).
+
 ## 0.9.2 — 2026-11-05
 
 A small patch release mirroring latexml-oxide perfect-kernel CSS: rules for

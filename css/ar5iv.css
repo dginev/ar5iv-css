@@ -701,9 +701,12 @@ div.ltx_keywords:empty::before {
   }
   .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
     position: absolute;
-    top: 0;
     /* fixed vertical slot for stacking multiple notes (~7 lines + gap) */
     --thanks-slot: 10rem;
+    top: calc(
+      (var(--thanks-before, 0) + var(--thanks-extra, 0) + var(--thanks-index, 0)) *
+        var(--thanks-slot)
+    );
     inset-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
     width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
     box-sizing: border-box;
@@ -711,32 +714,36 @@ div.ltx_keywords:empty::before {
     text-align: start;
   }
   /* Multiple \thanks notes (several authors each with one, or title + author)
-     would all anchor at top:0 and pile up. CSS can't read sibling heights, so
-     stack them into FIXED vertical slots: the notes live in sibling
-     `.ltx_creator`s, so count how many PRECEDING creators contain a thanks note
-     via a `:has()` + `~` chain and offset by that many slots. Specificity rises
-     with each `~` link, so a note with N preceding thanks-creators matches every
-     rule up to N and the highest (N) wins. Covers up to 5 notes; a 6th reuses
-     slot 4 (papers with 6+ distinct author \thanks are essentially unheard of). A
-     note taller than a slot spills into the next -- the accepted tradeoff for a
-     heightless CSS stack. */
+     would all anchor at the top and pile up. CSS can't read sibling heights, so
+     stack them into FIXED vertical slots. A note's slot is the sum of three counts:
+     - --thanks-before: PRECEDING creators with a thanks note, via a `:has()` + `~`
+       chain. Specificity rises with each `~` link, so a note with N preceding
+       thanks-creators matches every rule up to N and the highest (N) wins.
+     - --thanks-extra: the further notes a preceding creator holds beyond its first.
+     - --thanks-index: this note's position among its own creator's notes. Several
+       notes can share one creator: one person with several \thanks, or authors
+       with no `\and` between them (`\author{A\thanks{} \qquad B\thanks{}}`).
+     A note taller than a slot spills into the next -- the accepted tradeoff for a
+     heightless CSS stack. Limits: --thanks-extra reflects only the largest preceding multi-note creator;
+     past 10 notes in a creator or 5 creators with
+     notes, slots repeat. */
   .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator
     .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    top: var(--thanks-slot);
+    --thanks-before: 1;
   }
   .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator
     .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    top: calc(2 * var(--thanks-slot));
+    --thanks-before: 2;
   }
   .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator
     .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    top: calc(3 * var(--thanks-slot));
+    --thanks-before: 3;
   }
   .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator:has(.ltx_role_thanks)
@@ -744,7 +751,49 @@ div.ltx_keywords:empty::before {
     ~ .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator
     .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    top: calc(4 * var(--thanks-slot));
+    --thanks-before: 4;
+  }
+  .ltx_creator:has(.ltx_role_thanks ~ .ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    --thanks-extra: 1;
+  }
+  .ltx_creator:has(.ltx_role_thanks ~ .ltx_role_thanks ~ .ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    --thanks-extra: 2;
+  }
+  .ltx_creator:has(.ltx_role_thanks ~ .ltx_role_thanks ~ .ltx_role_thanks ~ .ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    --thanks-extra: 3;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(2 of .ltx_role_thanks) {
+    --thanks-index: 1;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(3 of .ltx_role_thanks) {
+    --thanks-index: 2;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(4 of .ltx_role_thanks) {
+    --thanks-index: 3;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(5 of .ltx_role_thanks) {
+    --thanks-index: 4;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(6 of .ltx_role_thanks) {
+    --thanks-index: 5;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(7 of .ltx_role_thanks) {
+    --thanks-index: 6;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(8 of .ltx_role_thanks) {
+    --thanks-index: 7;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(9 of .ltx_role_thanks) {
+    --thanks-index: 8;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(10 of .ltx_role_thanks) {
+    --thanks-index: 9;
   }
   /* the note now lives wholly in the margin; drop every dagger (the anchor one,
      which would otherwise sit on its own line in the creator flex column, and the
@@ -3089,7 +3138,10 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 /* enumitem leftmargin (latexml-oxide #559): the LaTeXML binding emits a theming
    surface for enumitem's leftmargin. `leftmargin=*` (auto/flush) arrives as the
    .ltx_leftmargin_flush class -- a font-INDEPENDENT boolean toggle -- which we
-   honor by dropping the list's UA left indent.
+   honor by dropping the list's UA left indent. An itemize keeps that indent as
+   its label column: `li.ltx_item > .ltx_tag` below hangs -2.5rem into it, which
+   lands the bullet on the container's edge, as `leftmargin=*` does in LaTeX.
+   (Enumerate tags sit in a grid column instead, so they need no such column.)
    `leftmargin=<dim>` arrives as the --ltx-enum-leftmargin custom property, but we
    deliberately do NOT consume it: an ABSOLUTE TeX dimension is calibrated to
    TeX's font and box model and does not translate to ar5iv's font, so forcing it
@@ -3101,6 +3153,9 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 .ltx_leftmargin_flush {
   padding-inline-start: 0;
   margin-inline-start: 0;
+}
+.ltx_itemize.ltx_leftmargin_flush {
+  padding-inline-start: 2.5rem;
 }
 .ltx_item > .ltx_para > .ltx_description,
 .ltx_item > .ltx_para > .ltx_itemize,
