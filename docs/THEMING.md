@@ -268,7 +268,7 @@ non-emergency overrides.
   "main": "css/index.css",
   "files": ["css/"],
   "peerDependencies": {
-    "ar5iv-css": "^0.9.1"
+    "ar5iv-css": "^0.9.2"
   }
 }
 ```
@@ -277,7 +277,7 @@ non-emergency overrides.
 
 ```html
 <link rel="stylesheet"
-      href="https://cdn.jsdelivr.net/gh/dginev/ar5iv-css@0.9.1/dist/ar5iv.min.css">
+      href="https://cdn.jsdelivr.net/gh/dginev/ar5iv-css@0.9.2/dist/ar5iv.min.css">
 <link rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/@your-org/ar5iv-sepia@0.1.0/css/index.css">
 ```
