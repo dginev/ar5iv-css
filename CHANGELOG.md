@@ -16,6 +16,17 @@ does not silently drop them; the engine side carries the matching
 `OXIDIZED_DESIGN` divergence and a guard test.
 
 ### Fixed
+- **Trivlist proofs and doc.sty entries render flush, their label run in.** latexml-oxide
+  now keeps a raw `\trivlist\item[label]` as a list (`ul.ltx_trivlist`; previously the label
+  and the list were lost — e.g. `\trivlist\item[Proof.]` in 17 of 3,003 2605 papers). latex.ltx
+  sets a trivlist's `\leftmargin` and `\labelwidth` to 0, so it is indented at no depth (doc.sty
+  nests them twenty deep) and its first paragraph runs in after the label ("Proof. The …").
+- **A letter's sender and addressee lay out as address blocks**, not centred author cards
+  (`.ltx_role_sender`, `.ltx_role_addressee`; g-brief and similar letter classes).
+- **`\makebox[w][s]` spread text is justified**: `.ltx_align_justified`, the schema-valid
+  name latexml-oxide emits, aliases `.ltx_align_justify`.
+- **Glossary sub-entries are indented by level** (`.ltx_glossary_level_1`/`_2`, glossaries'
+  `\subglossentry`).
 - **A single affiliation shared by all authors renders once, below the author row.**
   latexml-oxide (OXIDIZED_DESIGN #159) normalizes a shared affiliation (LLNCS `\institute`
   with no per-author `\inst`) into one trailing name-less `.ltx_creator` instead of stranding

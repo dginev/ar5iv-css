@@ -365,6 +365,20 @@ span.ltx_personname > .ltx_break + .ltx_break {
   align-items: center;
   object-fit: contain;
 }
+/* A letter's sender and addressee (g-brief and similar letter classes; latexml-oxide divergence #412):
+   the name, each contact block and its label on lines of their own, not the centred author card. */
+.ltx_creator.ltx_role_sender,
+.ltx_creator.ltx_role_addressee {
+  display: block;
+  text-align: start;
+}
+.ltx_role_sender .ltx_personname,
+.ltx_role_sender .ltx_contact,
+.ltx_role_addressee .ltx_contact,
+.ltx_role_sender .ltx_contact_name,
+.ltx_role_addressee .ltx_contact_name {
+  display: block;
+}
 .ltx_creator br.ltx_break {
   flex-basis: 100%;
   height: 0;
@@ -1575,6 +1589,15 @@ span.ltx_font_bold > .ltx_break:last-child {
 }
 
 /* indexes */
+/* Glossary sub-entries (glossaries' \subglossentry levels, latexml-oxide 60i). */
+.ltx_glossarylist dt.ltx_glossary_level_1,
+.ltx_glossarylist dt.ltx_glossary_level_1 + dd {
+  padding-inline-start: 1.5em;
+}
+.ltx_glossarylist dt.ltx_glossary_level_2,
+.ltx_glossarylist dt.ltx_glossary_level_2 + dd {
+  padding-inline-start: 3em;
+}
 .ltx_indexlist {
   columns: 2;
   list-style-type: none;
@@ -1735,7 +1758,9 @@ blockquote.ltx_epigraph {
 .ltx_align_center {
   text-align: center;
 }
-.ltx_align_justify {
+/* .ltx_align_justified: latexml-oxide's schema-valid name for `\makebox[w][s]`'s spread alignment. */
+.ltx_align_justify,
+.ltx_align_justified {
   text-align: justify;
   hyphens: auto;
 }
@@ -3115,6 +3140,25 @@ li.ltx_item > .ltx_tag {
   & .ltx_p {
     display: inline;
   }
+}
+/* A \trivlist (latexml-oxide marks it .ltx_trivlist): latex.ltx sets \leftmargin and \labelwidth to 0,
+   so it is indented at no depth — doc.sty's {macro} and raw proof environments nest trivlists twenty
+   deep — and its label runs in before the text ("Proof. The ..."), the first paragraph inline. */
+ul.ltx_trivlist,
+.ltx_item > .ltx_para > ul.ltx_trivlist {
+  padding-inline-start: 0;
+  margin-inline-start: 0;
+}
+ul.ltx_trivlist > li.ltx_item > .ltx_tag {
+  margin-inline-start: 0;
+  text-align: start;
+}
+ul.ltx_trivlist > li.ltx_item > .ltx_tag:empty {
+  display: none;
+}
+ul.ltx_trivlist > li.ltx_item > .ltx_tag + .ltx_para {
+  display: inline;
+  width: auto;
 }
 span.ltx_item .ltx_tag + span.ltx_para {
   display: inline;
