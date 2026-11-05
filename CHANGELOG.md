@@ -4,16 +4,10 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
-## 0.9.1 — 2026-08-23
+## 0.9.2 — 2026-11-05
 
-A fix-focused patch release: frontmatter layout (shared affiliations,
-ORCID iD badges, `\thanks` margin notes), algorithm & code-listing
-layout (nowrap, indentation, scrollbars, `\hfill` leaders), and
-containment of minipages, wrapped floats, and display math on narrow
-viewports. Many entries are mirrors of latexml-oxide surpass-Perl CSS deltas (each fixes a rendering
-gap shared with vanilla LaTeXML.css). Tracked here so a future re-sync
-does not silently drop them; the engine side carries the matching
-`OXIDIZED_DESIGN` divergence and a guard test.
+A small patch release mirroring latexml-oxide perfect-kernel CSS: rules for
+classes the engine now emits (its batches 56ej, 59o, 60i, 61p).
 
 ### Fixed
 - **Trivlist proofs and doc.sty entries render flush, their label run in.** latexml-oxide
@@ -27,6 +21,19 @@ does not silently drop them; the engine side carries the matching
   name latexml-oxide emits, aliases `.ltx_align_justify`.
 - **Glossary sub-entries are indented by level** (`.ltx_glossary_level_1`/`_2`, glossaries'
   `\subglossentry`).
+
+## 0.9.1 — 2026-08-23
+
+A fix-focused patch release: frontmatter layout (shared affiliations,
+ORCID iD badges, `\thanks` margin notes), algorithm & code-listing
+layout (nowrap, indentation, scrollbars, `\hfill` leaders), and
+containment of minipages, wrapped floats, and display math on narrow
+viewports. Many entries are mirrors of latexml-oxide surpass-Perl CSS deltas (each fixes a rendering
+gap shared with vanilla LaTeXML.css). Tracked here so a future re-sync
+does not silently drop them; the engine side carries the matching
+`OXIDIZED_DESIGN` divergence and a guard test.
+
+### Fixed
 - **A single affiliation shared by all authors renders once, below the author row.**
   latexml-oxide (OXIDIZED_DESIGN #159) normalizes a shared affiliation (LLNCS `\institute`
   with no per-author `\inst`) into one trailing name-less `.ltx_creator` instead of stranding
