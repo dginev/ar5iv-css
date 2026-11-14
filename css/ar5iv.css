@@ -473,6 +473,15 @@ span.ltx_role_orcid + span.ltx_role_affiliation:not(.ltx_note) {
 .ltx_annotated_personname > .ltx_personname {
   min-width: 0;
 }
+/* The ORCID iD logo (`svg.ltx_orcidlogo`, from orcidlink's `\orcidlink` /
+   `\orcidlogo`, and latexml-oxide's class `\orcid`) is a text-height inline glyph.
+   LaTeXML emits it 1.7em square (orcidlink.sty.ltxml), a badge that overflows the line.
+   Mirrors latexml-oxide (PR #737, arXiv/html_feedback#6571). */
+.ltx_orcidlogo {
+  height: 1em;
+  width: 1em;
+  vertical-align: -0.15em;
+}
 
 /* sometimes ltx_keywords only contains a single text node */
 /* and we can't write a selector for ".ltx_keywords that only has text" via CSS...

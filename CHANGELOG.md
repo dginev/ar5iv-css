@@ -19,6 +19,9 @@ Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
   height: `    return  0;` keeps its four-space indent and double space (was `return 0;`),
   a blank source line is 24 px (was 0), likewise inside a `frame=single` box. Inline `\verb` still wraps, and an fvextra `breaklines` line keeps
   wrapping (`.ltx_verbatim .ltx_parbox` is `normal`). Mirrors latexml-oxide #431 (PR #481).
+- **The ORCID iD logo is a text-height glyph.** `.ltx_orcidlogo` is 1em square, set
+  slightly below the baseline: LaTeXML's 1.7em badge (orcidlink `\orcidlink`) measured
+  27.2 px on 16 px text, now 16 px. Mirrors latexml-oxide PR #737 (arXiv/html_feedback#6571).
 
 ## 0.9.2 — 2026-11-05
 
