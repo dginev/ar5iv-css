@@ -58,10 +58,13 @@ Current placements:
   Reserved for future sub-divisions and for downstream themes that
   want to slot their own rules between ours.
 
-Two things stay **un-layered**, deliberately:
+Three things stay **un-layered**, deliberately:
 - The transformed-wrappers feature flag in `ar5iv.css` (its
   `!important` rules need maximum priority to defeat LaTeXML's
   inline `style="transform:…"`).
+- The MathJax display-margin reset at the end of `ar5iv.css`
+  (MathJax injects its own styles un-layered at run time, and an
+  un-layered rule beats every layered one regardless of specificity).
 - `dark-mode.css` and `print.css` imports (their selectors carry
   enough specificity / media-query gating that they don't need a
   layer; staying un-layered keeps them at the top of the cascade).
