@@ -79,18 +79,19 @@ the project follows [semantic versioning](https://semver.org/).
   centre for `(1)`, 74 px for a long `\tag`); a one-row centred equation is now a grid whose tag
   sits over the pad on its side with a 1em quad, so the formula moves only as far as its tag needs
   (tex.web §1202). A `p{}` cell's equation keeps to the column's width; multi-row tables are unchanged.
-- **A citation no longer breaks right after `[` or right before `]`** (ar5iv-css#53).
-  `.ltx_cite > .ltx_ref` was an inline-block, and an atomic inline is a soft-wrap
-  opportunity on both sides, so lines broke as `[` / `39]`. It is now an ordinary inline,
-  and lines break at the `; `/`, ` between cites. On latexml-oxide main output (8060573111),
-  cites split at a bracket: 321 → 3 at 375 px and 221 → 1 at 1280 px in Chromium (Firefox
-  487 → 0 and 369 → 0, WebKit 388 → 4 and 230 → 1), across 2409.12111, 2403.11784,
-  2608.21320v1, 2510.22681v1, 2006.09882 and others. The leftovers open with inline math
-  (`[∼10³⁶ erg; 66]`), whose `<math>` is itself atomic. 2006.09882's justified
-  `[10, 24, 44]` cluster, the reason for the inline-block, renders unchanged. Trade-off:
-  older Perl LaTeXML output that leaves a space inside an unresolved key (`durfee:97 ;`,
-  arXiv cs/0001008, 1810.10704) now shows it, as the inline-block trimmed it. latexml-oxide
-  emits no such space (0 of 1,920 cite refs).
+- **A citation no longer breaks right after `[` or right before `]`** (ar5iv-css#53), in
+  Chromium and Firefox. `.ltx_cite > .ltx_ref` was an inline-block, and an atomic inline is a
+  soft-wrap opportunity on both sides, so lines broke as `[` / `39]`. It is now an ordinary
+  inline with `text-justify: none`, so lines break at the `; `/`, ` between cites while
+  justification still leaves an author-year ref (`[Carron et al., 2023]`) unspread, which is what
+  the inline-block was for. On latexml-oxide main output (8060573111, 12 papers), cites split at
+  a bracket: Chromium 323 → 3 at 375 px and 222 → 1 at 1280 px, Firefox 490 → 0 and 370 → 0;
+  refs spread by justification stay 0 of 1,908. The Chromium leftovers open with inline math,
+  whose `<math>` is atomic. WebKit 26 has no `text-justify` and would spread such refs by up to
+  2.35x on a phone, so `@supports not (text-justify: none)` keeps the inline-block there, and
+  WebKit renders as before. Trade-off: older Perl LaTeXML output that leaves a space inside an
+  unresolved key (`durfee:97 ;`, arXiv cs/0001008, 1810.10704) now shows it in Chromium and
+  Firefox; latexml-oxide emits no such space.
 
 ## 0.9.2 — 2026-11-05
 
