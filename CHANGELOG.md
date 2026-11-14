@@ -92,6 +92,37 @@ the project follows [semantic versioning](https://semver.org/).
   centre for `(1)`, 74 px for a long `\tag`); a one-row centred equation is now a grid whose tag
   sits over the pad on its side with a 1em quad, so the formula moves only as far as its tag needs
   (tex.web §1202). A `p{}` cell's equation keeps to the column's width; multi-row tables are unchanged.
+- **Subfigure panels captioned above align on their captions** (ar5iv-css#31). Flex
+  subfigures were always bottom-aligned, which suits captions below. A panel whose caption
+  comes first (the norm for subtables) now aligns to the top, so the captions share one
+  line. On latexml-oxide main output (8060573111), the spread of caption tops within a row
+  went 44 → 0 px (2510.22681v1 Table 1), 18–44 → 0 px (2111.00396 Tables 2–3, 5–6, 7–8),
+  24 → 0 px (1712.01103 at 768 px; 2407.16893 Table 1 at 375 px) in Chromium, and likewise
+  to 0 in Firefox and WebKit. Panels captioned below are unchanged. As with captions below,
+  captions of different line counts now offset the bodies instead of the captions.
+- **A reference list set in `{quotation}` reads as a reference list** (ar5iv-css#13). The JENAM
+  2005 template's `\beginrefer` opens References with `\begin{quotation}\mbox{}\par`, and each
+  `\refer` entry is an `\indent`-ed paragraph with a negative `\parindent`; it rendered as an
+  italic pull-quote with a quote mark and a 2em first-line indent. A section-level quote led by
+  that empty `\mbox{}\par` paragraph, then two or more entries and nothing else, is now upright,
+  unruled and flush, each entry hung by 2.5em, 0.75em apart. Both latexml-oxide output (entries
+  as `\indent`-ed paragraphs; main 8060573111 on astro-ph/0508157, 0507693, 0509231, 0509896,
+  0510337, 0510538) and the served Perl LaTeXML page (bare paragraphs) match, in Chromium,
+  Firefox and WebKit. Quotes without the empty lead, `\indent`-ed or not, are untouched. In
+  print, the list may break across pages.
+- **A citation no longer breaks right after `[` or right before `]`** (ar5iv-css#53), in
+  Chromium and Firefox. `.ltx_cite > .ltx_ref` was an inline-block, and an atomic inline is a
+  soft-wrap opportunity on both sides, so lines broke as `[` / `39]`. It is now an ordinary
+  inline with `text-justify: none`, so lines break at the `; `/`, ` between cites while
+  justification still leaves an author-year ref (`[Carron et al., 2023]`) unspread, which is what
+  the inline-block was for. On latexml-oxide main output (8060573111, 12 papers), cites split at
+  a bracket: Chromium 323 → 3 at 375 px and 222 → 1 at 1280 px, Firefox 490 → 0 and 370 → 0;
+  refs spread by justification stay 0 of 1,908. The Chromium leftovers open with inline math,
+  whose `<math>` is atomic. WebKit 26 has no `text-justify` and would spread such refs by up to
+  2.35x on a phone, so `@supports not (text-justify: none)` keeps the inline-block there, and
+  WebKit renders as before. Trade-off: older Perl LaTeXML output that leaves a space inside an
+  unresolved key (`durfee:97 ;`, arXiv cs/0001008, 1810.10704) now shows it in Chromium and
+  Firefox; latexml-oxide emits no such space.
 
 ## 0.9.2 — 2026-11-05
 
