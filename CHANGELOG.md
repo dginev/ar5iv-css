@@ -7,11 +7,16 @@ the project follows [semantic versioning](https://semver.org/).
 ## Unreleased
 
 ### Fixed
-- **A section set inside a minipage or `\parbox` keeps the box's width.** latexml-oxide lifts
-  such a `\section` out as a real section carrying the box's class (`ltx_minipage`), and now its
-  width as the custom property `--ltx-box-width` (a section has no width attribute); the rule
-  `[style*="--ltx-box-width:"]` applies it, capped at the column. A stylesheet overrides or
-  disables it by redefining that rule.
+- **Every box's width is the custom property `--ltx-box-width`.** latexml-oxide now writes a
+  minipage's, `\parbox`'s, `\makebox`'s, `p{}` cell's, transformed box's or wrapfigure's width as
+  `style="--ltx-box-width:<w>"` instead of `style="width:<w>"`, and a section set inside a minipage
+  or `\parbox` (lifted out as a real section carrying the box's class) keeps the box's width the
+  same way, capped at its container like a minipage. An un-layered `!important` rule of zero specificity applies it at the inline style's
+  rank, so every layered ar5iv rule ranks under it as before, every `!important` one over it, and a
+  `width:` in the box's own style after it (varwidth's `max-content`) still wins: pages render as
+  before (every element's box and the screenshot ink identical in Chrome and Firefox at 1280, 768
+  and 375 px). Override it with an `!important` rule, or reuse the value
+  (`width: min(var(--ltx-box-width), 100%) !important`).
 
 ## 0.9.2 — 2026-11-05
 

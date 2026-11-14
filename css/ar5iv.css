@@ -46,14 +46,24 @@
 
 /* ============================================================
    The bulk of ar5iv.css now sits inside `@layer components`.
-   Two regions remain un-layered:
+   Three regions remain un-layered:
    - the transformed-wrappers feature flag near the middle of the
      file, whose !important rules defeat LaTeXML's inline
      `style="transform:…"` — a normal declaration, so any author
      !important beats it and the layer placement isn't load-bearing;
+   - the --ltx-box-width rule just below, which stands in for an inline `width:`;
    - nothing else; the imports above and the closing `@layer fixes`
      near the end are deliberate placements.
    ============================================================ */
+
+/* A box's width (minipage, \parbox, \makebox, p{} cell, tabular*), which latexml-oxide
+   writes as --ltx-box-width. Un-layered, important and of zero specificity, it ranks as
+   the inline `width:` it replaces did: over every normal rule, under every other
+   !important one (every layered one included), and under a width the box's own style
+   sets after it (varwidth's max-content). Override it with an !important rule. */
+:where([style*="--ltx-box-width:"]:not([style*=";width:"], [style*="; width:"])) {
+  width: var(--ltx-box-width, auto) !important;
+}
 
 @layer components {
 img {
@@ -84,10 +94,9 @@ img {
 [style*="--ltx-stroke-color:"] {
   stroke: var(--ltx-stroke-color);
 }
-/* A box's width that its element cannot carry as a width attribute (a \section inside a
-   minipage or \parbox, latexml-oxide QAB57): override or disable it by redefining this rule. */
-[style*="--ltx-box-width:"] {
-  width: var(--ltx-box-width, auto);
+/* A section lifted out of a minipage or \parbox keeps the box's width (--ltx-box-width);
+   like a minipage (#1797) it never exceeds its container. */
+:is(section, .ltx_inline-sectional-block)[style*="--ltx-box-width:"] {
   max-width: 100%;
 }
 
