@@ -97,6 +97,19 @@ the project follows [semantic versioning](https://semver.org/).
   0510337, 0510538) and the served Perl LaTeXML page (bare paragraphs) match, in Chromium,
   Firefox and WebKit. Quotes without the empty lead, `\indent`-ed or not, are untouched. In
   print, the list may break across pages.
+- **A citation no longer breaks right after `[` or right before `]`** (ar5iv-css#53), in
+  Chromium and Firefox. `.ltx_cite > .ltx_ref` was an inline-block, and an atomic inline is a
+  soft-wrap opportunity on both sides, so lines broke as `[` / `39]`. It is now an ordinary
+  inline with `text-justify: none`, so lines break at the `; `/`, ` between cites while
+  justification still leaves an author-year ref (`[Carron et al., 2023]`) unspread, which is what
+  the inline-block was for. On latexml-oxide main output (8060573111, 12 papers), cites split at
+  a bracket: Chromium 323 → 3 at 375 px and 222 → 1 at 1280 px, Firefox 490 → 0 and 370 → 0;
+  refs spread by justification stay 0 of 1,908. The Chromium leftovers open with inline math,
+  whose `<math>` is atomic. WebKit 26 has no `text-justify` and would spread such refs by up to
+  2.35x on a phone, so `@supports not (text-justify: none)` keeps the inline-block there, and
+  WebKit renders as before. Trade-off: older Perl LaTeXML output that leaves a space inside an
+  unresolved key (`durfee:97 ;`, arXiv cs/0001008, 1810.10704) now shows it in Chromium and
+  Firefox; latexml-oxide emits no such space.
 
 ## 0.9.2 — 2026-11-05
 

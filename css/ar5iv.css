@@ -269,19 +269,29 @@ math mtd[columnalign="left"] {
 .ltx_cite .ltx_font_italic {
   font-style: normal;
 }
+/* A cite's ref is an ordinary inline (ar5iv-css#53). It was an inline-block,
+   added in 2022 so justification would not spread a ref (2006.09882's
+   `[10, 24, 44]`; an author-year "[Carron et al., 2023]", apalike, arXiv
+   2403.11784). But an atomic inline is a soft-wrap opportunity on both sides
+   whatever its neighbours, so lines broke right after `[`/`(` and right before
+   `]`/`)`: `[` / `39]` (arXiv 2608.21320v1, 2409.12111, 2510.22681v1). As an
+   inline, the brackets stay glued by the line-breaking rules (no break after
+   an opening, or before a closing, punctuation), and a line breaks at the
+   `; `/`, ` between cites. `nowrap` keeps
+   a multi-word ref whole, and `text-justify: none` keeps justification out of
+   it, as the inline-block did. An engine without `text-justify` (WebKit 26)
+   would spread the ref by up to 2.35x on a phone, so it keeps the inline-block,
+   with its bracket breaks; text-indent matters only there (see 1810.10704). */
 .ltx_cite > .ltx_ref {
   white-space: nowrap;
-  /* inline-block + custom line-height: cites separated by
-     semicolon text nodes get spaced out too far under justified
-     text-align without these (see 2006.09882's Introduction
-     `[10, 24, 44]` cluster). Verified still load-bearing
-     2026-05-15 cross-engine: disable-and-diff on 2006.09882
-     produces 8753 px diff in WebKit p004 and 2544 px in
-     Chromium p012, with downstream reflow cascade. */
-  display: inline-block;
   line-height: 1.4rem;
-  /* see the introduction at 1810.10704 for why text-indent needs to be 0 */
-  text-indent: 0;
+  text-justify: none;
+}
+@supports not (text-justify: none) {
+  .ltx_cite > .ltx_ref {
+    display: inline-block;
+    text-indent: 0;
+  }
 }
 
 /* title page image. `min(30rem, 100%)` so the cap never exceeds
