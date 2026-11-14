@@ -23,6 +23,53 @@ the project follows [semantic versioning](https://semver.org/).
   issues 809, 755, 756). Chrome 155 on the issue-809 example, gap before `=` per row: 30.0,
   27.7, 26.2, 11.0 px before; 4.4, 4.4, 4.4, 7.8 px after (4.4 px = TeX's thick space; the
   fourth row's left column is a fraction).
+- **Copying a numbered listing leaves its line numbers out.** `.ltx_listing
+  .ltx_tag_listingline` is `user-select: none`: a select-all of a `numbers=left` lstlisting
+  copied `1 for i in x: 2 print(i)`, now `for i in x: print(i)` (Chrome, 1280 px). Mirrors
+  LaTeXML `95a77fc0` (#2850) via latexml-oxide PR #844. LaTeXML's other change there
+  (`ee4b3640`, dark-mode colours on `body`, not `:root`) needs no mirror: ar5iv's `body`
+  already carries the theme's colours.
+- **A display of several text runs stays on one line.** A display equation's content cell
+  (`td.ltx_eqn_cell.ltx_align_*`, no `ltx_td`) now gets the table-cell `white-space: nowrap`
+  with its `ltx_wrap` opt-out, so `\[\text{The solution}\quad\text{is not valid}\]` no
+  longer breaks between its runs (cell 58 → 34 px, two lines → one, Chrome at 1280 and
+  375 px). Mirrors latexml-oxide #527 (PR #571).
+- **fancyvrb `Verbatim` keeps its indentation and blank lines.** `.ltx_verbatim` (not inline
+  `code`) is `white-space: pre`, and each fancyvrb line span is one block row with a line's
+  height: `    return  0;` keeps its four-space indent and double space (was `return 0;`),
+  a blank source line is 24 px (was 0), likewise inside a `frame=single` box. Inline `\verb`
+  still wraps, and an fvextra `breaklines` line keeps wrapping (`.ltx_verbatim .ltx_parbox`
+  is `normal`). Mirrors latexml-oxide #431 (PR #481).
+- **The ORCID iD logo is a text-height glyph.** `.ltx_orcidlogo` is 1em square, set
+  slightly below the baseline: LaTeXML's 1.7em badge (orcidlink `\orcidlink`) measured
+  27.2 px on 16 px text, now 16 px. Mirrors latexml-oxide PR #737 (arXiv/html_feedback#6571).
+- **A capped image in a minipage keeps its aspect ratio.** `.ltx_minipage > .ltx_graphics`
+  adds `height: auto` to its `max-width: 100%`: a square image wider than its minipage
+  (`ltx_img_square`, which sets no `height: auto` above 52rem) rendered 138 × 215 px
+  (ratio 0.642) at 1280 px, now 138 × 138. Mirrors latexml-oxide PR #711
+  (brucemiller/LaTeXML#2392).
+- **An fvextra `breaklines` Verbatim reflows on a phone.** Each fancyvrb line, and the box
+  `xleftmargin`/`xrightmargin` wrap it in (arXiv 2605.01024), is capped at its box and a
+  `breaklines` line is a flex row whose `\parbox` shrinks to it, so at 375 px a
+  `frame=single,breaklines` box no longer scrolls (scrollWidth 468 → 341 = clientWidth) and an
+  unframed one no longer widens the page (476 → 375 px); the frame is a block, as a display.
+  Its paragraph adds no blank row (a one-row line 48 → 24 px at 1280 px). Inline `\verb` keeps
+  its spaces and breaks an unbroken run rather than widen the page (620 → 375 px). Mirrors
+  latexml-oxide #702 (PR #718's rule capped nothing: the line carries an inline `width`).
+- **A numbered, indented `breaklines` line reflows too, and every breaklines line keeps its
+  spaces.** With ids an `ltx_text` wraps such a line's indent boxes and `\parbox`; it is now
+  `display: contents`, so the parbox still shrinks in the line's flex row (375 px: a
+  `numbers=left,frame=single` box's scrollWidth 464 → 341 = clientWidth, an unframed one's
+  page 476 → 375 px). The line's paragraph is `pre-wrap`: it wraps and keeps the source's
+  spaces (`        return   x` rendered `return x`), with no blank rows. Mirrors
+  latexml-oxide #702.
+  The `xleftmargin` wrapper is a flex row: its margin arrives as an em space (U+2003), kept
+  beside the line rather than on a line box of its own.
+- **A long identifier in a `breaklines` line breaks rather than widen a phone page.** The
+  breaklines paragraph is `overflow-wrap: anywhere` (the shrink-to-fit paragraph needs
+  `anywhere`, not `break-word`, to lower its min-content): a 35-character identifier pushed
+  a 375 px page to 393 px, now 375. Desktop widths still break at spaces. An ar5iv addition
+  beyond the latexml-oxide mirror.
 
 ## 0.9.2 — 2026-11-05
 

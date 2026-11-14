@@ -488,6 +488,15 @@ span.ltx_role_orcid + span.ltx_role_affiliation:not(.ltx_note) {
 .ltx_annotated_personname > .ltx_personname {
   min-width: 0;
 }
+/* The ORCID iD logo (`svg.ltx_orcidlogo`, from orcidlink's `\orcidlink` /
+   `\orcidlogo`, and latexml-oxide's class `\orcid`) is a text-height inline glyph.
+   LaTeXML emits it 1.7em square (orcidlink.sty.ltxml), a badge that overflows the line.
+   Mirrors latexml-oxide (PR #737, arXiv/html_feedback#6571). */
+.ltx_orcidlogo {
+  height: 1em;
+  width: 1em;
+  vertical-align: -0.15em;
+}
 
 /* sometimes ltx_keywords only contains a single text node */
 /* and we can't write a selector for ".ltx_keywords that only has text" via CSS...
@@ -1875,20 +1884,31 @@ blockquote.ltx_epigraph {
   }
 }
 
+/* A display equation's content cell (`\[…\]`, `equation`) is an `ltx_eqn_cell`
+   with an alignment class but no `ltx_td`, so it needs the cell nowrap (and its
+   `ltx_wrap` opt-out) too: otherwise a display of several text runs
+   (`\[\text{a}\quad\text{b}\]`) breaks between them, though TeX sets a display
+   on one line. Mirrors latexml-oxide LaTeXML.css (latexml-oxide #527, PR #571). */
 .ltx_td.ltx_align_left,
 .ltx_th.ltx_align_left,
+.ltx_eqn_cell.ltx_align_left,
 .ltx_td.ltx_align_right,
 .ltx_th.ltx_align_right,
+.ltx_eqn_cell.ltx_align_right,
 .ltx_td.ltx_align_center,
-.ltx_th.ltx_align_center {
+.ltx_th.ltx_align_center,
+.ltx_eqn_cell.ltx_align_center {
   white-space: nowrap;
 }
 .ltx_td.ltx_align_left.ltx_wrap,
 .ltx_th.ltx_align_left.ltx_wrap,
+.ltx_eqn_cell.ltx_align_left.ltx_wrap,
 .ltx_td.ltx_align_right.ltx_wrap,
 .ltx_th.ltx_align_right.ltx_wrap,
+.ltx_eqn_cell.ltx_align_right.ltx_wrap,
 .ltx_td.ltx_align_center.ltx_wrap,
 .ltx_th.ltx_align_center.ltx_wrap,
+.ltx_eqn_cell.ltx_align_center.ltx_wrap,
 .ltx_td.ltx_align_justify,
 .ltx_th.ltx_align_justify {
   white-space: normal;
@@ -2587,6 +2607,10 @@ svg foreignObject > .ltx_foreignobject_container {
 }
 .ltx_minipage > .ltx_graphics {
   max-width: 100%;
+  /* keep the image's aspect ratio when the width is capped: a square image
+     (ltx_img_square sets no height:auto above 52rem) kept its height attribute
+     and distorted. Mirrors latexml-oxide (PR #711, brucemiller/LaTeXML#2392). */
+  height: auto;
 }
 /* minipages need some dedicated work (ar5iv#83),
    but for now we can accommodate with a bit of special-case padding; */
@@ -2643,6 +2667,50 @@ svg foreignObject > .ltx_foreignobject_container {
   max-width: 100%;
   overflow-x: auto;
   box-sizing: border-box;
+}
+/* latexml-oxide #702: the box is a display, so a block (no paragraph indent
+   shifts it past the viewport); each fancyvrb line is capped at its box. An
+   fvextra `breaklines` line is a fixed break-indent box beside a print-width
+   \parbox, wider than a phone: as a flex row the parbox shrinks to the line and
+   its text reflows, framed (`.ltx_break`) or not. Mirrors the bundled
+   LaTeXML.css delta. */
+.ltx_framed.ltx_framed_verbatim {
+  display: block;
+  width: fit-content;
+}
+.ltx_text.ltx_verbatim.ltx_inline-block {
+  max-width: 100%;
+}
+/* ...and so is the box fvextra's xleftmargin/xrightmargin wrap a line in
+   (arXiv 2605.01024). Its margin arrives as an EM SPACE (U+2003) text node
+   beside the line, which does not collapse: in a block wrapper it would take a
+   line box of its own above the block line, a blank row under every source line
+   (24 -> 48 px per line). A flex row keeps the margin beside the line, as TeX's
+   \hbox{\hskip\FV@XLeftMargin ...} does, and lets the line shrink to the rest. */
+.ltx_text.ltx_inline-block:has(> .ltx_text.ltx_verbatim.ltx_inline-block) {
+  display: flex;
+  text-indent: 0;
+  max-width: 100%;
+}
+.ltx_text.ltx_inline-block > .ltx_text.ltx_verbatim.ltx_inline-block {
+  min-width: 0;
+}
+/* An ltx_text kept around the indent boxes and parbox (it carries an id, as
+   with `numbers=left` on an indented line) passes its children to the row. */
+.ltx_text.ltx_verbatim.ltx_inline-block:has(> .ltx_parbox, > .ltx_text > .ltx_parbox) {
+  display: flex;
+}
+.ltx_verbatim > .ltx_text:has(> .ltx_parbox) {
+  display: contents;
+}
+.ltx_verbatim > .ltx_inline-block,
+.ltx_verbatim > .ltx_text > .ltx_inline-block {
+  flex-shrink: 0;
+}
+.ltx_verbatim > .ltx_parbox,
+.ltx_verbatim > .ltx_text > .ltx_parbox {
+  flex-shrink: 1;
+  min-width: 0;
 }
 .ltx_listing > .ltx_framed_rectangle {
   /* download arrow has a glitchy border, disable it. */
@@ -2741,6 +2809,8 @@ svg foreignObject > .ltx_foreignobject_container {
   box-sizing: border-box;
 }
 .ltx_listing .ltx_tag_listingline {
+  /* copying the code leaves its line numbers out (LaTeXML 95a77fc0, #2850) */
+  user-select: none;
   padding-right: 0.3rem;
   /* gutter rule between line-number tag and code: hairline, currentColor */
   border-right: var(--border-hairline) solid;
@@ -3537,6 +3607,50 @@ span.ltx_framed {
 .ltx_verbatim {
   text-align: left;
   font-size: 90%;
+}
+/* Verbatim keeps its spaces (latexml-oxide #431, PR #481): fancyvrb's per-line
+   spans otherwise lose their indentation and runs of spaces. A `<pre>` is `pre`
+   already; inline `\verb` (`code`) is left to wrap, so a long one cannot push a
+   narrow page into horizontal scroll. An fvextra `breaklines` line wraps its text
+   in a `\parbox`: `normal` there, else the line would not wrap and the markup's
+   newlines would render as blank lines. */
+.ltx_verbatim:not(code) {
+  white-space: pre;
+}
+.ltx_verbatim .ltx_parbox {
+  white-space: normal;
+}
+/* Inline `\verb` keeps its spaces, and an unbroken one breaks rather than widen
+   a narrow page (in a table cell too: ar5iv's cells wrap); a `breaklines` line's
+   paragraph wraps, keeps its spaces (Python indentation) and adds no blank row
+   below it. */
+code.ltx_verbatim {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+/* `anywhere`, not `break-word`: the paragraph is a shrink-to-fit inline-block, and
+   only `anywhere` lowers its min-content, so an unbroken identifier longer than
+   the shrunk parbox breaks instead of widening a phone page (375 px: 393 -> 375).
+   fvextra's promise for breaklines is that lines fit; desktop widths still break
+   at spaces, as before. (ar5iv addition beyond the latexml-oxide mirror.) */
+.ltx_verbatim .ltx_parbox .ltx_p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+/* Both parbox placements: directly in the line, or inside the `ltx_text` an id
+   keeps around a numbered, indented line (made `display: contents` above). */
+.ltx_verbatim > .ltx_parbox > .ltx_para,
+.ltx_verbatim > .ltx_text > .ltx_parbox > .ltx_para {
+  margin-bottom: 0;
+}
+/* fancyvrb typesets each source line as a width-limited inline-block
+   (`.ltx_text.ltx_verbatim.ltx_inline-block`): one source line per row, a blank
+   source line keeps a line's height, and the paragraph's text-indent does not
+   shift the first line. Inline `\verb` is a `code` without `ltx_inline-block`. */
+.ltx_text.ltx_verbatim.ltx_inline-block {
+  display: block;
+  text-indent: 0;
+  min-height: 1lh;
 }
 /*======================================================================
  Meta stuff */
