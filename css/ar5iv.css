@@ -724,8 +724,8 @@ div.ltx_keywords:empty::before {
        notes can share one creator: one person with several \thanks, or authors
        with no `\and` between them (`\author{A\thanks{} \qquad B\thanks{}}`).
      A note taller than a slot spills into the next -- the accepted tradeoff for a
-     heightless CSS stack. Limits: --thanks-extra reflects only the largest preceding multi-note creator;
-     past 10 notes in a creator or 5 creators with
+     heightless CSS stack. Limits: --thanks-extra reflects only the largest
+     preceding multi-note creator; past 10 notes in a creator or 5 creators with
      notes, slots repeat. */
   .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator
