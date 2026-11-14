@@ -79,6 +79,13 @@ the project follows [semantic versioning](https://semver.org/).
   centre for `(1)`, 74 px for a long `\tag`); a one-row centred equation is now a grid whose tag
   sits over the pad on its side with a 1em quad, so the formula moves only as far as its tag needs
   (tex.web §1202). A `p{}` cell's equation keeps to the column's width; multi-row tables are unchanged.
+- **A reference list set in `{quotation}` reads as a reference list** (ar5iv-css#13). The JENAM
+  2005 template's `\beginrefer`/`\refer` puts References in a quotation, one `\indent`-ed
+  paragraph per entry with a negative `\parindent`; it rendered as an italic pull-quote with a
+  quote mark and a 2em first-line indent. A section-level quote whose children are only
+  `\indent`-ed paragraphs (two or more) is now upright, unruled and flush, with a 2.5em hanging
+  indent per entry (latexml-oxide main 8060573111 on astro-ph/0508157, 0509231, 0510337, 0510538,
+  0507693). Ordinary quotations are untouched: oxide emits their paragraphs as bare `.ltx_p`.
 
 ## 0.9.2 — 2026-11-05
 
