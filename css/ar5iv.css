@@ -269,19 +269,19 @@ math mtd[columnalign="left"] {
 .ltx_cite .ltx_font_italic {
   font-style: normal;
 }
+/* A cite's ref stays an ordinary inline (ar5iv-css#53). It was an inline-block
+   (2022, for 2006.09882's justified `[10, 24, 44]` cluster, whose cites were then
+   separate `<cite>`s split by semicolon text nodes), but an atomic inline is a
+   soft-wrap opportunity on both sides whatever the neighbouring characters, so
+   lines broke right after `[`/`(` and right before `]`/`)`: `[` / `39]` (arXiv
+   2608.21320v1, 2409.12111, 2403.11784, 2510.22681v1). As an inline the brackets
+   stay glued by the line-breaking rules (no break after an opening, or before a
+   closing, punctuation) and a line breaks at the `; `/`, ` between cites.
+   `nowrap` still keeps a multi-word ref (`Li et al., 2009`) whole; text-indent
+   (an inline-block concern, see 1810.10704) no longer applies. */
 .ltx_cite > .ltx_ref {
   white-space: nowrap;
-  /* inline-block + custom line-height: cites separated by
-     semicolon text nodes get spaced out too far under justified
-     text-align without these (see 2006.09882's Introduction
-     `[10, 24, 44]` cluster). Verified still load-bearing
-     2026-05-15 cross-engine: disable-and-diff on 2006.09882
-     produces 8753 px diff in WebKit p004 and 2544 px in
-     Chromium p012, with downstream reflow cascade. */
-  display: inline-block;
   line-height: 1.4rem;
-  /* see the introduction at 1810.10704 for why text-indent needs to be 0 */
-  text-indent: 0;
 }
 
 /* title page image. `min(30rem, 100%)` so the cap never exceeds
