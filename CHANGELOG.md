@@ -13,10 +13,13 @@ the project follows [semantic versioning](https://semver.org/).
   or `\parbox` (lifted out as a real section carrying the box's class) keeps the box's width the
   same way, capped at its container like a minipage. An un-layered `!important` rule of zero specificity applies it at the inline style's
   rank, so every layered ar5iv rule ranks under it as before, every `!important` one over it, and a
-  `width:` in the box's own style after it (varwidth's `max-content`) still wins: pages render as
-  before (every element's box and the screenshot ink identical in Chrome and Firefox at 1280, 768
-  and 375 px). Override it with an `!important` rule, or reuse the value
-  (`width: min(var(--ltx-box-width), 100%) !important`).
+  `width:` in the box's own style (varwidth's `max-content`) still wins: pages render as before
+  (every element's box identical in Chrome and Firefox at 1280 and 375 px, and the screenshot ink
+  where compared). Override one box with `.sel { --ltx-box-width: <w> !important }` or
+  `.sel { width: <w> !important }`, reuse the value (`width: min(var(--ltx-box-width), 100%)
+  !important`), or switch every box width off with
+  `:where([style*="--ltx-box-width:"]) { --ltx-box-width: initial !important }`. The widths now
+  need this rule: a page rendered without ar5iv.css or LaTeXML.css loses them.
 - **Flush itemize bullets stay inside their container.** `itemize[leftmargin=*]`
   (`.ltx_itemize.ltx_leftmargin_flush`) zeroed the padding its hanging tag relies on, so bullets
   sat 2.5rem outside the text edge, and off-screen with clipped text on phones (arXiv 2610.06709).

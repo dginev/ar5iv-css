@@ -60,11 +60,11 @@
    ============================================================ */
 
 /* A box's width (minipage, \parbox, \makebox, p{} cell, tabular*), which latexml-oxide
-   writes as --ltx-box-width. Un-layered, important and of zero specificity, it ranks as
-   the inline `width:` it replaces did: over every normal rule, under every other
-   !important one (every layered one included), and under a width the box's own style
-   sets after it (varwidth's max-content). Override it with an !important rule. */
-:where([style*="--ltx-box-width:"]:not([style*=";width:"], [style*="; width:"])) {
+   writes as --ltx-box-width. Un-layered, important and of zero specificity, it ranks where
+   the inline `width:` it replaces ranked: over every normal rule, under every other
+   !important one (every layered one included). A width the box's own style sets
+   (varwidth's max-content) wins over it. Override it with an !important rule. */
+:where([style*="--ltx-box-width:"]:not([style^="width:"], [style*=";width:"], [style*="; width:"])) {
   width: var(--ltx-box-width, auto) !important;
 }
 
