@@ -20,6 +20,15 @@ the project follows [semantic versioning](https://semver.org/).
   !important`), or switch every box width off with
   `:where([style*="--ltx-box-width:"]) { --ltx-box-width: initial !important }`. The widths now
   need this rule: a page rendered without ar5iv.css or LaTeXML.css loses them.
+- **A box's height and depth are `--ltx-box-height` and `--ltx-box-depth`.** latexml-oxide now writes
+  a `\raisebox{y}[h][d]`'s or a rotated or scaled box's `height:<h+d>;vertical-align:<-d>` as TeX's
+  own values, `--ltx-box-height:<h>;--ltx-box-depth:<d>`. Three un-layered rules beside the width's
+  derive `height:` (h, or h+d) and `vertical-align:` (-d) at the inline style's rank, each off where
+  the box's own style sets that property (a `\raisebox` shift's `bottom:`, an author's `height:`);
+  on the 52 arXiv pages whose HTML moved, every element's box is identical in Chrome and Firefox at
+  1280 and 375 px. Switch every box height off with
+  `:where([style*="--ltx-box-height:"]) { --ltx-box-height: initial !important }`, or every depth
+  with `--ltx-box-depth: 0pt` the same way.
 - **Flush itemize bullets stay inside their container.** `itemize[leftmargin=*]`
   (`.ltx_itemize.ltx_leftmargin_flush`) zeroed the padding its hanging tag relies on, so bullets
   sat 2.5rem outside the text edge, and off-screen with clipped text on phones (arXiv 2610.06709).
