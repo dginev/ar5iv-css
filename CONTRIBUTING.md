@@ -85,7 +85,7 @@ which is the earliest named layer).
 
 ## Regression corpus
 
-The CSS file's comments cite 51 distinct arXiv IDs as live test
+The CSS file's comments cite 52 distinct arXiv IDs as live test
 cases (e.g. `1810.10704`, `astro-ph/0001001`, `2510.11037`). They
 are the canonical visual-regression corpus. The full set is
 maintained in `examples/fetch-corpus.sh` and consumed by
@@ -97,7 +97,7 @@ paper locally and eyeball.
 ## Visual regression
 
 ```bash
-./examples/fetch-corpus.sh ar5iv               # fetch all 51 corpus papers
+./examples/fetch-corpus.sh ar5iv               # fetch all 52 corpus papers
                                                # (~120 MB to examples/)
 node tools/visual.mjs --update                 # generate baseline
                                                # (~440 MB to tools/baseline/, ~3 min)
@@ -115,7 +115,7 @@ above the per-image pixel-count tolerance (default 400) fail the
 run; diff PNGs land in `tools/.cache/diff/` for inspection.
 
 **Baselines are gitignored**, not committed. The Chromium baseline
-(51 papers × 4 viewport/theme cells, with paginated long papers
+(52 papers × 4 viewport/theme cells, with paginated long papers
 chunked into `<base>-pNNN.png` files) totals ~8 000 PNGs per engine
 — too large for git history. Each developer generates locally via
 `node tools/visual.mjs --update`.

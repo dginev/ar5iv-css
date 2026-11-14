@@ -1817,6 +1817,44 @@ blockquote.ltx_epigraph {
   z-index: initial;
 }
 
+/* Exception: a {quotation} holding the reference list (ar5iv-css#13).
+   The JENAM 2005 template's \beginrefer is \section*{References}
+   \begin{quotation}\mbox{}\par, and each \refer entry is an \indent-ed
+   paragraph with \parindent = -\leftmargin: a hanging indent, upright,
+   its first line flush with the text block (arXiv astro-ph/0508157 and
+   five more JENAM 2005 papers: 0507693, 0509231, 0509896, 0510337,
+   0510538). The key is that opening: a section-level quote led by the
+   empty paragraph \mbox{}\par leaves, then two or more entries and
+   nothing else. latexml-oxide emits each entry as an \indent-ed
+   .ltx_para, Perl LaTeXML as a bare .ltx_p. A quote that \indent-s its
+   paragraphs but lacks the empty lead stays a quotation. Drop the
+   italic, the rule and the quote mark; hang each entry by 2.5em
+   (\leftmargini). */
+.ltx_section > .ltx_para > blockquote.ltx_quote:only-child:has(> .ltx_p:first-child > .ltx_text:only-child:empty):is(
+    :has(> .ltx_para.ltx_indent + .ltx_para.ltx_indent):not(:has(> :not(.ltx_p:first-child, .ltx_para.ltx_indent))),
+    :has(> .ltx_p + .ltx_p + .ltx_p):not(:has(> :not(.ltx_p)))) {
+  border-inline-start: initial;
+  font-style: initial;
+  margin: 0;
+  padding: 0;
+  &::before,
+  &::after {
+    content: none;
+  }
+  & > .ltx_para.ltx_indent {
+    margin-bottom: 0;
+  }
+  & > .ltx_para.ltx_indent > .ltx_p:first-child,
+  & > .ltx_p:not(:first-child) {
+    margin-bottom: 0.75em;
+    padding-inline-start: 2.5em;
+    text-align: start;
+    /* !important: beats `.ltx_indent > .ltx_p:first-child
+       { text-indent: 2em !important }` (explicit-indent rule above) */
+    text-indent: -2.5em !important;
+  }
+}
+
 /* ================================= */
 /* from LaTeXML.css, possibly edited */
 /* ================================= */

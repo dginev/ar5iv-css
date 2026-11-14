@@ -87,6 +87,16 @@ the project follows [semantic versioning](https://semver.org/).
   24 → 0 px (1712.01103 at 768 px; 2407.16893 Table 1 at 375 px) in Chromium, and likewise
   to 0 in Firefox and WebKit. Panels captioned below are unchanged. As with captions below,
   captions of different line counts now offset the bodies instead of the captions.
+- **A reference list set in `{quotation}` reads as a reference list** (ar5iv-css#13). The JENAM
+  2005 template's `\beginrefer` opens References with `\begin{quotation}\mbox{}\par`, and each
+  `\refer` entry is an `\indent`-ed paragraph with a negative `\parindent`; it rendered as an
+  italic pull-quote with a quote mark and a 2em first-line indent. A section-level quote led by
+  that empty `\mbox{}\par` paragraph, then two or more entries and nothing else, is now upright,
+  unruled and flush, each entry hung by 2.5em, 0.75em apart. Both latexml-oxide output (entries
+  as `\indent`-ed paragraphs; main 8060573111 on astro-ph/0508157, 0507693, 0509231, 0509896,
+  0510337, 0510538) and the served Perl LaTeXML page (bare paragraphs) match, in Chromium,
+  Firefox and WebKit. Quotes without the empty lead, `\indent`-ed or not, are untouched. In
+  print, the list may break across pages.
 - **A citation no longer breaks right after `[` or right before `]`** (ar5iv-css#53), in
   Chromium and Firefox. `.ltx_cite > .ltx_ref` was an inline-block, and an atomic inline is a
   soft-wrap opportunity on both sides, so lines broke as `[` / `39]`. It is now an ordinary
