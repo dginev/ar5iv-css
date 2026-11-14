@@ -210,6 +210,21 @@ mjx-container {
 mtd {
   padding: 0.1rem;
 }
+/* An `aligned`/`split` table (columnspacing="0pt") meets its columns at the relation, as TeX
+   does: its cells carry no padding (latexml-oxide issue 756). Mirrors latexml-oxide's LaTeXML.css. */
+math mtable[columnspacing="0pt"] mtd {
+  padding-left: 0;
+  padding-right: 0;
+}
+/* MathML Core dropped `columnalign`, and Chrome sets a `columnalign="right"` cell flush left,
+   so the left column of an `aligned` did not meet its relation (latexml-oxide issues 809, 755).
+   Mirrors latexml-oxide's LaTeXML.css. */
+math mtd[columnalign="right"] {
+  justify-items: end;
+}
+math mtd[columnalign="left"] {
+  justify-items: start;
+}
 /* Sometimes .ltx_markedasmath may contain an actual math element
    with a textual trailing dot, say in a <td> (1910.08129)
    avoid breaks in those cases */
