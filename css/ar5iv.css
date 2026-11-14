@@ -2617,6 +2617,13 @@ svg foreignObject > .ltx_foreignobject_container {
 .ltx_text.ltx_verbatim.ltx_inline-block {
   max-width: 100%;
 }
+/* ...and so is the box fvextra's xleftmargin/xrightmargin wrap a line in
+   (arXiv 2605.01024), a block like the line itself. */
+.ltx_text.ltx_inline-block:has(> .ltx_text.ltx_verbatim.ltx_inline-block) {
+  display: block;
+  text-indent: 0;
+  max-width: 100%;
+}
 .ltx_text.ltx_verbatim.ltx_inline-block:has(> .ltx_parbox) {
   display: flex;
 }

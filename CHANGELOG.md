@@ -27,8 +27,8 @@ Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
   (`ltx_img_square`, which sets no `height: auto` above 52rem) rendered 138 × 215 px
   (ratio 0.642) at 1280 px, now 138 × 138. Mirrors latexml-oxide PR #711
   (brucemiller/LaTeXML#2392).
-- **An fvextra `breaklines` Verbatim reflows on a phone.** Each fancyvrb line is capped at
-  its box and a `breaklines` line is a flex row whose `\parbox` shrinks to it, so at 375 px a
+- **An fvextra `breaklines` Verbatim reflows on a phone.** Each fancyvrb line, and the box
+  `xleftmargin`/`xrightmargin` wrap it in (arXiv 2605.01024), is capped at its box and a `breaklines` line is a flex row whose `\parbox` shrinks to it, so at 375 px a
   `frame=single,breaklines` box no longer scrolls (scrollWidth 468 → 341 = clientWidth) and an
   unframed one no longer widens the page (476 → 375 px); the frame is a block, as a display.
   Its paragraph adds no blank row (a one-row line 48 → 24 px at 1280 px). Inline `\verb` keeps
