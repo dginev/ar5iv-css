@@ -1811,20 +1811,31 @@ blockquote.ltx_epigraph {
   }
 }
 
+/* A display equation's content cell (`\[…\]`, `equation`) is an `ltx_eqn_cell`
+   with an alignment class but no `ltx_td`, so it needs the cell nowrap (and its
+   `ltx_wrap` opt-out) too: otherwise a display of several text runs
+   (`\[\text{a}\quad\text{b}\]`) breaks between them, though TeX sets a display
+   on one line. Mirrors latexml-oxide LaTeXML.css (latexml-oxide #527, PR #571). */
 .ltx_td.ltx_align_left,
 .ltx_th.ltx_align_left,
+.ltx_eqn_cell.ltx_align_left,
 .ltx_td.ltx_align_right,
 .ltx_th.ltx_align_right,
+.ltx_eqn_cell.ltx_align_right,
 .ltx_td.ltx_align_center,
-.ltx_th.ltx_align_center {
+.ltx_th.ltx_align_center,
+.ltx_eqn_cell.ltx_align_center {
   white-space: nowrap;
 }
 .ltx_td.ltx_align_left.ltx_wrap,
 .ltx_th.ltx_align_left.ltx_wrap,
+.ltx_eqn_cell.ltx_align_left.ltx_wrap,
 .ltx_td.ltx_align_right.ltx_wrap,
 .ltx_th.ltx_align_right.ltx_wrap,
+.ltx_eqn_cell.ltx_align_right.ltx_wrap,
 .ltx_td.ltx_align_center.ltx_wrap,
 .ltx_th.ltx_align_center.ltx_wrap,
+.ltx_eqn_cell.ltx_align_center.ltx_wrap,
 .ltx_td.ltx_align_justify,
 .ltx_th.ltx_align_justify {
   white-space: normal;

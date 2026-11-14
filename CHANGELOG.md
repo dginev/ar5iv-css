@@ -4,6 +4,17 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
+
+### Fixed
+- **A display of several text runs stays on one line.** A display equation's content cell
+  (`td.ltx_eqn_cell.ltx_align_*`, no `ltx_td`) now gets the table-cell `white-space: nowrap`
+  with its `ltx_wrap` opt-out, so `\[\text{The solution}\quad\text{is not valid}\]` no
+  longer breaks between its runs (cell 58 → 34 px, two lines → one, Chrome at 1280 and
+  375 px). Mirrors latexml-oxide #527 (PR #571).
+
 ## 0.9.2 — 2026-11-05
 
 A small patch release mirroring latexml-oxide perfect-kernel CSS: rules for
