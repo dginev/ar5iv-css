@@ -14,8 +14,8 @@ the project follows [semantic versioning](https://semver.org/).
   same way, capped at its container like a minipage. An un-layered `!important` rule of zero specificity applies it at the inline style's
   rank, so every layered ar5iv rule ranks under it as before, every `!important` one over it, and a
   `width:` in the box's own style (varwidth's `max-content`) still wins: pages render as before
-  (every element's box identical in Chrome and Firefox at 1280 and 375 px, and the screenshot ink
-  where compared). Override one box with `.sel { --ltx-box-width: <w> !important }` or
+  (on 63 arXiv pages, every element's box identical in Chrome at 1280 and 375 px and in Firefox at
+  1280 px; in Firefox at 375 px six glyph boxes on one page are 2 px shorter, nothing moved). Override one box with `.sel { --ltx-box-width: <w> !important }` or
   `.sel { width: <w> !important }`, reuse the value (`width: min(var(--ltx-box-width), 100%)
   !important`), or switch every box width off with
   `:where([style*="--ltx-box-width:"]) { --ltx-box-width: initial !important }`. The widths now
