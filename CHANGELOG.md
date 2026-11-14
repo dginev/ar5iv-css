@@ -6,9 +6,23 @@ the project follows [semantic versioning](https://semver.org/).
 
 ## Unreleased
 
-Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
-
 ### Fixed
+- **Flush itemize bullets stay inside their container.** `itemize[leftmargin=*]`
+  (`.ltx_itemize.ltx_leftmargin_flush`) zeroed the padding its hanging tag relies on, so bullets
+  sat 2.5rem outside the text edge, and off-screen with clipped text on phones (arXiv 2610.06709).
+  Bullets now land on the edge, as `leftmargin=*` does in LaTeX. Enumerate and description lists
+  are unchanged.
+- **`\thanks` notes in one creator no longer overprint in the wide margin.** Stacking counted only
+  preceding creators, so several notes in one creator all landed in the same slot (one person with
+  several `\thanks`, or `\author{A\thanks{} \qquad B\thanks{}}`; arXiv 2610.06709).
+- **An aligned left column meets its relation in Chrome.** MathML Core dropped `columnalign`,
+  and Chrome set a `columnalign="right"` cell flush left, so in `aligned` (inline, or inside
+  `gather*`) the gap before `=` varied by row. `math mtd[columnalign]` now sets
+  `justify-items`, and an `aligned`/`split` table (`columnspacing="0pt"`) drops the 0.1rem cell
+  padding, so the columns meet at the relation. Both mirror latexml-oxide's LaTeXML.css (its
+  issues 809, 755, 756). Chrome 155 on the issue-809 example, gap before `=` per row: 30.0,
+  27.7, 26.2, 11.0 px before; 4.4, 4.4, 4.4, 7.8 px after (4.4 px = TeX's thick space; the
+  fourth row's left column is a fraction).
 - **Copying a numbered listing leaves its line numbers out.** `.ltx_listing
   .ltx_tag_listingline` is `user-select: none`: a select-all of a `numbers=left` lstlisting
   copied `1 for i in x: 2 print(i)`, now `for i in x: print(i)` (Chrome, 1280 px). Mirrors
