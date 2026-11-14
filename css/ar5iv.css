@@ -3575,3 +3575,14 @@ mfrac > * {
 }
 
 }  /* end @layer fixes */
+
+/* latexml-oxide #475: MathJax gives its display container a 1em block margin (v3/v4
+   mjx-container[display], v2 .MathJax_Display); inside an equation cell it cannot collapse
+   with the table's margin, so consecutive displays sat far apart (MathJax 2.1 in Chrome:
+   formulas 54px apart, natively 20px). The table supplies the display skip. Un-layered:
+   MathJax injects its styles un-layered at run time, which beat any @layer rule. */
+table.ltx_eqn_table td.ltx_eqn_cell > mjx-container[display="true"],
+table.ltx_eqn_table td.ltx_eqn_cell > .MathJax_Display {
+  margin-top: 0;
+  margin-bottom: 0;
+}

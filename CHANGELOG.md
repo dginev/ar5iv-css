@@ -4,6 +4,14 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+### Fixed
+- **Consecutive display equations are not spread apart under MathJax** (latexml-oxide issue 475).
+  MathJax's display container carries a 1em margin, which inside the equation table cannot
+  collapse with the table's own margin; it is zeroed there (MathJax 2.1 in Chrome: 54 px
+  between two displays, 20 px natively, now 22 px).
+
 ## 0.9.2 — 2026-11-05
 
 A small patch release mirroring latexml-oxide perfect-kernel CSS: rules for
