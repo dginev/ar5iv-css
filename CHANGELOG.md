@@ -79,6 +79,14 @@ the project follows [semantic versioning](https://semver.org/).
   centre for `(1)`, 74 px for a long `\tag`); a one-row centred equation is now a grid whose tag
   sits over the pad on its side with a 1em quad, so the formula moves only as far as its tag needs
   (tex.web §1202). A `p{}` cell's equation keeps to the column's width; multi-row tables are unchanged.
+- **Subfigure panels captioned above align on their captions** (ar5iv-css#31). Flex
+  subfigures were always bottom-aligned, which suits captions below. A panel whose caption
+  comes first (the norm for subtables) now aligns to the top, so the captions share one
+  line. On latexml-oxide main output (8060573111), the spread of caption tops within a row
+  went 44 → 0 px (2510.22681v1 Table 1), 18–44 → 0 px (2111.00396 Tables 2–3, 5–6, 7–8),
+  24 → 0 px (1712.01103 at 768 px; 2407.16893 Table 1 at 375 px) in Chromium, and likewise
+  to 0 in Firefox and WebKit. Panels captioned below are unchanged. As with captions below,
+  captions of different line counts now offset the bodies instead of the captions.
 - **A reference list set in `{quotation}` reads as a reference list** (ar5iv-css#13). The JENAM
   2005 template's `\beginrefer` opens References with `\begin{quotation}\mbox{}\par`, and each
   `\refer` entry is an `\indent`-ed paragraph with a negative `\parindent`; it rendered as an
