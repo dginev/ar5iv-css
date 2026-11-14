@@ -2738,6 +2738,8 @@ svg foreignObject > .ltx_foreignobject_container {
   box-sizing: border-box;
 }
 .ltx_listing .ltx_tag_listingline {
+  /* copying the code leaves its line numbers out (LaTeXML 95a77fc0, #2850) */
+  user-select: none;
   padding-right: 0.3rem;
   /* gutter rule between line-number tag and code: hairline, currentColor */
   border-right: var(--border-hairline) solid;

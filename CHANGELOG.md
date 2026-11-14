@@ -9,6 +9,12 @@ the project follows [semantic versioning](https://semver.org/).
 Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
 
 ### Fixed
+- **Copying a numbered listing leaves its line numbers out.** `.ltx_listing
+  .ltx_tag_listingline` is `user-select: none`: a select-all of a `numbers=left` lstlisting
+  copied `1 for i in x: 2 print(i)`, now `for i in x: print(i)` (Chrome, 1280 px). Mirrors
+  LaTeXML `95a77fc0` (#2850) via latexml-oxide PR #844. LaTeXML's other change there
+  (`ee4b3640`, dark-mode colours on `body`, not `:root`) needs no mirror: ar5iv's `body`
+  already carries the theme's colours.
 - **A display of several text runs stays on one line.** A display equation's content cell
   (`td.ltx_eqn_cell.ltx_align_*`, no `ltx_td`) now gets the table-cell `white-space: nowrap`
   with its `ltx_wrap` opt-out, so `\[\text{The solution}\quad\text{is not valid}\]` no
