@@ -2604,6 +2604,29 @@ svg foreignObject > .ltx_foreignobject_container {
   overflow-x: auto;
   box-sizing: border-box;
 }
+/* latexml-oxide #702: the box is a display, so a block (no paragraph indent
+   shifts it past the viewport); each fancyvrb line is capped at its box. An
+   fvextra `breaklines` line is a fixed break-indent box beside a print-width
+   \parbox, wider than a phone: as a flex row the parbox shrinks to the line and
+   its text reflows, framed (`.ltx_break`) or not. Mirrors the bundled
+   LaTeXML.css delta. */
+.ltx_framed.ltx_framed_verbatim {
+  display: block;
+  width: fit-content;
+}
+.ltx_text.ltx_verbatim.ltx_inline-block {
+  max-width: 100%;
+}
+.ltx_text.ltx_verbatim.ltx_inline-block:has(> .ltx_parbox) {
+  display: flex;
+}
+.ltx_verbatim > .ltx_inline-block {
+  flex-shrink: 0;
+}
+.ltx_verbatim > .ltx_parbox {
+  flex-shrink: 1;
+  min-width: 0;
+}
 .ltx_listing > .ltx_framed_rectangle {
   /* download arrow has a glitchy border, disable it. */
   border-style: none;
@@ -3503,6 +3526,15 @@ span.ltx_framed {
 }
 .ltx_verbatim .ltx_parbox {
   white-space: normal;
+}
+/* Inline `\verb` keeps its spaces, and an unbroken one breaks rather than widen
+   a narrow page; a `breaklines` line's paragraph adds no blank row below it. */
+code.ltx_verbatim {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+.ltx_verbatim > .ltx_parbox > .ltx_para {
+  margin-bottom: 0;
 }
 /* fancyvrb typesets each source line as a width-limited inline-block
    (`.ltx_text.ltx_verbatim.ltx_inline-block`): one source line per row, a blank
