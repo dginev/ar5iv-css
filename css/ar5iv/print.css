@@ -81,6 +81,11 @@
   blockquote.ltx_quote {
     break-inside: avoid;
   }
+  /* ...but a reference list set as a quote (ar5iv.css, ar5iv-css#13)
+     may run for pages: let it break. */
+  .ltx_section > .ltx_para > blockquote.ltx_quote:only-child:has(> .ltx_p:first-child > .ltx_text:only-child:empty) {
+    break-inside: auto;
+  }
   /* Don't orphan a heading at the bottom of a page. */
   .ltx_title_section,
   .ltx_title_subsection,
