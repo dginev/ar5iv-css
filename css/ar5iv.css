@@ -168,6 +168,13 @@ body {
 .ltx_flex_figure + .ltx_para {
   clear: both;
 }
+/* The glue a \bigskip, \medskip or \vspace puts between two paragraphs:
+   latexml-oxide keeps it on the second as --ltx-skip-before (its
+   OXIDIZED_DESIGN_DIVERGENCES #1044). It adds to the paragraph gap; a padding,
+   since the .ltx_p margins above do not collapse into a top margin here. */
+.ltx_para[style*="--ltx-skip-before:"] {
+  padding-top: var(--ltx-skip-before);
+}
 
 .ltx_p {
   line-height: var(--line-height-prose);

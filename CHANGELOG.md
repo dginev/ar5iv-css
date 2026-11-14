@@ -4,6 +4,14 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+### Fixed
+- **A `\bigskip`, `\medskip` or `\vspace` between two paragraphs shows its gap.** latexml-oxide
+  keeps the glue on the second paragraph as `--ltx-skip-before` (its OXIDIZED_DESIGN_DIVERGENCES
+  #1044); `.ltx_para[style*="--ltx-skip-before:"]` adds it to the paragraph gap as `padding-top`
+  (40 px for a 12pt `\bigskip` at 16 px, against 24 px before; Chrome and Firefox).
+
 ## 0.9.2 — 2026-11-05
 
 A small patch release mirroring latexml-oxide perfect-kernel CSS: rules for
