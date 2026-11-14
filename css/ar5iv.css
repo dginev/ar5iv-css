@@ -3479,6 +3479,27 @@ span.ltx_framed {
   text-align: left;
   font-size: 90%;
 }
+/* Verbatim keeps its spaces (latexml-oxide #431, PR #481): fancyvrb's per-line
+   spans otherwise lose their indentation and runs of spaces. A `<pre>` is `pre`
+   already; inline `\verb` (`code`) is left to wrap, so a long one cannot push a
+   narrow page into horizontal scroll. An fvextra `breaklines` line wraps its text
+   in a `\parbox`: `normal` there, else the line would not wrap and the markup's
+   newlines would render as blank lines. */
+.ltx_verbatim:not(code) {
+  white-space: pre;
+}
+.ltx_verbatim .ltx_parbox {
+  white-space: normal;
+}
+/* fancyvrb typesets each source line as a width-limited inline-block
+   (`.ltx_text.ltx_verbatim.ltx_inline-block`): one source line per row, a blank
+   source line keeps a line's height, and the paragraph's text-indent does not
+   shift the first line. Inline `\verb` is a `code` without `ltx_inline-block`. */
+.ltx_text.ltx_verbatim.ltx_inline-block {
+  display: block;
+  text-indent: 0;
+  min-height: 1lh;
+}
 /*======================================================================
  Meta stuff */
 .ltx_tag_note {

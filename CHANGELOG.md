@@ -14,6 +14,11 @@ Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
   with its `ltx_wrap` opt-out, so `\[\text{The solution}\quad\text{is not valid}\]` no
   longer breaks between its runs (cell 58 → 34 px, two lines → one, Chrome at 1280 and
   375 px). Mirrors latexml-oxide #527 (PR #571).
+- **fancyvrb `Verbatim` keeps its indentation and blank lines.** `.ltx_verbatim` (not inline
+  `code`) is `white-space: pre`, and each fancyvrb line span is one block row with a line's
+  height: `    return  0;` keeps its four-space indent and double space (was `return 0;`),
+  a blank source line is 24 px (was 0), likewise inside a `frame=single` box. Inline `\verb` still wraps, and an fvextra `breaklines` line keeps
+  wrapping (`.ltx_verbatim .ltx_parbox` is `normal`). Mirrors latexml-oxide #431 (PR #481).
 
 ## 0.9.2 — 2026-11-05
 
