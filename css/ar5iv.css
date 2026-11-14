@@ -3,7 +3,7 @@
 
   Public theming surface (set per-element by LaTeXML, via inline style="…"):
     --ltx-fg-color, --ltx-bg-color, --ltx-border-color,
-    --ltx-fill-color,  --ltx-stroke-color
+    --ltx-fill-color,  --ltx-stroke-color, --ltx-box-width
   See docs/rfc_latexml_custom_properties.md for the full contract,
   the OKLCH dark-mode strategy, and the rationale for the inversion
   constants used below (the `0.8237` for backgrounds derives from the
@@ -83,6 +83,12 @@ img {
 }
 [style*="--ltx-stroke-color:"] {
   stroke: var(--ltx-stroke-color);
+}
+/* A box's width that its element cannot carry as a width attribute (a \section inside a
+   minipage or \parbox, latexml-oxide QAB57): override or disable it by redefining this rule. */
+[style*="--ltx-box-width:"] {
+  width: var(--ltx-box-width, auto);
+  max-width: 100%;
 }
 
 /* Main content */

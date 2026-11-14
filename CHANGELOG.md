@@ -4,6 +4,15 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+### Fixed
+- **A section set inside a minipage or `\parbox` keeps the box's width.** latexml-oxide lifts
+  such a `\section` out as a real section carrying the box's class (`ltx_minipage`), and now its
+  width as the custom property `--ltx-box-width` (a section has no width attribute); the rule
+  `[style*="--ltx-box-width:"]` applies it, capped at the column. A stylesheet overrides or
+  disables it by redefining that rule.
+
 ## 0.9.2 — 2026-11-05
 
 A small patch release mirroring latexml-oxide perfect-kernel CSS: rules for
