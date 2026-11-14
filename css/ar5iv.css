@@ -2624,13 +2624,20 @@ svg foreignObject > .ltx_foreignobject_container {
   text-indent: 0;
   max-width: 100%;
 }
-.ltx_text.ltx_verbatim.ltx_inline-block:has(> .ltx_parbox) {
+/* An ltx_text kept around the indent boxes and parbox (it carries an id, as
+   with `numbers=left` on an indented line) passes its children to the row. */
+.ltx_text.ltx_verbatim.ltx_inline-block:has(> .ltx_parbox, > .ltx_text > .ltx_parbox) {
   display: flex;
 }
-.ltx_verbatim > .ltx_inline-block {
+.ltx_verbatim > .ltx_text:has(> .ltx_parbox) {
+  display: contents;
+}
+.ltx_verbatim > .ltx_inline-block,
+.ltx_verbatim > .ltx_text > .ltx_inline-block {
   flex-shrink: 0;
 }
-.ltx_verbatim > .ltx_parbox {
+.ltx_verbatim > .ltx_parbox,
+.ltx_verbatim > .ltx_text > .ltx_parbox {
   flex-shrink: 1;
   min-width: 0;
 }
@@ -3535,10 +3542,15 @@ span.ltx_framed {
   white-space: normal;
 }
 /* Inline `\verb` keeps its spaces, and an unbroken one breaks rather than widen
-   a narrow page; a `breaklines` line's paragraph adds no blank row below it. */
+   a narrow page (in a table cell too: ar5iv's cells wrap); a `breaklines` line's
+   paragraph wraps, keeps its spaces (Python indentation) and adds no blank row
+   below it. */
 code.ltx_verbatim {
   white-space: pre-wrap;
   overflow-wrap: break-word;
+}
+.ltx_verbatim .ltx_parbox .ltx_p {
+  white-space: pre-wrap;
 }
 .ltx_verbatim > .ltx_parbox > .ltx_para {
   margin-bottom: 0;

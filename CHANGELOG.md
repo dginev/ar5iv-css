@@ -34,6 +34,13 @@ Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
   Its paragraph adds no blank row (a one-row line 48 → 24 px at 1280 px). Inline `\verb` keeps
   its spaces and breaks an unbroken run rather than widen the page (620 → 375 px). Mirrors
   latexml-oxide #702 (PR #718's rule capped nothing: the line carries an inline `width`).
+- **A numbered, indented `breaklines` line reflows too, and every breaklines line keeps its
+  spaces.** With ids an `ltx_text` wraps such a line's indent boxes and `\parbox`; it is now
+  `display: contents`, so the parbox still shrinks in the line's flex row (375 px: a
+  `numbers=left,frame=single` box's scrollWidth 464 → 341 = clientWidth, an unframed one's
+  page 476 → 375 px). The line's paragraph is `pre-wrap`: it wraps and keeps the source's
+  spaces (`        return   x` rendered `return x`), with no blank rows. Mirrors
+  latexml-oxide #702.
 
 ## 0.9.2 — 2026-11-05
 
