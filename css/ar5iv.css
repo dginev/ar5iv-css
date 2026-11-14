@@ -46,12 +46,15 @@
 
 /* ============================================================
    The bulk of ar5iv.css now sits inside `@layer components`.
-   Three regions remain un-layered:
+   Four regions remain un-layered:
    - the transformed-wrappers feature flag near the middle of the
      file, whose !important rules defeat LaTeXML's inline
      `style="transform:…"` — a normal declaration, so any author
      !important beats it and the layer placement isn't load-bearing;
    - the --ltx-box-width rule just below, which stands in for an inline `width:`;
+   - the MathJax display-margin reset at the very end, which must beat
+     the un-layered styles MathJax injects at run time (any layered
+     rule loses to them, whatever its specificity);
    - nothing else; the imports above and the closing `@layer fixes`
      near the end are deliberate placements.
    ============================================================ */
@@ -224,6 +227,21 @@ mjx-container {
 /* add some padding to math table cells, e.g. space out cells with fractions */
 mtd {
   padding: 0.1rem;
+}
+/* An `aligned`/`split` table (columnspacing="0pt") meets its columns at the relation, as TeX
+   does: its cells carry no padding (latexml-oxide issue 756). Mirrors latexml-oxide's LaTeXML.css. */
+math mtable[columnspacing="0pt"] mtd {
+  padding-left: 0;
+  padding-right: 0;
+}
+/* MathML Core dropped `columnalign`, and Chrome sets a `columnalign="right"` cell flush left,
+   so the left column of an `aligned` did not meet its relation (latexml-oxide issues 809, 755).
+   Mirrors latexml-oxide's LaTeXML.css. */
+math mtd[columnalign="right"] {
+  justify-items: end;
+}
+math mtd[columnalign="left"] {
+  justify-items: start;
 }
 /* Sometimes .ltx_markedasmath may contain an actual math element
    with a textual trailing dot, say in a <td> (1910.08129)
@@ -488,6 +506,15 @@ span.ltx_role_orcid + span.ltx_role_affiliation:not(.ltx_note) {
 .ltx_annotated_personname > .ltx_personname {
   min-width: 0;
 }
+/* The ORCID iD logo (`svg.ltx_orcidlogo`, from orcidlink's `\orcidlink` /
+   `\orcidlogo`, and latexml-oxide's class `\orcid`) is a text-height inline glyph.
+   LaTeXML emits it 1.7em square (orcidlink.sty.ltxml), a badge that overflows the line.
+   Mirrors latexml-oxide (PR #737, arXiv/html_feedback#6571). */
+.ltx_orcidlogo {
+  height: 1em;
+  width: 1em;
+  vertical-align: -0.15em;
+}
 
 /* sometimes ltx_keywords only contains a single text node */
 /* and we can't write a selector for ".ltx_keywords that only has text" via CSS...
@@ -716,9 +743,12 @@ div.ltx_keywords:empty::before {
   }
   .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
     position: absolute;
-    top: 0;
     /* fixed vertical slot for stacking multiple notes (~7 lines + gap) */
     --thanks-slot: 10rem;
+    top: calc(
+      (var(--thanks-before, 0) + var(--thanks-extra, 0) + var(--thanks-index, 0)) *
+        var(--thanks-slot)
+    );
     inset-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
     width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
     box-sizing: border-box;
@@ -726,32 +756,36 @@ div.ltx_keywords:empty::before {
     text-align: start;
   }
   /* Multiple \thanks notes (several authors each with one, or title + author)
-     would all anchor at top:0 and pile up. CSS can't read sibling heights, so
-     stack them into FIXED vertical slots: the notes live in sibling
-     `.ltx_creator`s, so count how many PRECEDING creators contain a thanks note
-     via a `:has()` + `~` chain and offset by that many slots. Specificity rises
-     with each `~` link, so a note with N preceding thanks-creators matches every
-     rule up to N and the highest (N) wins. Covers up to 5 notes; a 6th reuses
-     slot 4 (papers with 6+ distinct author \thanks are essentially unheard of). A
-     note taller than a slot spills into the next -- the accepted tradeoff for a
-     heightless CSS stack. */
+     would all anchor at the top and pile up. CSS can't read sibling heights, so
+     stack them into FIXED vertical slots. A note's slot is the sum of three counts:
+     - --thanks-before: PRECEDING creators with a thanks note, via a `:has()` + `~`
+       chain. Specificity rises with each `~` link, so a note with N preceding
+       thanks-creators matches every rule up to N and the highest (N) wins.
+     - --thanks-extra: the further notes a preceding creator holds beyond its first.
+     - --thanks-index: this note's position among its own creator's notes. Several
+       notes can share one creator: one person with several \thanks, or authors
+       with no `\and` between them (`\author{A\thanks{} \qquad B\thanks{}}`).
+     A note taller than a slot spills into the next -- the accepted tradeoff for a
+     heightless CSS stack. Limits: --thanks-extra reflects only the largest
+     preceding multi-note creator; past 10 notes in a creator or 5 creators with
+     notes, slots repeat. */
   .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator
     .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    top: var(--thanks-slot);
+    --thanks-before: 1;
   }
   .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator
     .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    top: calc(2 * var(--thanks-slot));
+    --thanks-before: 2;
   }
   .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator
     .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    top: calc(3 * var(--thanks-slot));
+    --thanks-before: 3;
   }
   .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator:has(.ltx_role_thanks)
@@ -759,7 +793,49 @@ div.ltx_keywords:empty::before {
     ~ .ltx_creator:has(.ltx_role_thanks)
     ~ .ltx_creator
     .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    top: calc(4 * var(--thanks-slot));
+    --thanks-before: 4;
+  }
+  .ltx_creator:has(.ltx_role_thanks ~ .ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    --thanks-extra: 1;
+  }
+  .ltx_creator:has(.ltx_role_thanks ~ .ltx_role_thanks ~ .ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    --thanks-extra: 2;
+  }
+  .ltx_creator:has(.ltx_role_thanks ~ .ltx_role_thanks ~ .ltx_role_thanks ~ .ltx_role_thanks)
+    ~ .ltx_creator
+    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
+    --thanks-extra: 3;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(2 of .ltx_role_thanks) {
+    --thanks-index: 1;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(3 of .ltx_role_thanks) {
+    --thanks-index: 2;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(4 of .ltx_role_thanks) {
+    --thanks-index: 3;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(5 of .ltx_role_thanks) {
+    --thanks-index: 4;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(6 of .ltx_role_thanks) {
+    --thanks-index: 5;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(7 of .ltx_role_thanks) {
+    --thanks-index: 6;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(8 of .ltx_role_thanks) {
+    --thanks-index: 7;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(9 of .ltx_role_thanks) {
+    --thanks-index: 8;
+  }
+  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(10 of .ltx_role_thanks) {
+    --thanks-index: 9;
   }
   /* the note now lives wholly in the margin; drop every dagger (the anchor one,
      which would otherwise sit on its own line in the creator flex column, and the
@@ -1826,20 +1902,31 @@ blockquote.ltx_epigraph {
   }
 }
 
+/* A display equation's content cell (`\[…\]`, `equation`) is an `ltx_eqn_cell`
+   with an alignment class but no `ltx_td`, so it needs the cell nowrap (and its
+   `ltx_wrap` opt-out) too: otherwise a display of several text runs
+   (`\[\text{a}\quad\text{b}\]`) breaks between them, though TeX sets a display
+   on one line. Mirrors latexml-oxide LaTeXML.css (latexml-oxide #527, PR #571). */
 .ltx_td.ltx_align_left,
 .ltx_th.ltx_align_left,
+.ltx_eqn_cell.ltx_align_left,
 .ltx_td.ltx_align_right,
 .ltx_th.ltx_align_right,
+.ltx_eqn_cell.ltx_align_right,
 .ltx_td.ltx_align_center,
-.ltx_th.ltx_align_center {
+.ltx_th.ltx_align_center,
+.ltx_eqn_cell.ltx_align_center {
   white-space: nowrap;
 }
 .ltx_td.ltx_align_left.ltx_wrap,
 .ltx_th.ltx_align_left.ltx_wrap,
+.ltx_eqn_cell.ltx_align_left.ltx_wrap,
 .ltx_td.ltx_align_right.ltx_wrap,
 .ltx_th.ltx_align_right.ltx_wrap,
+.ltx_eqn_cell.ltx_align_right.ltx_wrap,
 .ltx_td.ltx_align_center.ltx_wrap,
 .ltx_th.ltx_align_center.ltx_wrap,
+.ltx_eqn_cell.ltx_align_center.ltx_wrap,
 .ltx_td.ltx_align_justify,
 .ltx_th.ltx_align_justify {
   white-space: normal;
@@ -2538,6 +2625,10 @@ svg foreignObject > .ltx_foreignobject_container {
 }
 .ltx_minipage > .ltx_graphics {
   max-width: 100%;
+  /* keep the image's aspect ratio when the width is capped: a square image
+     (ltx_img_square sets no height:auto above 52rem) kept its height attribute
+     and distorted. Mirrors latexml-oxide (PR #711, brucemiller/LaTeXML#2392). */
+  height: auto;
 }
 /* minipages need some dedicated work (ar5iv#83),
    but for now we can accommodate with a bit of special-case padding; */
@@ -2594,6 +2685,50 @@ svg foreignObject > .ltx_foreignobject_container {
   max-width: 100%;
   overflow-x: auto;
   box-sizing: border-box;
+}
+/* latexml-oxide #702: the box is a display, so a block (no paragraph indent
+   shifts it past the viewport); each fancyvrb line is capped at its box. An
+   fvextra `breaklines` line is a fixed break-indent box beside a print-width
+   \parbox, wider than a phone: as a flex row the parbox shrinks to the line and
+   its text reflows, framed (`.ltx_break`) or not. Mirrors the bundled
+   LaTeXML.css delta. */
+.ltx_framed.ltx_framed_verbatim {
+  display: block;
+  width: fit-content;
+}
+.ltx_text.ltx_verbatim.ltx_inline-block {
+  max-width: 100%;
+}
+/* ...and so is the box fvextra's xleftmargin/xrightmargin wrap a line in
+   (arXiv 2605.01024). Its margin arrives as an EM SPACE (U+2003) text node
+   beside the line, which does not collapse: in a block wrapper it would take a
+   line box of its own above the block line, a blank row under every source line
+   (24 -> 48 px per line). A flex row keeps the margin beside the line, as TeX's
+   \hbox{\hskip\FV@XLeftMargin ...} does, and lets the line shrink to the rest. */
+.ltx_text.ltx_inline-block:has(> .ltx_text.ltx_verbatim.ltx_inline-block) {
+  display: flex;
+  text-indent: 0;
+  max-width: 100%;
+}
+.ltx_text.ltx_inline-block > .ltx_text.ltx_verbatim.ltx_inline-block {
+  min-width: 0;
+}
+/* An ltx_text kept around the indent boxes and parbox (it carries an id, as
+   with `numbers=left` on an indented line) passes its children to the row. */
+.ltx_text.ltx_verbatim.ltx_inline-block:has(> .ltx_parbox, > .ltx_text > .ltx_parbox) {
+  display: flex;
+}
+.ltx_verbatim > .ltx_text:has(> .ltx_parbox) {
+  display: contents;
+}
+.ltx_verbatim > .ltx_inline-block,
+.ltx_verbatim > .ltx_text > .ltx_inline-block {
+  flex-shrink: 0;
+}
+.ltx_verbatim > .ltx_parbox,
+.ltx_verbatim > .ltx_text > .ltx_parbox {
+  flex-shrink: 1;
+  min-width: 0;
 }
 .ltx_listing > .ltx_framed_rectangle {
   /* download arrow has a glitchy border, disable it. */
@@ -2692,6 +2827,8 @@ svg foreignObject > .ltx_foreignobject_container {
   box-sizing: border-box;
 }
 .ltx_listing .ltx_tag_listingline {
+  /* copying the code leaves its line numbers out (LaTeXML 95a77fc0, #2850) */
+  user-select: none;
   padding-right: 0.3rem;
   /* gutter rule between line-number tag and code: hairline, currentColor */
   border-right: var(--border-hairline) solid;
@@ -3094,6 +3231,64 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 .ltx_eqn_right_padleft {
   width: 100%;
 }
+/* latexml-oxide issue 810 (its OD #1042): a one-row centred equation is a grid
+   `minmax(2em,1fr) auto 1fr` (`minmax(0,1fr)` in a minipage or table cell),
+   the tag laid over the pad on its side with a 1em quad, so the formula is
+   centred in the full line and moves only as far as its tag needs (tex.web
+   §1202). The other pad's 100vw keeps the old 50% columns' shrink-to-fit
+   width; a multi-row table keeps the 3em tag column above. */
+.ltx_equation.ltx_eqn_table > :has(> .ltx_eqn_row:only-child > .ltx_eqn_center_padleft) {
+  display: block;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) {
+  display: grid;
+  grid-template-columns: minmax(2em, 1fr) auto 1fr;
+  align-items: center;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_eqno.ltx_align_left) {
+  grid-template-columns: 1fr auto minmax(2em, 1fr);
+}
+.ltx_inline-block .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft),
+.ltx_td .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) {
+  grid-template-columns: minmax(0, 1fr) auto 1fr;
+}
+.ltx_inline-block .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_eqno.ltx_align_left),
+.ltx_td .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_eqno.ltx_align_left) {
+  grid-template-columns: 1fr auto minmax(0, 1fr);
+}
+/* the 2em pad would overflow its 0 track and scroll a leqno p{} cell */
+.ltx_inline-block .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > :is(.ltx_eqn_center_padleft, .ltx_eqn_center_padright),
+.ltx_td .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > :is(.ltx_eqn_center_padleft, .ltx_eqn_center_padright) {
+  min-width: 0;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_center_padleft {
+  grid-area: 1 / 1;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_center_padleft + .ltx_eqn_cell {
+  grid-area: 1 / 2;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_center_padright {
+  grid-area: 1 / 3;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_center_padleft:first-child,
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_eqno.ltx_align_left ~ .ltx_eqn_center_padright {
+  width: 100vw;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) > .ltx_eqn_eqno {
+  width: auto;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) > .ltx_eqn_eqno.ltx_align_right {
+  grid-area: 1 / 3;
+  justify-self: end;
+  padding-inline-start: 1em;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) > .ltx_eqn_eqno.ltx_align_left {
+  grid-area: 1 / 1;
+  justify-self: start;
+  padding-inline-end: 1em;
+}
 
 /* Various lists */
 .ltx_itemize,
@@ -3104,7 +3299,10 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 /* enumitem leftmargin (latexml-oxide #559): the LaTeXML binding emits a theming
    surface for enumitem's leftmargin. `leftmargin=*` (auto/flush) arrives as the
    .ltx_leftmargin_flush class -- a font-INDEPENDENT boolean toggle -- which we
-   honor by dropping the list's UA left indent.
+   honor by dropping the list's UA left indent. An itemize keeps that indent as
+   its label column: `li.ltx_item > .ltx_tag` below hangs -2.5rem into it, which
+   lands the bullet on the container's edge, as `leftmargin=*` does in LaTeX.
+   (Enumerate tags sit in a grid column instead, so they need no such column.)
    `leftmargin=<dim>` arrives as the --ltx-enum-leftmargin custom property, but we
    deliberately do NOT consume it: an ABSOLUTE TeX dimension is calibrated to
    TeX's font and box model and does not translate to ar5iv's font, so forcing it
@@ -3116,6 +3314,9 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 .ltx_leftmargin_flush {
   padding-inline-start: 0;
   margin-inline-start: 0;
+}
+.ltx_itemize.ltx_leftmargin_flush {
+  padding-inline-start: 2.5rem;
 }
 .ltx_item > .ltx_para > .ltx_description,
 .ltx_item > .ltx_para > .ltx_itemize,
@@ -3483,6 +3684,50 @@ span.ltx_framed {
   text-align: left;
   font-size: 90%;
 }
+/* Verbatim keeps its spaces (latexml-oxide #431, PR #481): fancyvrb's per-line
+   spans otherwise lose their indentation and runs of spaces. A `<pre>` is `pre`
+   already; inline `\verb` (`code`) is left to wrap, so a long one cannot push a
+   narrow page into horizontal scroll. An fvextra `breaklines` line wraps its text
+   in a `\parbox`: `normal` there, else the line would not wrap and the markup's
+   newlines would render as blank lines. */
+.ltx_verbatim:not(code) {
+  white-space: pre;
+}
+.ltx_verbatim .ltx_parbox {
+  white-space: normal;
+}
+/* Inline `\verb` keeps its spaces, and an unbroken one breaks rather than widen
+   a narrow page (in a table cell too: ar5iv's cells wrap); a `breaklines` line's
+   paragraph wraps, keeps its spaces (Python indentation) and adds no blank row
+   below it. */
+code.ltx_verbatim {
+  white-space: pre-wrap;
+  overflow-wrap: break-word;
+}
+/* `anywhere`, not `break-word`: the paragraph is a shrink-to-fit inline-block, and
+   only `anywhere` lowers its min-content, so an unbroken identifier longer than
+   the shrunk parbox breaks instead of widening a phone page (375 px: 393 -> 375).
+   fvextra's promise for breaklines is that lines fit; desktop widths still break
+   at spaces, as before. (ar5iv addition beyond the latexml-oxide mirror.) */
+.ltx_verbatim .ltx_parbox .ltx_p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+/* Both parbox placements: directly in the line, or inside the `ltx_text` an id
+   keeps around a numbered, indented line (made `display: contents` above). */
+.ltx_verbatim > .ltx_parbox > .ltx_para,
+.ltx_verbatim > .ltx_text > .ltx_parbox > .ltx_para {
+  margin-bottom: 0;
+}
+/* fancyvrb typesets each source line as a width-limited inline-block
+   (`.ltx_text.ltx_verbatim.ltx_inline-block`): one source line per row, a blank
+   source line keeps a line's height, and the paragraph's text-indent does not
+   shift the first line. Inline `\verb` is a `code` without `ltx_inline-block`. */
+.ltx_text.ltx_verbatim.ltx_inline-block {
+  display: block;
+  text-indent: 0;
+  min-height: 1lh;
+}
 /*======================================================================
  Meta stuff */
 .ltx_tag_note {
@@ -3590,3 +3835,14 @@ mfrac > * {
 }
 
 }  /* end @layer fixes */
+
+/* latexml-oxide #475: MathJax gives its display container a 1em block margin (v3/v4
+   mjx-container[display], v2 .MathJax_Display); inside an equation cell it cannot collapse
+   with the table's margin, so consecutive displays sat far apart (MathJax 2.1 in Chrome:
+   formulas 54px apart, natively 20px). The table supplies the display skip. Un-layered:
+   MathJax injects its styles un-layered at run time, which beat any @layer rule. */
+.ltx_eqn_table .ltx_eqn_cell > mjx-container[display="true"],
+.ltx_eqn_table .ltx_eqn_cell > .MathJax_Display {
+  margin-top: 0;
+  margin-bottom: 0;
+}
