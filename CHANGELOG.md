@@ -23,8 +23,9 @@ Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
 - **fancyvrb `Verbatim` keeps its indentation and blank lines.** `.ltx_verbatim` (not inline
   `code`) is `white-space: pre`, and each fancyvrb line span is one block row with a line's
   height: `    return  0;` keeps its four-space indent and double space (was `return 0;`),
-  a blank source line is 24 px (was 0), likewise inside a `frame=single` box. Inline `\verb` still wraps, and an fvextra `breaklines` line keeps
-  wrapping (`.ltx_verbatim .ltx_parbox` is `normal`). Mirrors latexml-oxide #431 (PR #481).
+  a blank source line is 24 px (was 0), likewise inside a `frame=single` box. Inline `\verb`
+  still wraps, and an fvextra `breaklines` line keeps wrapping (`.ltx_verbatim .ltx_parbox`
+  is `normal`). Mirrors latexml-oxide #431 (PR #481).
 - **The ORCID iD logo is a text-height glyph.** `.ltx_orcidlogo` is 1em square, set
   slightly below the baseline: LaTeXML's 1.7em badge (orcidlink `\orcidlink`) measured
   27.2 px on 16 px text, now 16 px. Mirrors latexml-oxide PR #737 (arXiv/html_feedback#6571).
@@ -34,7 +35,8 @@ Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
   (ratio 0.642) at 1280 px, now 138 × 138. Mirrors latexml-oxide PR #711
   (brucemiller/LaTeXML#2392).
 - **An fvextra `breaklines` Verbatim reflows on a phone.** Each fancyvrb line, and the box
-  `xleftmargin`/`xrightmargin` wrap it in (arXiv 2605.01024), is capped at its box and a `breaklines` line is a flex row whose `\parbox` shrinks to it, so at 375 px a
+  `xleftmargin`/`xrightmargin` wrap it in (arXiv 2605.01024), is capped at its box and a
+  `breaklines` line is a flex row whose `\parbox` shrinks to it, so at 375 px a
   `frame=single,breaklines` box no longer scrolls (scrollWidth 468 → 341 = clientWidth) and an
   unframed one no longer widens the page (476 → 375 px); the frame is a block, as a display.
   Its paragraph adds no blank row (a one-row line 48 → 24 px at 1280 px). Inline `\verb` keeps
@@ -47,6 +49,13 @@ Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
   page 476 → 375 px). The line's paragraph is `pre-wrap`: it wraps and keeps the source's
   spaces (`        return   x` rendered `return x`), with no blank rows. Mirrors
   latexml-oxide #702.
+  The `xleftmargin` wrapper is a flex row: its margin arrives as an em space (U+2003), kept
+  beside the line rather than on a line box of its own.
+- **A long identifier in a `breaklines` line breaks rather than widen a phone page.** The
+  breaklines paragraph is `overflow-wrap: anywhere` (the shrink-to-fit paragraph needs
+  `anywhere`, not `break-word`, to lower its min-content): a 35-character identifier pushed
+  a 375 px page to 393 px, now 375. Desktop widths still break at spaces. An ar5iv addition
+  beyond the latexml-oxide mirror.
 
 ## 0.9.2 — 2026-11-05
 

@@ -2618,11 +2618,18 @@ svg foreignObject > .ltx_foreignobject_container {
   max-width: 100%;
 }
 /* ...and so is the box fvextra's xleftmargin/xrightmargin wrap a line in
-   (arXiv 2605.01024), a block like the line itself. */
+   (arXiv 2605.01024). Its margin arrives as an EM SPACE (U+2003) text node
+   beside the line, which does not collapse: in a block wrapper it would take a
+   line box of its own above the block line, a blank row under every source line
+   (24 -> 48 px per line). A flex row keeps the margin beside the line, as TeX's
+   \hbox{\hskip\FV@XLeftMargin ...} does, and lets the line shrink to the rest. */
 .ltx_text.ltx_inline-block:has(> .ltx_text.ltx_verbatim.ltx_inline-block) {
-  display: block;
+  display: flex;
   text-indent: 0;
   max-width: 100%;
+}
+.ltx_text.ltx_inline-block > .ltx_text.ltx_verbatim.ltx_inline-block {
+  min-width: 0;
 }
 /* An ltx_text kept around the indent boxes and parbox (it carries an id, as
    with `numbers=left` on an indented line) passes its children to the row. */
@@ -3551,10 +3558,19 @@ code.ltx_verbatim {
   white-space: pre-wrap;
   overflow-wrap: break-word;
 }
+/* `anywhere`, not `break-word`: the paragraph is a shrink-to-fit inline-block, and
+   only `anywhere` lowers its min-content, so an unbroken identifier longer than
+   the shrunk parbox breaks instead of widening a phone page (375 px: 393 -> 375).
+   fvextra's promise for breaklines is that lines fit; desktop widths still break
+   at spaces, as before. (ar5iv addition beyond the latexml-oxide mirror.) */
 .ltx_verbatim .ltx_parbox .ltx_p {
   white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
-.ltx_verbatim > .ltx_parbox > .ltx_para {
+/* Both parbox placements: directly in the line, or inside the `ltx_text` an id
+   keeps around a numbered, indented line (made `display: contents` above). */
+.ltx_verbatim > .ltx_parbox > .ltx_para,
+.ltx_verbatim > .ltx_text > .ltx_parbox > .ltx_para {
   margin-bottom: 0;
 }
 /* fancyvrb typesets each source line as a width-limited inline-block
