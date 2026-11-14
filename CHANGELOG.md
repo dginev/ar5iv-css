@@ -15,6 +15,14 @@ the project follows [semantic versioning](https://semver.org/).
 - **`\thanks` notes in one creator no longer overprint in the wide margin.** Stacking counted only
   preceding creators, so several notes in one creator all landed in the same slot (one person with
   several `\thanks`, or `\author{A\thanks{} \qquad B\thanks{}}`; arXiv 2610.06709).
+- **An aligned left column meets its relation in Chrome.** MathML Core dropped `columnalign`,
+  and Chrome set a `columnalign="right"` cell flush left, so in `aligned` (inline, or inside
+  `gather*`) the gap before `=` varied by row. `math mtd[columnalign]` now sets
+  `justify-items`, and an `aligned`/`split` table (`columnspacing="0pt"`) drops the 0.1rem cell
+  padding, so the columns meet at the relation. Both mirror latexml-oxide's LaTeXML.css (its
+  issues 809, 755, 756). Chrome 155 on the issue-809 example, gap before `=` per row: 30.0,
+  27.7, 26.2, 11.0 px before; 4.4, 4.4, 4.4, 7.8 px after (4.4 px = TeX's thick space; the
+  fourth row's left column is a fraction).
 
 ## 0.9.2 — 2026-11-05
 
