@@ -3079,6 +3079,63 @@ table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
 .ltx_eqn_right_padleft {
   width: 100%;
 }
+/* latexml-oxide issue 810 (its OD #1042): a one-row centred equation is a grid
+   `1fr auto 1fr`, the tag laid over the pad on its side with a 1em quad, so the
+   formula is centred in the full line and moves only as far as its tag needs
+   (tex.web §1202). The other pad's 100vw keeps the old 50% columns'
+   shrink-to-fit width; a multi-row table keeps the 3em tag column above. */
+.ltx_equation.ltx_eqn_table > :has(> .ltx_eqn_row:only-child > .ltx_eqn_center_padleft) {
+  display: block;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) {
+  display: grid;
+  grid-template-columns: minmax(2em, 1fr) auto 1fr;
+  align-items: center;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_eqno.ltx_align_left) {
+  grid-template-columns: 1fr auto minmax(2em, 1fr);
+}
+.ltx_inline-block .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft),
+.ltx_td .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) {
+  grid-template-columns: minmax(0, 1fr) auto 1fr;
+}
+.ltx_inline-block .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_eqno.ltx_align_left),
+.ltx_td .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_eqno.ltx_align_left) {
+  grid-template-columns: 1fr auto minmax(0, 1fr);
+}
+/* the 2em pad would overflow its 0 track and scroll a leqno p{} cell */
+.ltx_inline-block .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > :is(.ltx_eqn_center_padleft, .ltx_eqn_center_padright),
+.ltx_td .ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > :is(.ltx_eqn_center_padleft, .ltx_eqn_center_padright) {
+  min-width: 0;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_center_padleft {
+  grid-area: 1 / 1;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_center_padleft + .ltx_eqn_cell {
+  grid-area: 1 / 2;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_center_padright {
+  grid-area: 1 / 3;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_center_padleft:first-child,
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child > .ltx_eqn_eqno.ltx_align_left ~ .ltx_eqn_center_padright {
+  width: 100vw;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) > .ltx_eqn_eqno {
+  width: auto;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) > .ltx_eqn_eqno.ltx_align_right {
+  grid-area: 1 / 3;
+  justify-self: end;
+  padding-inline-start: 1em;
+}
+.ltx_equation.ltx_eqn_table > * > .ltx_eqn_row:only-child:has(> .ltx_eqn_center_padleft) > .ltx_eqn_eqno.ltx_align_left {
+  grid-area: 1 / 1;
+  justify-self: start;
+  padding-inline-end: 1em;
+}
 
 /* Various lists */
 .ltx_itemize,
