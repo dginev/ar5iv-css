@@ -7,6 +7,14 @@ the project follows [semantic versioning](https://semver.org/).
 ## Unreleased
 
 ### Fixed
+- **Flush itemize bullets stay inside their container.** `itemize[leftmargin=*]`
+  (`.ltx_itemize.ltx_leftmargin_flush`) zeroed the padding its hanging tag relies on, so bullets
+  sat 2.5rem outside the text edge, and off-screen with clipped text on phones (arXiv 2610.06709).
+  Bullets now land on the edge, as `leftmargin=*` does in LaTeX. Enumerate and description lists
+  are unchanged.
+- **`\thanks` notes in one creator no longer overprint in the wide margin.** Stacking counted only
+  preceding creators, so several notes in one creator all landed in the same slot (one person with
+  several `\thanks`, or `\author{A\thanks{} \qquad B\thanks{}}`; arXiv 2610.06709).
 - **An aligned left column meets its relation in Chrome.** MathML Core dropped `columnalign`,
   and Chrome set a `columnalign="right"` cell flush left, so in `aligned` (inline, or inside
   `gather*`) the gap before `=` varied by row. `math mtd[columnalign]` now sets
