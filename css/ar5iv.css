@@ -3581,8 +3581,8 @@ mfrac > * {
    with the table's margin, so consecutive displays sat far apart (MathJax 2.1 in Chrome:
    formulas 54px apart, natively 20px). The table supplies the display skip. Un-layered:
    MathJax injects its styles un-layered at run time, which beat any @layer rule. */
-table.ltx_eqn_table td.ltx_eqn_cell > mjx-container[display="true"],
-table.ltx_eqn_table td.ltx_eqn_cell > .MathJax_Display {
+.ltx_eqn_table .ltx_eqn_cell > mjx-container[display="true"],
+.ltx_eqn_table .ltx_eqn_cell > .MathJax_Display {
   margin-top: 0;
   margin-bottom: 0;
 }
