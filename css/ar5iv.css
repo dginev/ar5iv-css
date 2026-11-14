@@ -273,10 +273,11 @@ math mtd[columnalign="left"] {
    added in 2022 so justification would not spread a ref (2006.09882's
    `[10, 24, 44]`; an author-year "[Carron et al., 2023]", apalike, arXiv
    2403.11784). But an atomic inline is a soft-wrap opportunity on both sides
-   whatever its neighbours, so lines broke right after `[`/`(` and right before `]`/`)`: `[` / `39]` (arXiv
-   2608.21320v1, 2409.12111, 2510.22681v1). As an inline, the brackets stay glued
-   by the line-breaking rules (no break after an opening, or before a closing,
-   punctuation), and a line breaks at the `; `/`, ` between cites. `nowrap` keeps
+   whatever its neighbours, so lines broke right after `[`/`(` and right before
+   `]`/`)`: `[` / `39]` (arXiv 2608.21320v1, 2409.12111, 2510.22681v1). As an
+   inline, the brackets stay glued by the line-breaking rules (no break after
+   an opening, or before a closing, punctuation), and a line breaks at the
+   `; `/`, ` between cites. `nowrap` keeps
    a multi-word ref whole, and `text-justify: none` keeps justification out of
    it, as the inline-block did. An engine without `text-justify` (WebKit 26)
    would spread the ref by up to 2.35x on a phone, so it keeps the inline-block,
@@ -2053,6 +2054,15 @@ mtext > .ltx_graphics,
    the source `[t]` minipages), hide the stray bars, and paint the `\vrule` as a real
    full-height inter-column border on each cell that carried one. Engine-structural
    at root (shared with Perl); this is the theme-layer remedy. */
+/* The bottom alignment above suits panels captioned BELOW (the caption is the
+   panel's last child). A panel captioned ABOVE (`\subcaption` before the tabular,
+   the norm for subtables) aligns on its top instead, so the captions share one
+   line and the bodies hang from it, as in the PDF (ar5iv-css#31; arXiv
+   2510.22681v1 Table 1, 2111.00396 Tables 2-3/5-6/7-8, 1712.01103). Per cell, so a row
+   mixing both kinds keeps each on its captioned side. */
+.ltx_flex_figure > .ltx_flex_cell:has(> .ltx_figure_panel > .ltx_caption:first-child:not(:last-child)) {
+  align-self: flex-start;
+}
 .ltx_flex_figure:has(> .ltx_flex_cell > .ltx_minipage > .ltx_rule) {
   align-items: stretch;
 }
