@@ -22,6 +22,11 @@ Mirrors of latexml-oxide `LaTeXML.css` fixes not yet in ar5iv-css.
 - **The ORCID iD logo is a text-height glyph.** `.ltx_orcidlogo` is 1em square, set
   slightly below the baseline: LaTeXML's 1.7em badge (orcidlink `\orcidlink`) measured
   27.2 px on 16 px text, now 16 px. Mirrors latexml-oxide PR #737 (arXiv/html_feedback#6571).
+- **A capped image in a minipage keeps its aspect ratio.** `.ltx_minipage > .ltx_graphics`
+  adds `height: auto` to its `max-width: 100%`: a square image wider than its minipage
+  (`ltx_img_square`, which sets no `height: auto` above 52rem) rendered 138 × 215 px
+  (ratio 0.642) at 1280 px, now 138 × 138. Mirrors latexml-oxide PR #711
+  (brucemiller/LaTeXML#2392).
 
 ## 0.9.2 — 2026-11-05
 

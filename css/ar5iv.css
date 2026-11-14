@@ -2543,6 +2543,10 @@ svg foreignObject > .ltx_foreignobject_container {
 }
 .ltx_minipage > .ltx_graphics {
   max-width: 100%;
+  /* keep the image's aspect ratio when the width is capped: a square image
+     (ltx_img_square sets no height:auto above 52rem) kept its height attribute
+     and distorted. Mirrors latexml-oxide (PR #711, brucemiller/LaTeXML#2392). */
+  height: auto;
 }
 /* minipages need some dedicated work (ar5iv#83),
    but for now we can accommodate with a bit of special-case padding; */
