@@ -70,6 +70,15 @@ the project follows [semantic versioning](https://semver.org/).
   `anywhere`, not `break-word`, to lower its min-content): a 35-character identifier pushed
   a 375 px page to 393 px, now 375. Desktop widths still break at spaces. An ar5iv addition
   beyond the latexml-oxide mirror.
+- **Consecutive display equations are not spread apart under MathJax** (latexml-oxide issue 475).
+  MathJax's display container carries a 1em margin, which inside the equation table cannot
+  collapse with the table's own margin; it is zeroed there (MathJax 2.1 in Chrome: 54 px
+  between two displays, 20 px natively, now 22 px).
+- **A numbered one-row equation is centred in the full line, its tag beside it** (latexml-oxide
+  issue 810). The 3em tag column centred the formula in the line less its tag (12 px left of
+  centre for `(1)`, 74 px for a long `\tag`); a one-row centred equation is now a grid whose tag
+  sits over the pad on its side with a 1em quad, so the formula moves only as far as its tag needs
+  (tex.web §1202). A `p{}` cell's equation keeps to the column's width; multi-row tables are unchanged.
 
 ## 0.9.2 — 2026-11-05
 
