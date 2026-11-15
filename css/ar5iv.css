@@ -292,9 +292,9 @@ math mtd[columnalign="left"] {
     display: inline-block;
     text-indent: 0;
   }
-  /* A numeric cite (`[1]`, `[3, 4]`, `[Kho00]`, latexml-oxide#857) has no
-     space inside its refs to spread, so its refs stay inline and keep their
-     brackets on the same line. */
+  /* A numeric cite (`[1]`, `[3, 4]`, `[Kho00]`, latexml-oxide#857) keeps its
+     refs inline, so its brackets stay on the line; a label with spaces
+     (`Smith et al.(2000)`, 2003.13016) may then be spread by justification. */
   .ltx_cite_numeric > .ltx_ref {
     display: inline;
   }

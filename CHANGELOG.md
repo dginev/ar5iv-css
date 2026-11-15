@@ -10,10 +10,12 @@ the project follows [semantic versioning](https://semver.org/).
 - **A numeric citation keeps its brackets on its line in Safari.** WebKit has no `text-justify`,
   so a cite's refs stay inline-blocks there, and a line could break right after `[` or before `]`
   (#53). latexml-oxide marks a citation that shows only numbers or labels with `ltx_cite_numeric`
-  (latexml-oxide#857); its refs hold no space to spread, so they stay inline and the brackets stay
-  glued. Measured with the WebKit path forced in Chrome at 320 px (arXiv 1503.03017, 2504.12515,
-  2311.09782): 20 bracket splits → 2, both textual cites (`Wang et al. [98]`, `Williams et al.
-  (2019)`). Chrome and Firefox render unchanged.
+  (latexml-oxide#857); its refs stay inline, so the brackets stay glued. The trade-off: a numeric
+  ref whose label has spaces (`\bibitem[Smith et al.(2000)]` under a plain `\cite`, arXiv 2003.13016)
+  may be spread by justification in WebKit. Measured with the WebKit path forced in Chrome at 320 px
+  (arXiv 1503.03017, 2504.12515, 2311.09782): 20 bracket splits → 2, a textual cite
+  (`Wang et al. [98]`) and an author-year one (`Williams et al. (2019)`). Chrome and Firefox render
+  unchanged.
 - **Flush itemize bullets stay inside their container.** `itemize[leftmargin=*]`
   (`.ltx_itemize.ltx_leftmargin_flush`) zeroed the padding its hanging tag relies on, so bullets
   sat 2.5rem outside the text edge, and off-screen with clipped text on phones (arXiv 2610.06709).
