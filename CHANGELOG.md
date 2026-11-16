@@ -4,7 +4,13 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
-## Unreleased
+## 0.9.3 — 2026-11-16
+
+A patch release mirroring latexml-oxide's CSS for its 0.8.0 release. Box widths, heights and depths become the
+custom properties latexml-oxide now writes (`--ltx-box-width`, `--ltx-box-height`, `--ltx-box-depth`), and a skip
+between paragraphs keeps its gap (`--ltx-skip-before`). Citations no longer break inside their brackets, numbered
+one-row equations centre with their tag, verbatim and `breaklines` listings reflow on phones, and subfigure
+captions, reference lists in `{quotation}`, aligned columns and `\thanks` notes render as in the PDF.
 
 ### Fixed
 - **Every box's width is the custom property `--ltx-box-width`.** latexml-oxide now writes a
