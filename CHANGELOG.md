@@ -7,6 +7,28 @@ the project follows [semantic versioning](https://semver.org/).
 ## Unreleased
 
 ### Fixed
+- **Every box's width is the custom property `--ltx-box-width`.** latexml-oxide now writes a
+  minipage's, `\parbox`'s, `\makebox`'s, `p{}` cell's, transformed box's or wrapfigure's width as
+  `style="--ltx-box-width:<w>"` instead of `style="width:<w>"`, and a section set inside a minipage
+  or `\parbox` (lifted out as a real section carrying the box's class) keeps the box's width the
+  same way, capped at its container like a minipage. An un-layered `!important` rule of zero specificity applies it at the inline style's
+  rank, so every layered ar5iv rule ranks under it as before, every `!important` one over it, and a
+  `width:` in the box's own style (varwidth's `max-content`) still wins: pages render as before
+  (on 63 arXiv pages, every element's box identical in Chrome at 1280 and 375 px and in Firefox at
+  1280 px; in Firefox at 375 px six glyph boxes on one page are 2 px shorter, nothing moved). Override one box with `.sel { --ltx-box-width: <w> !important }` or
+  `.sel { width: <w> !important }`, reuse the value (`width: min(var(--ltx-box-width), 100%)
+  !important`), or switch every box width off with
+  `:where([style*="--ltx-box-width:"]) { --ltx-box-width: initial !important }`. The widths now
+  need this rule: a page rendered without ar5iv.css or LaTeXML.css loses them.
+- **A box's height and depth are `--ltx-box-height` and `--ltx-box-depth`.** latexml-oxide now writes
+  a `\raisebox{y}[h][d]`'s or a rotated or scaled box's `height:<h+d>;vertical-align:<-d>` as TeX's
+  own values, `--ltx-box-height:<h>;--ltx-box-depth:<d>`. Three un-layered rules beside the width's
+  derive `height:` (h, or h+d) and `vertical-align:` (-d) at the inline style's rank, each off where
+  the box's own style sets that property (a `\raisebox` shift's `bottom:`, an author's `height:`);
+  on the 52 arXiv pages whose HTML moved, every element's box is identical in Chrome and Firefox at
+  1280 and 375 px. Switch every box height off with
+  `:where([style*="--ltx-box-height:"]) { --ltx-box-height: initial !important }`, or every depth
+  with `--ltx-box-depth: 0pt` the same way.
 - **Flush itemize bullets stay inside their container.** `itemize[leftmargin=*]`
   (`.ltx_itemize.ltx_leftmargin_flush`) zeroed the padding its hanging tag relies on, so bullets
   sat 2.5rem outside the text edge, and off-screen with clipped text on phones (arXiv 2610.06709).

@@ -3,7 +3,8 @@
 
   Public theming surface (set per-element by LaTeXML, via inline style="…"):
     --ltx-fg-color, --ltx-bg-color, --ltx-border-color,
-    --ltx-fill-color,  --ltx-stroke-color
+    --ltx-fill-color,  --ltx-stroke-color,
+    --ltx-box-width, --ltx-box-height, --ltx-box-depth
   See docs/rfc_latexml_custom_properties.md for the full contract,
   the OKLCH dark-mode strategy, and the rationale for the inversion
   constants used below (the `0.8237` for backgrounds derives from the
@@ -46,17 +47,42 @@
 
 /* ============================================================
    The bulk of ar5iv.css now sits inside `@layer components`.
-   Two regions remain un-layered:
+   Four regions remain un-layered:
    - the transformed-wrappers feature flag near the middle of the
      file, whose !important rules defeat LaTeXML's inline
      `style="transform:…"` — a normal declaration, so any author
      !important beats it and the layer placement isn't load-bearing;
+   - the --ltx-box-width, --ltx-box-height and --ltx-box-depth rules just below, which
+     stand in for an inline `width:`, `height:` and `vertical-align:`;
    - the MathJax display-margin reset at the very end, which must beat
      the un-layered styles MathJax injects at run time (any layered
      rule loses to them, whatever its specificity);
    - nothing else; the imports above and the closing `@layer fixes`
      near the end are deliberate placements.
    ============================================================ */
+
+/* A box's width (minipage, \parbox, \makebox, p{} cell, tabular*), which latexml-oxide
+   writes as --ltx-box-width. Un-layered, important and of zero specificity, it ranks where
+   the inline `width:` it replaces ranked: over every normal rule, under every other
+   !important one (every layered one included). A width the box's own style sets
+   (varwidth's max-content) wins over it. Override it with an !important rule. */
+:where([style*="--ltx-box-width:"]:not([style^="width:"], [style*=";width:"], [style*="; width:"])) {
+  width: var(--ltx-box-width, auto) !important;
+}
+/* Its height above the baseline and depth below (\raisebox[h][d], a rotated or scaled box),
+   --ltx-box-height and --ltx-box-depth, applied the same way: the height as h+d, the depth as
+   the box's drop below the line, unless the box's own style sets that property (a \raise's
+   vertical-align: or bottom:, an author's height:). One rule per case: the custom properties
+   inherit, so a box's own depth is read only where its style sets one. */
+:where([style*="--ltx-box-height:"]:not([style^="height:"], [style*=";height:"], [style*="; height:"])) {
+  height: var(--ltx-box-height) !important;
+}
+:where([style*="--ltx-box-height:"][style*="--ltx-box-depth:"]:not([style^="height:"], [style*=";height:"], [style*="; height:"])) {
+  height: calc(var(--ltx-box-height) + var(--ltx-box-depth)) !important;
+}
+:where([style*="--ltx-box-depth:"]:not([style^="vertical-align:"], [style*=";vertical-align:"], [style*="; vertical-align:"], [style*="; bottom:"])) {
+  vertical-align: calc(-1 * var(--ltx-box-depth)) !important;
+}
 
 @layer components {
 img {
@@ -86,6 +112,11 @@ img {
 }
 [style*="--ltx-stroke-color:"] {
   stroke: var(--ltx-stroke-color);
+}
+/* A section lifted out of a minipage or \parbox keeps the box's width (--ltx-box-width);
+   like a minipage (#1797) it never exceeds its container. */
+:is(section, .ltx_inline-sectional-block)[style*="--ltx-box-width:"] {
+  max-width: 100%;
 }
 
 /* Main content */
