@@ -27,6 +27,16 @@ the project follows [semantic versioning](https://semver.org/).
   Pages from older latexml-oxide releases, whose author notes all follow the name's wrapper, show
   them in the margin with no mark, as 0.9.3 did. Measured in Chrome
   and Firefox at 1800 and 375 px on 1510.02728, 2606.00446, 2407.07614, 2606.00397 and 1706.03762.
+- **Every mark printed on a name shows on it, in the printed order.** latexml-oxide now keeps a
+  name alone in its personname and every mark the PDF prints on it in a note after it, so
+  `.ltx_annotated_personname` holds the name and then each mark: a mark-only note
+  (`.ltx_role_footnotemark`: an affiliation letter, a `\footnotemark` no note answers) shows its
+  mark, linked when its mark names a note of the block (0801.1438's "Kardoš", `a`, `*`, as the PDF
+  prints it; it read "Kardoš* a").
+  - A note's body under the name floats, full width, so a mark after it stays on the name's line.
+  - Consecutive marks are parted by a superscript comma ("1,2", not "12"), as authors type them.
+  Measured in Chrome at 1800 and 375 px on 0801.1438, 2606.00446, 2407.07614, 1911.13299 and
+  1706.03762.
 
 ## 0.9.3 — 2026-11-16
 
