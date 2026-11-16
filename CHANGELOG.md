@@ -34,11 +34,19 @@ the project follows [semantic versioning](https://semver.org/).
   mark, linked when its mark names a note of the block (0801.1438's "Kardoš", `a`, `*`, as the PDF
   prints it; it read "Kardoš* a").
   - A note's body under the name floats, full width, so a mark after it stays on the name's line.
-  - Consecutive marks are parted by a superscript comma ("1,2", not "12"), as authors type them.
   - A name with marks keeps an un-noted name's column bounds, so a block of marked names keeps its
     columns (2602.18802's twelve names with affiliation numbers had squeezed into ten narrow ones).
   Measured in Chrome at 1800 and 375 px on 0801.1438, 2606.00446, 2407.07614, 1911.13299 and
   1706.03762.
+- **A name's marks are parted only by the separator the source printed.** latexml-oxide now
+  writes the comma an author typed between two marks (`$^{*,\dagger}$`) into the later mark's
+  superscript as `.ltx_mark_sep`, so it copies and reads with the marks; LaTeX's own run of marks
+  (`\thanks{…}\thanks{…}`, a typed `a` before a `\footnote`'s mark: 0801.1438's "Kardošᵃ∗") has
+  none. The blanket comma between consecutive marks is gone; a separator shows only after a mark
+  shown before it (one author's note shows no mark on the name). A mark shows once per author:
+  a typed `*` beside a `\thanks` whose own mark is ∗ (`Ann Able*\thanks{…}`) is no second mark on
+  the page (the HTML leaves it out; no rule changes here). Measured in Chrome at 1800 and
+  375 px on 0801.1438, 2602.18802, 1706.03762, 2606.00446 and 2407.07614.
 - **A letter or digit on a name links no other author's note.** latexml-oxide links a mark-only
   note (`.ltx_role_footnotemark`) only when its mark is a symbol (`*`, `†`, …) or a LaTeXML
   `\footnotemark` leftover: an affiliation `1`, `a` or `α` is a plain glyph and no longer turns
