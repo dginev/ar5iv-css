@@ -4,6 +4,22 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+### Fixed
+- **A note several authors share prints once, and margin notes never overlap.** latexml-oxide now
+  prints a shared author note (an authblk `\affil[*]`, a legend line's `*`, a `\thanks` repeated by
+  `\footnotemark`) once, at its first author (`.ltx_note_shared`), and as a mark linked to it at
+  each other author, every marked note right after its name in `.ltx_annotated_personname`. A shared
+  note shows its mark on every name and at its head; on wide screens it sits in the side margin,
+  each margin note placed under the one before (CSS anchor positioning), so a tall note no longer
+  runs over the next (1706.03762's "Equal contribution" notes did, through the fixed 10rem slots,
+  which are gone). A note of one author sits on a row under the name, as affiliations do, with no
+  mark (2606.00397's correspondence note sat markless in the margin, as if no one's); so does every author note on phones, and the shared ones in a browser without anchor
+  positioning. A name with notes is set as text, so a mark follows its last word wherever it wraps.
+  Pages from older latexml-oxide releases show each note under its author. Measured in Chrome and
+  Firefox at 1800 and 375 px on 2606.00446, 2407.07614, 2606.00397 and 1706.03762.
+
 ## 0.9.3 — 2026-11-16
 
 A patch release mirroring latexml-oxide's CSS for its 0.8.0 release. Box widths, heights and depths become the
