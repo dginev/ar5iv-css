@@ -110,6 +110,10 @@ the project follows [semantic versioning](https://semver.org/).
   WebKit renders as before. Trade-off: older Perl LaTeXML output that leaves a space inside an
   unresolved key (`durfee:97 ;`, arXiv cs/0001008, 1810.10704) now shows it in Chromium and
   Firefox; latexml-oxide emits no such space.
+- **A `\bigskip`, `\medskip` or `\vspace` between two paragraphs shows its gap.** latexml-oxide
+  keeps the glue on the second paragraph as `--ltx-skip-before` (its OXIDIZED_DESIGN_DIVERGENCES
+  #1050); `.ltx_para[style*="--ltx-skip-before:"]` adds it to the paragraph gap as `padding-top`
+  (40 px for a 12pt `\bigskip` at 16 px, against 24 px before; Chrome and Firefox).
 
 ## 0.9.2 — 2026-11-05
 
