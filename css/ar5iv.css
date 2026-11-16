@@ -1242,6 +1242,10 @@ div.ltx_keywords:empty::before {
    row an ORCID badge uses, a mark under a long name took a line of its own. */
 .ltx_authors .ltx_annotated_personname:has(> .ltx_note) {
   display: flow-root;
+  /* the inline name's box bounds, as an un-noted name's (span.ltx_personname): an author with marks
+     takes the same column (2602.18802's twelve names with affiliation marks) */
+  min-width: calc(0.27 * var(--main-width));
+  max-width: calc(0.65 * var(--main-width));
 }
 .ltx_authors .ltx_annotated_personname:has(> .ltx_note) > .ltx_personname {
   display: inline;

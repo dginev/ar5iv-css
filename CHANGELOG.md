@@ -35,6 +35,8 @@ the project follows [semantic versioning](https://semver.org/).
   prints it; it read "Kardoš* a").
   - A note's body under the name floats, full width, so a mark after it stays on the name's line.
   - Consecutive marks are parted by a superscript comma ("1,2", not "12"), as authors type them.
+  - A name with marks keeps an un-noted name's column bounds, so a block of marked names keeps its
+    columns (2602.18802's twelve names with affiliation numbers had squeezed into ten narrow ones).
   Measured in Chrome at 1800 and 375 px on 0801.1438, 2606.00446, 2407.07614, 1911.13299 and
   1706.03762.
 
