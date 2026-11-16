@@ -1163,7 +1163,7 @@ div.ltx_keywords:empty::before {
    The name is the name alone, so every mark printed on it is a note after it, in the order printed:
    a mark-only note (`.ltx_role_footnotemark`: an affiliation letter, an unanswered \footnotemark)
    always shows its mark, linked only when a symbol names a note of the block (0801.1438's "Kardoš",
-   "a", "*"); a letter or digit is its plain glyph. Copies of an unmarked note print once.
+   "a", "*"); a letter or digit is its plain glyph.
    - A marked note of one author sits on a row under the name, as affiliations and e-mails do, with
      no mark.
    - A shared note shows its mark on every name and at the head of the note, and goes to the side

@@ -39,12 +39,11 @@ the project follows [semantic versioning](https://semver.org/).
     columns (2602.18802's twelve names with affiliation numbers had squeezed into ten narrow ones).
   Measured in Chrome at 1800 and 375 px on 0801.1438, 2606.00446, 2407.07614, 1911.13299 and
   1706.03762.
-- **A letter or digit on a name links no other author's note; an unmarked note shared by several
-  authors prints once.** latexml-oxide links a mark-only note (`.ltx_role_footnotemark`) only when
-  its mark is a symbol (`*`, `†`, …) or a LaTeXML `\footnotemark` leftover: an affiliation `1` or
-  `a` is a plain glyph and no longer turns another author's own note `1` or `a` into a shared
-  margin note. Copies of one unmarked note print once, in the margin (2602.18802's "Equal
-  contribution" note had printed twice). No rule changes here; the comment says so.
+- **A letter or digit on a name links no other author's note.** latexml-oxide links a mark-only
+  note (`.ltx_role_footnotemark`) only when its mark is a symbol (`*`, `†`, …) or a LaTeXML
+  `\footnotemark` leftover: an affiliation `1`, `a` or `α` is a plain glyph and no longer turns
+  another author's own note `1` or `a` into a shared margin note. No rule changes here; the
+  comment says so.
 
 ## 0.9.3 — 2026-11-16
 
