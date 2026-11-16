@@ -13,9 +13,11 @@ the project follows [semantic versioning](https://semver.org/).
   each other author, every marked note right after its name in `.ltx_annotated_personname`.
   - A shared note shows its mark on every name and at its head, and sits in the side margin.
   - A marked note of one author sits on a row under the name, as affiliations do, with no mark.
-  - An unmarked note is no one author's: the PDF prints it with no mark, as a footnote of the paper
-    (IEEEtran's `\thanks`: 1510.02728's Asilomar/NSF note stays in the margin, off Azadeh
-    Vosoughi's name). It sits in the margin with no mark.
+  - An unmarked note (`.ltx_note_unmarked`) shows no mark: no glyph is known for it (IEEEtran's
+    `\thanks` prints none: 1510.02728's Asilomar/NSF note; an unbound class's or a document's own
+    `\maketitle` prints one latexml-oxide cannot know, so it no longer shows a dagger it invented,
+    1807.01940). Its text follows its author's lines, in the margin on wide screens; a picture note
+    stays on the name's column.
   - On wide screens the margin notes stack, each placed under the one before (CSS anchor
     positioning), so a tall note no longer runs over the next (1706.03762's "Equal contribution"
     notes did, through the fixed 10rem slots, which are gone). On phones, and in a browser without

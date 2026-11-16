@@ -1168,10 +1168,10 @@ div.ltx_keywords:empty::before {
      no mark.
    - A shared note shows its mark on every name and at the head of the note, and goes to the side
      margin.
-   - An unmarked note is no one author's: the PDF prints it with no mark, as a footnote of the paper
-     (IEEEtran's \maketitle sets \@makefnmark to \relax, so its \thanks is the funding or "manuscript
-     received" note: 1510.02728's Asilomar/NSF note, which under Azadeh Vosoughi's name read as her
-     affiliation). It goes to the margin with no mark.
+   - An unmarked note (`.ltx_note_unmarked`, latexml-oxide #990: no glyph is known for it, so none is
+     shown, as IEEEtran's \maketitle prints none for its funding or "manuscript received" \thanks,
+     1510.02728's Asilomar/NSF note) is its text alone, after its author's lines; it goes to the margin
+     with no mark on wide screens. A picture note stays on the name's column.
    On wide screens with anchor positioning the margin notes stack, each below the one before, so
    they never overlap whatever their height (1706.03762). On narrow screens, and in browsers without
    anchor positioning, a shared note stays in flow under its first author, and an unmarked one after
@@ -1225,6 +1225,15 @@ div.ltx_keywords:empty::before {
 }
 .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content {
   font-size: 0.85rem;
+  text-align: start;
+}
+.ltx_authors .ltx_creator > .ltx_note_unmarked:not(:has(img, svg)) {
+  display: block;
+  order: 1;
+  margin: var(--space-xs) 0 0;
+  font-family: var(--text-font-family);
+  font-size: 0.85rem;
+  line-height: var(--line-height-prose);
   text-align: start;
 }
 .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_note_shared, .ltx_role_footnotemark) .ltx_note_mark,
@@ -1292,7 +1301,8 @@ div.ltx_keywords:empty::before {
     /* each margin note's body is placed under the previous one: the last earlier box of the
        same anchor name in the block (the first has none, and sits at the block's top) */
     .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer,
-    .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer {
+    .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer,
+    .ltx_authors .ltx_creator > .ltx_note_unmarked:not(:has(img, svg)) {
       position: absolute;
       anchor-name: --ltx-margin-note;
       top: calc(anchor(--ltx-margin-note bottom, -1rem) + 1rem);
@@ -1301,7 +1311,8 @@ div.ltx_keywords:empty::before {
       box-sizing: border-box;
     }
     .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content,
-    .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content {
+    .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content,
+    .ltx_authors .ltx_creator > .ltx_note_unmarked:not(:has(img, svg)) {
       margin: 0;
       padding-inline: 1rem 0.75rem;
       font-size: 0.85rem;
