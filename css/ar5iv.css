@@ -1159,18 +1159,23 @@ div.ltx_keywords:empty::before {
    An author's marked note (a \thanks, an authblk or legend note, a \footnote in \author) sits right
    after the name, inside `.ltx_annotated_personname`. A note that several authors share is printed
    once, at its first author (`.ltx_note_shared`). At each other author it is a mark linked to that
-   copy (`.ltx_role_footnotemark.ltx_note_shared`).
-   - A note of one author sits on a row under the name, as affiliations and e-mails do, with no mark
-     (2606.00397's correspondence note: in the 0.9.3 margin, with no mark, it read as no one's).
-     An unmarked note is always one author's.
-   - A shared note shows its mark on every name and at the head of the note. On wide screens it goes
-     to the side margin. The margin notes stack, each below the one before (anchor positioning), so
-     they never overlap whatever their height (1706.03762). Narrow screens, and browsers without
-     anchor positioning, keep it in flow under its first author's name.
+   copy (`.ltx_role_footnotemark.ltx_note_shared`). An unmarked note follows the name's wrapper.
+   - A marked note of one author sits on a row under the name, as affiliations and e-mails do, with
+     no mark.
+   - A shared note shows its mark on every name and at the head of the note, and goes to the side
+     margin.
+   - An unmarked note is no one author's: the PDF prints it with no mark, as a footnote of the paper
+     (IEEEtran's \maketitle sets \@makefnmark to \relax, so its \thanks is the funding or "manuscript
+     received" note: 1510.02728's Asilomar/NSF note, which under Azadeh Vosoughi's name read as her
+     affiliation). It goes to the margin with no mark.
+   On wide screens with anchor positioning the margin notes stack, each below the one before, so
+   they never overlap whatever their height (1706.03762). On narrow screens, and in browsers without
+   anchor positioning, a shared note stays in flow under its first author, and an unmarked one after
+   its author's lines, set as a note (start-aligned), never between a name and its lines.
    The note's box dissolves (`display: contents`): its mark joins the name's line and its body is a
    block of its own. Witnesses: 2606.00446 (authblk `\affil[*]`), 2407.07614 (a legend line's `*`,
-   `+` and `†`), 1706.03762. Replaces the fixed margin slots of ar5iv-css 0.9.3, which overlapped;
-   1510.02728's NSF grant note, which those slots moved off its author, is one author's note. */
+   `+` and `†`), 1706.03762, 1510.02728. Replaces the fixed margin slots of ar5iv-css 0.9.3, which
+   overlapped. */
 .ltx_note.ltx_note_frontmatter.ltx_role_thanks .ltx_note_type,
 .ltx_authors .ltx_annotated_personname > .ltx_note .ltx_note_type,
 .ltx_authors .ltx_creator > .ltx_note .ltx_note_type {
@@ -1201,6 +1206,14 @@ div.ltx_keywords:empty::before {
   overflow-x: visible;
   font-size: 0.9rem;
   text-align: center;
+}
+/* an unmarked note in flow: after its author's lines (the creator is a flex column), as a note */
+.ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer {
+  order: 1;
+}
+.ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content {
+  font-size: 0.85rem;
+  text-align: start;
 }
 .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_note_shared) .ltx_note_mark,
 .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) .ltx_note_mark {
@@ -1236,22 +1249,29 @@ div.ltx_keywords:empty::before {
   color: inherit;
   text-decoration: none;
 }
+/* A note under one name makes its author taller: align the names on one row, as the PDF's
+   top-aligned author tabulars do, not the authors' centres (1706.03762's Illia Polosukhin). */
+.ltx_authors:has(.ltx_annotated_personname > .ltx_note) {
+  align-items: baseline;
+}
 @media only screen and (width >= 96rem) {
   @supports (anchor-name: --ltx-a) {
     .ltx_authors {
       position: relative;
     }
-    /* each shared note's body is placed under the previous one: the last earlier box of the
+    /* each margin note's body is placed under the previous one: the last earlier box of the
        same anchor name in the block (the first has none, and sits at the block's top) */
-    .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer {
+    .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer,
+    .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer {
       position: absolute;
-      anchor-name: --ltx-shared-note;
-      top: calc(anchor(--ltx-shared-note bottom, -1rem) + 1rem);
+      anchor-name: --ltx-margin-note;
+      top: calc(anchor(--ltx-margin-note bottom, -1rem) + 1rem);
       inset-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
       width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
       box-sizing: border-box;
     }
-    .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content {
+    .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content,
+    .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content {
       margin: 0;
       padding-inline: 1rem 0.75rem;
       font-size: 0.85rem;
