@@ -1167,10 +1167,10 @@ div.ltx_keywords:empty::before {
    a mark-only note (`.ltx_role_footnotemark`: an affiliation letter, an unanswered \footnotemark)
    always shows its mark, linked only when a symbol names a note of the block (0801.1438's "Kardoš",
    "a", "*"); a letter or digit is its plain glyph.
-   - A marked note of one author sits on a row under the name, as affiliations and e-mails do, with
-     no mark.
-   - A shared note shows its mark on every name and at the head of the note, and goes to the side
-     margin.
+   - A marked note, one author's or shared, shows its mark on every name that carries it and at the
+     head of the note, and goes to the side margin, as the PDF prints it as a footnote: a one-author
+     note under its name read as an affiliation (2506.06941's "† Work done during an internship at
+     Apple.", DG 2026-11-17).
    - An unmarked note (`.ltx_note_unmarked`, latexml-oxide #990: no glyph is known for it, so none is
      shown, as IEEEtran's \maketitle prints none for its funding or "manuscript received" \thanks,
      1510.02728's Asilomar/NSF note) is its text alone, after its author's lines; it goes to the margin
@@ -1238,12 +1238,11 @@ div.ltx_keywords:empty::before {
   line-height: var(--line-height-prose);
   text-align: start;
 }
-.ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_note_shared, .ltx_role_footnotemark) .ltx_note_mark,
 .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) .ltx_note_mark {
   display: none;
 }
-.ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_mark,
-.ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content > .ltx_note_mark {
+.ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_mark,
+.ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content > .ltx_note_mark {
   display: inline;
   opacity: 1;
   margin: 0;
@@ -1270,11 +1269,11 @@ div.ltx_keywords:empty::before {
 }
 .ltx_authors
   .ltx_annotated_personname
-  > :is(.ltx_note_shared, .ltx_role_footnotemark):has(~ :is(.ltx_note_shared, .ltx_role_footnotemark))
+  > .ltx_note:has(~ .ltx_note)
   > .ltx_note_mark::after {
   content: ",";
 }
-.ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content > .ltx_note_mark {
+.ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content > .ltx_note_mark {
   position: static;
   margin-inline-end: 0.25em;
 }
@@ -1295,7 +1294,7 @@ div.ltx_keywords:empty::before {
     }
     /* each margin note's body is placed under the previous one: the last earlier box of the
        same anchor name in the block (the first has none, and sits at the block's top) */
-    .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer,
+    .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer,
     .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer,
     .ltx_authors .ltx_creator > .ltx_note_unmarked:not(:has(img, svg)) {
       position: absolute;
@@ -1305,7 +1304,7 @@ div.ltx_keywords:empty::before {
       width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
       box-sizing: border-box;
     }
-    .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content,
+    .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content,
     .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content,
     .ltx_authors .ltx_creator > .ltx_note_unmarked:not(:has(img, svg)) {
       margin: 0;
