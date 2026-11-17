@@ -1392,7 +1392,9 @@ div.ltx_keywords:empty::before {
       ~ .ltx_note_copy[style*="position-anchor"] {
       display: block !important;
       opacity: 1 !important;
-      position: absolute;
+      /* fixed, not absolute: a fixed box is laid out after every other, so its note is an acceptable anchor even
+         when the note comes later in the page (a legend note on a later name: 2012.13912, 2606.17809) */
+      position: fixed;
       z-index: var(--z-popover);
       top: anchor(top);
       left: anchor(left);
