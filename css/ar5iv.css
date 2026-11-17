@@ -1281,6 +1281,51 @@ div.ltx_keywords:empty::before {
   color: inherit;
   text-decoration: none;
 }
+/* Adjacent marks on a name ("∗,†") keep apart touch targets: each mark's own width, the full target height
+   (the 1.5rem square inflation let a later mark take an earlier one's taps, 2506.06941). */
+@media not (forced-colors: active) {
+  .ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_mark::before {
+    width: 0.8em;
+  }
+}
+/* Narrow screens: a marked author note is its mark's pop-up, as every other note is there (DG 2026-11-17,
+   2602.04557, 2407.07614): the mark stays on the name, and hovering or tapping it shows the note, headed by
+   its mark. The name's line then holds the name and its marks only; affiliations stay under the name.
+   Unmarked notes, which have no mark to tap, stay in flow after the author's lines. */
+@media only screen and (width < 96rem) {
+  /* the author's column is the pop-up's box, so it never leaves the screen whichever column the name is in */
+  .ltx_authors .ltx_creator:has(.ltx_annotated_personname > .ltx_note) {
+    position: relative;
+  }
+  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) {
+    display: inline;
+    position: static;
+  }
+  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer {
+    display: none;
+  }
+  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark):hover > .ltx_note_outer,
+  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark):active > .ltx_note_outer,
+  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark):focus-within > .ltx_note_outer {
+    display: block;
+    position: absolute;
+    z-index: var(--z-popover);
+    /* top: auto keeps the pop-up's static place, the line after the name and its marks */
+    top: auto;
+    margin-top: 0.25rem;
+    inset-inline: 0;
+    float: none;
+    clear: none;
+    width: auto;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    background-color: var(--background-color);
+    border-width: 0.1rem 0;
+    border-top: double;
+    border-bottom: double;
+    text-align: start;
+  }
+}
 /* A block whose names carry notes (under one name, or a shared note's marks) aligns its names on one
    row, as the PDF's top-aligned author tabulars do, not the authors' centres (1706.03762's Illia
    Polosukhin). */
