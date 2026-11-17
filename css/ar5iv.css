@@ -1178,8 +1178,7 @@ div.ltx_keywords:empty::before {
    its author's lines, set as a note (start-aligned), never between a name and its lines.
    The note's box dissolves (`display: contents`): its mark joins the name's line and its body is a
    full-width float, so it drops under the line and the marks after it stay on the name's line.
-   Marks are parted only by the separator the source printed (`.ltx_mark_sep`, latexml-oxide #1056):
-   a typed `$^{*,\dagger}$` "∗,†", LaTeX's own `\thanks\thanks` "∗†". Witnesses: 2606.00446 (authblk `\affil[*]`), 2407.07614 (a legend line's `*`,
+   Consecutive marks are parted by a superscript comma ("1,2", not "12"), as authors type them. Witnesses: 2606.00446 (authblk `\affil[*]`), 2407.07614 (a legend line's `*`,
    `+` and `†`), 1706.03762, 1510.02728. Replaces the fixed margin slots of ar5iv-css 0.9.3, which
    overlapped. */
 .ltx_note.ltx_note_frontmatter.ltx_role_thanks .ltx_note_type,
@@ -1266,18 +1265,11 @@ div.ltx_keywords:empty::before {
 .ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_mark {
   top: 0;
 }
-/* the separator the source printed before a mark (latexml-oxide #1056), shown after a mark shown
-   before it: one author's note shows no mark here */
-.ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_mark > .ltx_mark_sep {
-  display: none;
-}
 .ltx_authors
   .ltx_annotated_personname
-  > :is(.ltx_note_shared, .ltx_role_footnotemark)
-  ~ :is(.ltx_note_shared, .ltx_role_footnotemark)
-  > .ltx_note_mark
-  > .ltx_mark_sep {
-  display: inline;
+  > :is(.ltx_note_shared, .ltx_role_footnotemark):has(~ :is(.ltx_note_shared, .ltx_role_footnotemark))
+  > .ltx_note_mark::after {
+  content: ",";
 }
 .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content > .ltx_note_mark {
   position: static;
