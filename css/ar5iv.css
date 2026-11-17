@@ -1247,7 +1247,8 @@ div.ltx_keywords:empty::before {
   display: none;
 }
 .ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_mark,
-.ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content > .ltx_note_mark {
+.ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
+.ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_copy > .ltx_note_content > .ltx_note_mark {
   display: inline;
   opacity: 1;
   margin: 0;
@@ -1278,7 +1279,8 @@ div.ltx_keywords:empty::before {
   > .ltx_note_mark::after {
   content: ",";
 }
-.ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content > .ltx_note_mark {
+.ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
+.ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_copy > .ltx_note_content > .ltx_note_mark {
   position: static;
   margin-inline-end: 0.25em;
 }
@@ -1296,22 +1298,24 @@ div.ltx_keywords:empty::before {
 /* Narrow screens: a marked author note is its mark's pop-up, as every other note is there (DG 2026-11-17,
    2602.04557, 2407.07614): the mark stays on the name, and hovering or tapping it shows the note, headed by
    its mark. The name's line then holds the name and its marks only; affiliations stay under the name.
-   Unmarked notes, which have no mark to tap, stay in flow after the author's lines. */
+   Unmarked notes, which have no mark to tap, stay in flow after the author's lines. A shared note's other
+   marks carry a hidden copy of it (`.ltx_note_copy`, latexml-oxide OD #1052, DG 2026-11-17), so each pops
+   it up too (2407.07614, 2606.00446, 1706.03762, 2506.06941); wide screens never show a copy. */
 @media only screen and (width < 96rem) {
   /* the author's column is the pop-up's box, so it never leaves the screen whichever column the name is in */
   .ltx_authors .ltx_creator:has(.ltx_annotated_personname > .ltx_note) {
     position: relative;
   }
-  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) {
+  .ltx_authors .ltx_annotated_personname > .ltx_note:is(:not(.ltx_role_footnotemark), :has(> .ltx_note_copy)) {
     display: inline;
     position: static;
   }
-  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer {
+  .ltx_authors .ltx_annotated_personname > .ltx_note:is(:not(.ltx_role_footnotemark), :has(> .ltx_note_copy)) > .ltx_note_outer {
     display: none;
   }
-  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark):hover > .ltx_note_outer,
-  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark):active > .ltx_note_outer,
-  .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark):focus-within > .ltx_note_outer {
+  .ltx_authors .ltx_annotated_personname > .ltx_note:is(:not(.ltx_role_footnotemark), :has(> .ltx_note_copy)):hover > .ltx_note_outer,
+  .ltx_authors .ltx_annotated_personname > .ltx_note:is(:not(.ltx_role_footnotemark), :has(> .ltx_note_copy)):active > .ltx_note_outer,
+  .ltx_authors .ltx_annotated_personname > .ltx_note:is(:not(.ltx_role_footnotemark), :has(> .ltx_note_copy)):focus-within > .ltx_note_outer {
     display: block;
     position: absolute;
     z-index: var(--z-popover);
@@ -1329,6 +1333,13 @@ div.ltx_keywords:empty::before {
     border-top: double;
     border-bottom: double;
     text-align: start;
+  }
+  /* (a copy's mark is a footnotemark's, whose pop-up is hidden everywhere else) */
+  .ltx_authors .ltx_annotated_personname > .ltx_note:hover > .ltx_note_copy,
+  .ltx_authors .ltx_annotated_personname > .ltx_note:active > .ltx_note_copy,
+  .ltx_authors .ltx_annotated_personname > .ltx_note:focus-within > .ltx_note_copy {
+    display: block !important;
+    opacity: 1 !important;
   }
 }
 /* A block whose names carry notes (under one name, or a shared note's marks) aligns its names on one
