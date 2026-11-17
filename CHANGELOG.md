@@ -4,7 +4,12 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
-## Unreleased
+## 0.9.4 — 2026-11-16
+
+A patch release for latexml-oxide's author blocks. A note several authors share prints once, in the margin, with
+its mark on every name it belongs to, and margin notes no longer overlap. Every mark the PDF prints on a name shows
+on it, in order, parted by a superscript comma; a letter or digit (an affiliation label) links no other author's
+note; a name with marks keeps its column; and an author note with no known mark shows no invented dagger.
 
 ### Fixed
 - **A note several authors share prints once, and margin notes never overlap.** latexml-oxide now
