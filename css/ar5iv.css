@@ -743,167 +743,8 @@ div.ltx_keywords:empty::before {
   }
 }
 
-/* Frontmatter \thanks notes (funding / grants / prior-presentation /
-   corresponding-author / equal-contribution). These carry the `ltx_role_thanks`
-   hook, sub-typed `ltx_thanks_{funding,correspondence,contribution,address,note}`
-   so a theme can style each kind. Semantically they are the SAME class as the
-   `.ltx_pubnotes_meta` block above -- document-level footnote metadata attached
-   to the title/author area, NOT identifying info about the one author they
-   happened to follow in the source. So they share the pubnotes responsive theme:
-   - NARROW (< 96rem): inherit the frontmatter always-on block below the authors
-     (handled in the footnote media block below). No margin to spend, and
-     funding/contact must not hide behind a hover on touch, so it stays in flow.
-   - WIDE (>= 96rem): a real side margin exists -> place the note in the right
-     margin beside the author block, always visible. Stops a long funding
-     paragraph from rendering under one author as if it were an affiliation (arXiv
-     1510.02728: NSF grant note stranded on the second author). Sized from the
-     ACTUAL available margin, `(100vw - --main-width)/2`, so it keeps a gap each
-     side and never triggers horizontal scroll at any viewport (WCAG 1.4.10),
-     exactly like the pubnotes rule.
-   IMPLEMENTATION NOTE: a plain `float:inline-end` does NOT work here. `.ltx_creator`
-   is `display:flex`, so the note is a blockified flex item only ~6px wide (just its
-   mark) sitting at the author's x -- a float/negative-margin would reference that
-   tiny box, not the text column, and the dagger would render on its own line below
-   the name. Instead anchor the note absolutely to `.ltx_authors` (main-width and
-   centered, so its right edge IS the text-column edge), lifting it out of the
-   creator flex flow entirely, and push it into the margin with the same calc. The
-   anchor dagger is dropped (the always-visible margin note is its own cue), so
-   nothing renders on a stray line by the author. */
-/* The "thanks:" type label (`.ltx_note_type`) is a LaTeX-ism with no reader
-   value -- the note content stands on its own -- so hide it for thanks notes in
-   every layout (narrow block and wide margin alike). */
-.ltx_note.ltx_note_frontmatter.ltx_role_thanks .ltx_note_type {
-  display: none;
-}
-
-@media only screen and (width >= 96rem) {
-  .ltx_authors {
-    position: relative;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    position: absolute;
-    /* fixed vertical slot for stacking multiple notes (~7 lines + gap) */
-    --thanks-slot: 10rem;
-    top: calc(
-      (var(--thanks-before, 0) + var(--thanks-extra, 0) + var(--thanks-index, 0)) *
-        var(--thanks-slot)
-    );
-    inset-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
-    width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
-    box-sizing: border-box;
-    margin: 0;
-    text-align: start;
-  }
-  /* Multiple \thanks notes (several authors each with one, or title + author)
-     would all anchor at the top and pile up. CSS can't read sibling heights, so
-     stack them into FIXED vertical slots. A note's slot is the sum of three counts:
-     - --thanks-before: PRECEDING creators with a thanks note, via a `:has()` + `~`
-       chain. Specificity rises with each `~` link, so a note with N preceding
-       thanks-creators matches every rule up to N and the highest (N) wins.
-     - --thanks-extra: the further notes a preceding creator holds beyond its first.
-     - --thanks-index: this note's position among its own creator's notes. Several
-       notes can share one creator: one person with several \thanks, or authors
-       with no `\and` between them (`\author{A\thanks{} \qquad B\thanks{}}`).
-     A note taller than a slot spills into the next -- the accepted tradeoff for a
-     heightless CSS stack. Limits: --thanks-extra reflects only the largest
-     preceding multi-note creator; past 10 notes in a creator or 5 creators with
-     notes, slots repeat. */
-  .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator
-    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    --thanks-before: 1;
-  }
-  .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator
-    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    --thanks-before: 2;
-  }
-  .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator
-    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    --thanks-before: 3;
-  }
-  .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator:has(.ltx_role_thanks)
-    ~ .ltx_creator
-    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    --thanks-before: 4;
-  }
-  .ltx_creator:has(.ltx_role_thanks ~ .ltx_role_thanks)
-    ~ .ltx_creator
-    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    --thanks-extra: 1;
-  }
-  .ltx_creator:has(.ltx_role_thanks ~ .ltx_role_thanks ~ .ltx_role_thanks)
-    ~ .ltx_creator
-    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    --thanks-extra: 2;
-  }
-  .ltx_creator:has(.ltx_role_thanks ~ .ltx_role_thanks ~ .ltx_role_thanks ~ .ltx_role_thanks)
-    ~ .ltx_creator
-    .ltx_note.ltx_note_frontmatter.ltx_role_thanks {
-    --thanks-extra: 3;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(2 of .ltx_role_thanks) {
-    --thanks-index: 1;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(3 of .ltx_role_thanks) {
-    --thanks-index: 2;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(4 of .ltx_role_thanks) {
-    --thanks-index: 3;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(5 of .ltx_role_thanks) {
-    --thanks-index: 4;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(6 of .ltx_role_thanks) {
-    --thanks-index: 5;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(7 of .ltx_role_thanks) {
-    --thanks-index: 6;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(8 of .ltx_role_thanks) {
-    --thanks-index: 7;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(9 of .ltx_role_thanks) {
-    --thanks-index: 8;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks:nth-child(10 of .ltx_role_thanks) {
-    --thanks-index: 9;
-  }
-  /* the note now lives wholly in the margin; drop every dagger (the anchor one,
-     which would otherwise sit on its own line in the creator flex column, and the
-     duplicate inside the content) -- the margin block is its own visual cue. */
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks .ltx_note_mark {
-    display: none;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks > .ltx_note_outer {
-    display: block;
-    opacity: 1;
-    position: static;
-    float: none;
-    width: auto;
-    max-width: none;
-    margin: 0;
-    padding: 0;
-  }
-  .ltx_note.ltx_note_frontmatter.ltx_role_thanks .ltx_note_content {
-    position: static;
-    margin: 0;
-    padding-inline: 1rem 0.75rem;
-    border: none;
-    text-align: start;
-    font-family: var(--text-font-family);
-    font-size: 0.85rem;
-    line-height: var(--line-height-prose);
-    color: var(--text-color);
-  }
-}
+/* Author notes (a \thanks, an authblk or legend note, a \footnote in \author) are laid out with the
+   author block's notes rule after the footnote rules below. */
 
 /* Mainmatter Footnotes */
 .ltx_note {
@@ -1062,11 +903,11 @@ div.ltx_keywords:empty::before {
   }
   .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):not(
       .ltx_role_footnotemark
-    ):hover
+    ):not(.ltx_annotated_personname > .ltx_note, .ltx_creator > .ltx_note):hover
     > .ltx_note_outer,
   .ltx_note:not(.ltx_note_frontmatter):not(.ltx_role_affiliationmark):not(
       .ltx_role_footnotemark
-    ):active
+    ):not(.ltx_annotated_personname > .ltx_note, .ltx_creator > .ltx_note):active
     > .ltx_note_outer {
     display: block;
     opacity: 1;
@@ -1086,7 +927,8 @@ div.ltx_keywords:empty::before {
     border-top: double;
   }
   /* Frontmatter notes: Author notes, Affiliation notes, Preprint notes
-     get a standalone line in small-screen mode. */
+     get a standalone line in small-screen mode. An author's own notes are
+     laid out by the author notes rule (after the footnote rules). */
   .ltx_note.ltx_note_frontmatter {
     display: block;
     opacity: inherit;
@@ -1264,7 +1106,8 @@ div.ltx_keywords:empty::before {
   .ltx_title_document > .ltx_note > .ltx_note_mark,
   .ltx_document > .ltx_note > .ltx_note_mark,
   .ltx_document > .ltx_note:not(.ltx_role_footnotetext) > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
-  /* also frontmatter notes: Author notes, Affiliation notes, Preprint notes */
+  /* also frontmatter notes: Affiliation notes, Preprint notes (an author's
+     notes keep their marks where shared: the author notes rule below) */
   .ltx_note.ltx_note_frontmatter > .ltx_note_mark,
   .ltx_note.ltx_note_frontmatter > .ltx_note_outer > .ltx_note_content > .ltx_note_mark,
   /* the inner marks on "malformed" author block notes */
@@ -1296,7 +1139,8 @@ div.ltx_keywords:empty::before {
   display: none;
   opacity: 0;
 }
-/* some notes were only provided a verbatim mark, deactivate them */
+/* some notes were only provided a verbatim mark, deactivate them (a shared
+   author note's later marks are links, coloured by the author notes rule) */
 .ltx_note.ltx_role_affiliationmark > .ltx_note_mark,
 .ltx_note.ltx_role_footnotemark > .ltx_note_mark {
   color: var(--text-color);
@@ -1309,6 +1153,166 @@ div.ltx_keywords:empty::before {
 
 .ltx_note.ltx_marginpar_left {
   display: none;
+}
+
+/* Author notes (latexml-oxide OXIDIZED_DESIGN_DIVERGENCES #1052; DG's rulings of 2026-11-16).
+   An author's marked note (a \thanks, an authblk or legend note, a \footnote in \author) sits right
+   after the name, inside `.ltx_annotated_personname`. A note that several authors share is printed
+   once, at its first author (`.ltx_note_shared`). At each other author it is a mark linked to that
+   copy (`.ltx_role_footnotemark.ltx_note_shared`). An unmarked note follows the name's wrapper.
+   The name is the name alone, so every mark printed on it is a note after it, in the order printed:
+   a mark-only note (`.ltx_role_footnotemark`: an affiliation letter, an unanswered \footnotemark)
+   always shows its mark, linked only when a symbol names a note of the block (0801.1438's "Kardoš",
+   "a", "*"); a letter or digit is its plain glyph.
+   - A marked note of one author sits on a row under the name, as affiliations and e-mails do, with
+     no mark.
+   - A shared note shows its mark on every name and at the head of the note, and goes to the side
+     margin.
+   - An unmarked note (`.ltx_note_unmarked`, latexml-oxide #990: no glyph is known for it, so none is
+     shown, as IEEEtran's \maketitle prints none for its funding or "manuscript received" \thanks,
+     1510.02728's Asilomar/NSF note) is its text alone, after its author's lines; it goes to the margin
+     with no mark on wide screens. A picture note stays on the name's column.
+   On wide screens with anchor positioning the margin notes stack, each below the one before, so
+   they never overlap whatever their height (1706.03762). On narrow screens, and in browsers without
+   anchor positioning, a shared note stays in flow under its first author, and an unmarked one after
+   its author's lines, set as a note (start-aligned), never between a name and its lines.
+   The note's box dissolves (`display: contents`): its mark joins the name's line and its body is a
+   full-width float, so it drops under the line and the marks after it stay on the name's line.
+   Consecutive marks are parted by a superscript comma ("1,2", not "12"), as authors type them. Witnesses: 2606.00446 (authblk `\affil[*]`), 2407.07614 (a legend line's `*`,
+   `+` and `†`), 1706.03762, 1510.02728. Replaces the fixed margin slots of ar5iv-css 0.9.3, which
+   overlapped. */
+.ltx_note.ltx_note_frontmatter.ltx_role_thanks .ltx_note_type,
+.ltx_authors .ltx_annotated_personname > .ltx_note .ltx_note_type,
+.ltx_authors .ltx_creator > .ltx_note .ltx_note_type {
+  display: none;
+}
+.ltx_authors .ltx_annotated_personname > .ltx_note,
+.ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark):has(> .ltx_note_outer) {
+  display: contents;
+}
+.ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_outer,
+.ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer {
+  display: block;
+  opacity: 1;
+  position: static;
+  float: none;
+  clear: none;
+  width: auto;
+  max-width: none;
+  margin: 0;
+  padding: 0;
+}
+.ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_outer > .ltx_note_content,
+.ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content {
+  width: auto;
+  margin: var(--space-xs) 0 0;
+  padding: 0;
+  border: none;
+  overflow-x: visible;
+  font-size: 0.9rem;
+  text-align: center;
+}
+/* a body under the name floats, full width: the marks after it stay on the name's line */
+.ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_outer {
+  float: inline-start;
+  clear: both;
+  width: 100%;
+}
+/* an unmarked note in flow: after its author's lines (the creator is a flex column), as a note */
+.ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer {
+  order: 1;
+}
+.ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content {
+  font-size: 0.85rem;
+  text-align: start;
+}
+.ltx_authors .ltx_creator > .ltx_note_unmarked:not(:has(img, svg)) {
+  display: block;
+  order: 1;
+  margin: var(--space-xs) 0 0;
+  font-family: var(--text-font-family);
+  font-size: 0.85rem;
+  line-height: var(--line-height-prose);
+  text-align: start;
+}
+.ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_note_shared, .ltx_role_footnotemark) .ltx_note_mark,
+.ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) .ltx_note_mark {
+  display: none;
+}
+.ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_mark,
+.ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content > .ltx_note_mark {
+  display: inline;
+  opacity: 1;
+  margin: 0;
+  color: var(--note-mark-color);
+}
+/* A name with notes is set as text, so its marks follow its last word wherever it wraps (the
+   XSLT writes no space between the name and a mark, so no line may break there). In the flex
+   row an ORCID badge uses, a mark under a long name took a line of its own. */
+.ltx_authors .ltx_annotated_personname:has(> .ltx_note) {
+  display: flow-root;
+  /* the inline name's box bounds, as an un-noted name's (span.ltx_personname): an author with marks
+     takes the same column (2602.18802's twelve names with affiliation marks) */
+  min-width: calc(0.27 * var(--main-width));
+  max-width: calc(0.65 * var(--main-width));
+}
+.ltx_authors .ltx_annotated_personname:has(> .ltx_note) > .ltx_personname {
+  display: inline;
+}
+.ltx_authors .ltx_annotated_personname:has(> .ltx_note) > .ltx_contact {
+  margin-inline-start: 0.35em;
+}
+.ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_mark {
+  top: 0;
+}
+.ltx_authors
+  .ltx_annotated_personname
+  > :is(.ltx_note_shared, .ltx_role_footnotemark):has(~ :is(.ltx_note_shared, .ltx_role_footnotemark))
+  > .ltx_note_mark::after {
+  content: ",";
+}
+.ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content > .ltx_note_mark {
+  position: static;
+  margin-inline-end: 0.25em;
+}
+.ltx_note.ltx_note_shared > .ltx_note_mark > a {
+  color: inherit;
+  text-decoration: none;
+}
+/* A block whose names carry notes (under one name, or a shared note's marks) aligns its names on one
+   row, as the PDF's top-aligned author tabulars do, not the authors' centres (1706.03762's Illia
+   Polosukhin). */
+.ltx_authors:has(.ltx_annotated_personname > .ltx_note) {
+  align-items: baseline;
+}
+@media only screen and (width >= 96rem) {
+  @supports (anchor-name: --ltx-a) {
+    .ltx_authors {
+      position: relative;
+    }
+    /* each margin note's body is placed under the previous one: the last earlier box of the
+       same anchor name in the block (the first has none, and sits at the block's top) */
+    .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer,
+    .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer,
+    .ltx_authors .ltx_creator > .ltx_note_unmarked:not(:has(img, svg)) {
+      position: absolute;
+      anchor-name: --ltx-margin-note;
+      top: calc(anchor(--ltx-margin-note bottom, -1rem) + 1rem);
+      inset-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
+      width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
+      box-sizing: border-box;
+    }
+    .ltx_authors .ltx_annotated_personname > .ltx_note.ltx_note_shared > .ltx_note_outer > .ltx_note_content,
+    .ltx_authors .ltx_creator > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content,
+    .ltx_authors .ltx_creator > .ltx_note_unmarked:not(:has(img, svg)) {
+      margin: 0;
+      padding-inline: 1rem 0.75rem;
+      font-size: 0.85rem;
+      line-height: var(--line-height-prose);
+      text-align: start;
+      color: var(--text-color);
+    }
+  }
 }
 
 /*======================================================================

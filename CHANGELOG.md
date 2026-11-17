@@ -4,6 +4,49 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+### Fixed
+- **A note several authors share prints once, and margin notes never overlap.** latexml-oxide now
+  prints a shared author note (an authblk `\affil[*]`, a legend line's `*`, a `\thanks` repeated by
+  `\footnotemark`) once, at its first author (`.ltx_note_shared`), and as a mark linked to it at
+  each other author, every marked note right after its name in `.ltx_annotated_personname`.
+  - A shared note shows its mark on every name and at its head, and sits in the side margin.
+  - A marked note of one author sits on a row under the name, as affiliations do, with no mark.
+  - An unmarked note (`.ltx_note_unmarked`) shows no mark: no glyph is known for it (IEEEtran's
+    `\thanks` prints none: 1510.02728's Asilomar/NSF note; an unbound class's or a document's own
+    `\maketitle` prints one latexml-oxide cannot know, so it no longer shows a dagger it invented,
+    1807.01940). Its text follows its author's lines, in the margin on wide screens; a picture note
+    stays on the name's column.
+  - On wide screens the margin notes stack, each placed under the one before (CSS anchor
+    positioning), so a tall note no longer runs over the next (1706.03762's "Equal contribution"
+    notes did, through the fixed 10rem slots, which are gone). On phones, and in a browser without
+    anchor positioning, a shared note stays under its first author and an unmarked one follows its
+    author's lines, start-aligned as a note.
+  - A name with notes is set as text, so a mark follows its last word wherever it wraps; an author
+    block with a note under a name aligns its names on one baseline, as the PDF's top-aligned
+    author tabulars do.
+  Pages from older latexml-oxide releases, whose author notes all follow the name's wrapper, show
+  them in the margin with no mark, as 0.9.3 did. Measured in Chrome
+  and Firefox at 1800 and 375 px on 1510.02728, 2606.00446, 2407.07614, 2606.00397 and 1706.03762.
+- **Every mark printed on a name shows on it, in the printed order.** latexml-oxide now keeps a
+  name alone in its personname and every mark the PDF prints on it in a note after it, so
+  `.ltx_annotated_personname` holds the name and then each mark: a mark-only note
+  (`.ltx_role_footnotemark`: an affiliation letter, a `\footnotemark` no note answers) shows its
+  mark, linked when its mark names a note of the block (0801.1438's "Kardoš", `a`, `*`, as the PDF
+  prints it; it read "Kardoš* a").
+  - A note's body under the name floats, full width, so a mark after it stays on the name's line.
+  - Consecutive marks are parted by a superscript comma ("1,2", not "12"), as authors type them.
+  - A name with marks keeps an un-noted name's column bounds, so a block of marked names keeps its
+    columns (2602.18802's twelve names with affiliation numbers had squeezed into ten narrow ones).
+  Measured in Chrome at 1800 and 375 px on 0801.1438, 2606.00446, 2407.07614, 1911.13299 and
+  1706.03762.
+- **A letter or digit on a name links no other author's note.** latexml-oxide links a mark-only
+  note (`.ltx_role_footnotemark`) only when its mark is a symbol (`*`, `†`, …) or a LaTeXML
+  `\footnotemark` leftover: an affiliation `1`, `a` or `α` is a plain glyph and no longer turns
+  another author's own note `1` or `a` into a shared margin note. No rule changes here; the
+  comment says so.
+
 ## 0.9.3 — 2026-11-16
 
 A patch release mirroring latexml-oxide's CSS for its 0.8.0 release. Box widths, heights and depths become the
