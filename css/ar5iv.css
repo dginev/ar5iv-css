@@ -1300,7 +1300,8 @@ div.ltx_keywords:empty::before {
    its mark. The name's line then holds the name and its marks only; affiliations stay under the name.
    Unmarked notes, which have no mark to tap, stay in flow after the author's lines. A shared note's other
    marks carry a hidden copy of it (`.ltx_note_copy`, latexml-oxide OD #1052, DG 2026-11-17), so each pops
-   it up too (2407.07614, 2606.00446, 1706.03762, 2506.06941); wide screens never show a copy. */
+   it up too (2407.07614, 2606.00446, 1706.03762, 2506.06941); wide screens show a copy only laid over its margin
+   note, as that note's highlight (latexml-oxide OD #1075, the anchor-positioning block below). */
 @media only screen and (width < 96rem) {
   /* the author's column is the pop-up's box, so it never leaves the screen whichever column the name is in */
   .ltx_authors .ltx_creator:has(.ltx_annotated_personname > .ltx_note) {
@@ -1374,13 +1375,35 @@ div.ltx_keywords:empty::before {
       width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
       box-sizing: border-box;
     }
-    .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content {
+    .ltx_authors .ltx_annotated_personname > .ltx_note:not(.ltx_role_footnotemark) > .ltx_note_outer > .ltx_note_content,
+    .ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_copy > .ltx_note_content {
       margin: 0;
       padding-inline: 1rem 0.75rem;
       font-size: 0.85rem;
       line-height: var(--line-height-prose);
       text-align: start;
       color: var(--text-color);
+    }
+    /* A shared note's other mark highlights the note in the margin, as its first mark does: hovering, tapping or
+       focusing it lays the mark's hidden copy over the note, at the anchor the note's content box names
+       (`anchor-name: --ltx-note-<id>` there, `position-anchor` on the copy; latexml-oxide OD #1075, DG 2026-11-17;
+       1706.03762, 2407.07614, 2606.00446). A copy with no anchor stays hidden. */
+    .ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_mark:is(:hover, :active, :focus-within)
+      ~ .ltx_note_copy[style*="position-anchor"] {
+      display: block !important;
+      opacity: 1 !important;
+      position: absolute;
+      z-index: var(--z-popover);
+      top: anchor(top);
+      left: anchor(left);
+      width: anchor-size(width);
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    .ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_mark:is(:hover, :active, :focus-within)
+      ~ .ltx_note_copy > .ltx_note_content {
+      background-color: var(--note-highlight-color);
     }
   }
 }
