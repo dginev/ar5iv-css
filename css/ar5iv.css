@@ -628,8 +628,11 @@ div.ltx_keywords:empty::before {
   font-style: normal;
   text-align: start;
 }
+/* The title notes' hover handle is no footnote mark, so it draws none of their glyphs (latexml-oxide
+   OXIDIZED_DESIGN_DIVERGENCES #1069, DG 2026-11-17): the page carries the marks the PDF prints, and a fixed "†" read as
+   a second mark beside a printed one (2605.10496's title † beside its authors' †). */
 .ltx_pubnotes::before {
-  content: "\002020"; /* dagger, matching our footnote marker accent */
+  content: "\24D8"; /* ⓘ, outside the mark vocabulary (∗ † ‡ § ¶ ‖) */
   color: var(--note-mark-color);
   font-size: 0.85em;
   vertical-align: super;
