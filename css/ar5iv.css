@@ -1355,14 +1355,18 @@ div.ltx_keywords:empty::before {
        its first boxes, the authors' marked notes follow, each under the one before, so a title note
        never covers an author's (1612.03574, 2605.10496). The document is the stack's box, so the
        title's notes are anchors the authors' notes can see; the first author note starts at the
-       author block's top or under the last title note, whichever is lower. */
+       author block's top or under the last title note, whichever is lower. The publication metadata
+       lifted out of the title (`.ltx_pubnotes_meta`: a preprint number, a conference, a DOI), floated
+       into the same margin above, is in the stack too: an author's note never covers it (1607.07280's
+       "KEK-TH 1909" under Mizoguchi's "* E-mail:", DG 2026-11-17). */
     .ltx_document {
       position: relative;
     }
     .ltx_authors {
       anchor-name: --ltx-authors;
     }
-    .ltx_title_document .ltx_pubnotes .ltx_pubnotes_content {
+    .ltx_title_document .ltx_pubnotes .ltx_pubnotes_content,
+    .ltx_pubnotes.ltx_pubnotes_meta .ltx_pubnotes_content {
       anchor-name: --ltx-margin-note;
     }
     /* An unmarked note of one author is that author's: under the name (it has no mark to tie it
@@ -1387,7 +1391,7 @@ div.ltx_keywords:empty::before {
     /* A shared note's other mark highlights the note in the margin, as its first mark does: hovering, tapping or
        focusing it lays the mark's hidden copy over the note, at the anchor the note's content box names
        (`anchor-name: --ltx-note-<id>` there, `position-anchor` on the copy; latexml-oxide OD #1075, DG 2026-11-17;
-       1706.03762, 2407.07614, 2606.00446). A copy with no anchor stays hidden. */
+       1706.03762, 2407.07614, 2606.00446). A copy that names no anchor stays hidden; the XSLT writes the anchor of every copy it names. */
     .ltx_authors .ltx_annotated_personname > .ltx_note > .ltx_note_mark:is(:hover, :active, :focus-within)
       ~ .ltx_note_copy[style*="position-anchor"] {
       display: block !important;
