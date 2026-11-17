@@ -34,7 +34,8 @@
     "prepublishOnly": "npm run build",
     "preversion": "npm run lint",
     "version": "npm run build && git add dist",
-    "postversion": "git push origin HEAD --follow-tags"
+    "postversion": "git push origin HEAD --follow-tags",
+    "test:margins": "node tools/margin-overlap.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.60.0",
