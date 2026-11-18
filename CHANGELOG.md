@@ -4,6 +4,31 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## 0.9.5 — 2026-11-17
+
+A patch release for latexml-oxide's frontmatter. Author notes live in one side-margin stack on wide screens — the
+title's notes, the lifted publication metadata and every marked author note, each under the one before — and on narrow
+screens each mark pops up its own note. Hover handles draw ⓘ instead of a footnote glyph, and a shared note's every mark
+highlights it.
+
+### Fixed
+- **The title notes' hover handle draws ⓘ, not a footnote mark** (#67; latexml-oxide OD #1069): a CSS-drawn `†` beside
+  a printed `†` was a second, false mark.
+- **A one-author marked note shows its mark and goes to the margin, as a shared note does** (#68).
+- **On narrow screens a marked author note is its mark's pop-up** (#69): the mark stays on the name, and hovering or
+  tapping it shows the note, headed by its mark; affiliations stay under the name.
+- **The title's notes join the side margin on wide screens** (#70): one margin stack for the title page, so a title note
+  never covers an author's; a one-author unmarked note sits under its name.
+- **Each mark of a shared author note pops up its own hidden copy on narrow screens** (#71; latexml-oxide OD #1052).
+- **The publication metadata in the margin joins the margin stack** (#72): an author's note no longer covers a preprint
+  number or conference line (arXiv 1607.07280).
+- **A shared note's other marks highlight its margin note on wide screens** (#73; latexml-oxide OD #1075): each copy is
+  laid over its note through a per-note CSS anchor the converter writes; inert without it.
+
+### Added
+- **`tools/margin-overlap.mjs`** (`npm run test:margins -- page.html …`, #74): fails on any two intersecting side-margin
+  boxes of the wide layout at 1536/1800/2400 px.
+
 ## 0.9.4 — 2026-11-16
 
 A patch release for latexml-oxide's author blocks. A note several authors share prints once, in the margin, with
