@@ -12,6 +12,7 @@ the project follows [semantic versioning](https://semver.org/).
   rows sat apart (or side by side), not aligned at `&`. Its row groups are row groups again, the `align` column gap is
   keyed on classes, and the display's cells keep their own padding inside a tabular. A row of one spanning cell
   (`\intertext`) is a block across the display, since CSS tables ignore `colspan` (it wrapped in the first column).
+  In a note or a minipage the span table is the same block scroll box as in a cell (an `\intertext` there wrapped).
 
 ## 0.9.5 — 2026-11-17
 

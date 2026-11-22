@@ -3379,6 +3379,16 @@ span.ltx_transformed_inner {
 span.ltx_eqn_table > span:not([class]) {
   display: table-row-group;
 }
+/* The span form is always the block scroll box above: a note or a minipage
+   (.ltx_inline-logical-block) is neither .ltx_inline-block nor .ltx_td, and as
+   a CSS table it put an \intertext row in its first column (at 375 px a
+   footnote's wrapped, 42 px against 26 in Chrome; a minipage's 56 against 33
+   in Firefox). */
+span.ltx_eqn_table {
+  display: block;
+  overflow-x: auto;
+  max-width: 100%;
+}
 /* CSS tables ignore colspan, so a row of one spanning cell (\intertext, a
    constraint) is a block across the display, not a cell of the first column. */
 span.ltx_eqn_table > span:not([class]):has(> .ltx_eqn_row > .ltx_eqn_cell[colspan]:only-child),
