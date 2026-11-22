@@ -4,6 +4,15 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
+## Unreleased
+
+### Fixed
+- **A display in a `p{}` cell, `\parbox` or minipage lays out its rows as outside** (latexml-oxide #972): there the
+  equation table is written as spans, and each row became an anonymous table of its own, so an `aligned` display's
+  rows sat apart (or side by side), not aligned at `&`. Its row groups are row groups again, the `align` column gap is
+  keyed on classes, and the display's cells keep their own padding inside a tabular. A row of one spanning cell
+  (`\intertext`) is a block across the display, since CSS tables ignore `colspan` (it wrapped in the first column).
+
 ## 0.9.5 — 2026-11-17
 
 A patch release for latexml-oxide's frontmatter. Author notes live in one side-margin stack on wide screens — the

@@ -3372,6 +3372,20 @@ span.ltx_transformed_inner {
   overflow-x: auto;
   max-width: 100%;
 }
+/* latexml-oxide #972: in an inline context (a p{} cell, \parbox, minipage, note)
+   LaTeXML writes the table as spans, each tbody a classless span. As an inline
+   box it gave every row an anonymous table of its own, so an aligned display's
+   rows ran side by side, their columns apart; they are row groups. */
+span.ltx_eqn_table > span:not([class]) {
+  display: table-row-group;
+}
+/* CSS tables ignore colspan, so a row of one spanning cell (\intertext, a
+   constraint) is a block across the display, not a cell of the first column. */
+span.ltx_eqn_table > span:not([class]):has(> .ltx_eqn_row > .ltx_eqn_cell[colspan]:only-child),
+span.ltx_eqn_table > span:not([class]) > .ltx_eqn_row:has(> .ltx_eqn_cell[colspan]:only-child),
+span.ltx_eqn_table > span:not([class]) > .ltx_eqn_row > .ltx_eqn_cell[colspan]:only-child {
+  display: block;
+}
 .ltx_eqn_row {
   display: table-row;
 }
@@ -3392,14 +3406,15 @@ span.ltx_transformed_inner {
   font-size: 0.9em;
 }
 
-/* Padding between column pairs in ams align */
-table.ltx_eqn_align tr.ltx_equation td.ltx_align_left + td.ltx_align_right,
-table.ltx_eqn_align tr.ltx_equation td.ltx_align_left + td.ltx_align_center,
-table.ltx_eqn_align tr.ltx_equation td.ltx_align_center + td.ltx_align_right,
-table.ltx_eqn_align tr.ltx_equation td.ltx_align_center + td.ltx_align_center {
+/* Padding between column pairs in ams align; keyed on classes, not on
+   table/tr/td, so the span form in a p{} cell keeps it (latexml-oxide #972) */
+.ltx_eqn_align .ltx_equation > .ltx_align_left + .ltx_align_right,
+.ltx_eqn_align .ltx_equation > .ltx_align_left + .ltx_align_center,
+.ltx_eqn_align .ltx_equation > .ltx_align_center + .ltx_align_right,
+.ltx_eqn_align .ltx_equation > .ltx_align_center + .ltx_align_center {
   padding-inline-start: 3em;
 }
-table.ltx_eqn_eqnarray tr.ltx_eqn_lefteqn + tr td.ltx_align_right {
+.ltx_eqn_eqnarray .ltx_eqn_lefteqn + .ltx_eqn_row > .ltx_align_right {
   min-width: 2em;
 }
 
@@ -3727,6 +3742,12 @@ dl.ltx_description dl.ltx_description dd {
   max-width: var(--main-width);
   overflow-wrap: break-word;
   white-space: normal;
+}
+/* A display in a p{} cell keeps its own cell padding, not the tabular's
+   (its cells are `ltx_td` too; latexml-oxide #972). */
+.ltx_tabular .ltx_eqn_cell {
+  padding-block: 0.3rem;
+  padding-inline: 0.2rem;
 }
 /* `.ltx_nopad_l`, `.ltx_nopad_r`, and the `.ltx_border_*` / `.ltx_framed_*`
    classes below carry physical-side semantics from LaTeXML's emission
