@@ -740,7 +740,9 @@ div.ltx_keywords:empty::before {
     /* fill the side margin, capped at a readable width and always leaving
        a 1rem gap each side so it can never overflow the viewport */
     width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
-    margin-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
+    /* the body's margin-note column (`.ltx_note_outer`: 27rem wide, 4rem from the text) once the margin is wide
+       enough, else 1rem from the viewport edge: never the viewport edge on a wide screen (2301.01331) */
+    margin-inline-end: calc(-1 * min(31rem, (100vw - var(--main-width)) / 2 - 1rem));
     max-width: none;
     padding-inline: 1rem 0.75rem;
     text-align: start;
@@ -1375,7 +1377,7 @@ div.ltx_keywords:empty::before {
       position: absolute;
       anchor-name: --ltx-margin-note;
       top: max(calc(anchor(--ltx-margin-note bottom, 0px) + 1rem), anchor(--ltx-authors top));
-      inset-inline-end: calc(1rem - (100vw - var(--main-width)) / 2);
+      inset-inline-end: calc(-1 * min(31rem, (100vw - var(--main-width)) / 2 - 1rem)); /* as the pubnotes above */
       width: min(27rem, calc((100vw - var(--main-width)) / 2 - 2rem));
       box-sizing: border-box;
     }

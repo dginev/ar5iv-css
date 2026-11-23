@@ -13,6 +13,10 @@ the project follows [semantic versioning](https://semver.org/).
   keyed on classes, and the display's cells keep their own padding inside a tabular. A row of one spanning cell
   (`\intertext`) is a block across the display, since CSS tables ignore `colspan` (it wrapped in the first column).
   In a note or a minipage the span table is the same block scroll box as in a cell (an `\intertext` there wrapped).
+- **The title page's margin notes stay beside the text on very wide screens** (2301.01331): an author's or the title's
+  note was placed from the viewport's edge, so past a 116rem screen it drifted away from the text (26rem of gap at 2560px).
+  It now takes the body's margin-note column (4rem from the text, 27rem wide) and keeps the 1rem edge gap only where
+  the margin is too narrow for that column.
 
 ## 0.9.5 — 2026-11-17
 
