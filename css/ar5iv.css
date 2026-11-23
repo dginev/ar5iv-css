@@ -3363,16 +3363,38 @@ span.ltx_transformed_inner {
    = .ltx_inline-block, or a table cell = .ltx_td) its intrinsic width exceeds
    the box. Since overflow is ignored on display:table, the equation escapes the
    cell and scatters across the page (matches the same gap in vanilla LaTeXML.css;
-   lualatex keeps it in the cell). Re-box it as a block scroll container so it
-   stays inside the cell and scrolls horizontally when too wide — the containment
-   .ltx_listing already uses. The .ltx_eqn_row/cell children regenerate an
-   anonymous table, so centering + eqno columns still lay out. Normal full-width
-   display math keeps display:table (untouched). */
+   lualatex keeps it in the cell). Re-box it as a block within the box's width;
+   the .ltx_eqn_row/cell children regenerate an anonymous table, so centering +
+   eqno columns still lay out. Normal full-width display math keeps
+   display:table (untouched).
+   It is no scroll container (latexml-oxide #972, ar5iv-css #76): one that
+   scrolls in x clips in y, and MathML tokens' text boxes reach a font-dependent
+   distance past their ink (w3c/mathml-core#349), so it drew phantom vertical
+   scrollbars and clipped lowered boxes. Instead the box grows to fit its
+   display (below): a display too wide for its p{} cell, \parbox or minipage
+   widens the box rather than scroll or overprint the next cell, and
+   .ltx_table scrolls a table that grows past the page. */
 .ltx_inline-block .ltx_eqn_table,
 .ltx_td .ltx_eqn_table {
   display: block;
-  overflow-x: auto;
   max-width: 100%;
+}
+/* Grow: a box holding a display is at least as wide as the display's
+   min-content width, and the 50% centring pads give way (min-width:0) so they
+   do not widen it by 4em. Not a table float that is a \parbox (2001.00529):
+   it is the .ltx_table scroll box that holds a grown table. A note is not
+   grown either: .ltx_note_content scrolls a too-wide display itself (a margin
+   note keeps its column, a pop-up the viewport). */
+:is(.ltx_inline-block, .ltx_inline-logical-block, .ltx_minipage, .ltx_parbox):not(.ltx_table):has(.ltx_eqn_table) {
+  min-width: min-content;
+}
+.ltx_inline-block .ltx_eqn_center_padleft,
+.ltx_inline-block .ltx_eqn_center_padright,
+.ltx_td .ltx_eqn_center_padleft,
+.ltx_td .ltx_eqn_center_padright,
+span.ltx_eqn_table .ltx_eqn_center_padleft,
+span.ltx_eqn_table .ltx_eqn_center_padright {
+  min-width: 0;
 }
 /* latexml-oxide #972: in an inline context (a p{} cell, \parbox, minipage, note)
    LaTeXML writes the table as spans, each tbody a classless span. As an inline
@@ -3381,14 +3403,13 @@ span.ltx_transformed_inner {
 span.ltx_eqn_table > span:not([class]) {
   display: table-row-group;
 }
-/* The span form is always the block scroll box above: a note or a minipage
+/* The span form is always the block above: a note or a minipage
    (.ltx_inline-logical-block) is neither .ltx_inline-block nor .ltx_td, and as
    a CSS table it put an \intertext row in its first column (at 375 px a
    footnote's wrapped, 42 px against 26 in Chrome; a minipage's 56 against 33
    in Firefox). */
 span.ltx_eqn_table {
   display: block;
-  overflow-x: auto;
   max-width: 100%;
 }
 /* CSS tables ignore colspan, so a row of one spanning cell (\intertext, a

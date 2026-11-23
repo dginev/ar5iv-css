@@ -12,7 +12,14 @@ the project follows [semantic versioning](https://semver.org/).
   rows sat apart (or side by side), not aligned at `&`. Its row groups are row groups again, the `align` column gap is
   keyed on classes, and the display's cells keep their own padding inside a tabular. A row of one spanning cell
   (`\intertext`) is a block across the display, since CSS tables ignore `colspan` (it wrapped in the first column).
-  In a note or a minipage the span table is the same block scroll box as in a cell (an `\intertext` there wrapped).
+  In a note or a minipage the span table is the same block as in a cell (an `\intertext` there wrapped).
+- **A display in a `p{}` cell, `\parbox`, minipage or note draws no scrollbar; its box grows to fit it** (latexml-oxide
+  #972, #76): the display was a horizontal scroll box, which also scrolls vertically, and MathML tokens' text boxes reach
+  past their ink (w3c/mathml-core#349), so a vertical scrollbar appeared with nothing to scroll (the issue's longtable
+  cell) and a `\raisebox`-lowered term was cut off. The display is no scroll box now: a box holding one is at least the
+  display's min-content width and its centring pads give way, so a display too wide for its cell widens the cell
+  instead of scrolling inside it or overprinting the next one; a table that grows past the page scrolls as a whole. A
+  footnote is not widened: the note scrolls a too-wide display, as it scrolls any wide content.
 - **The title page's margin notes stay beside the text on very wide screens** (2301.01331): an author's or the title's
   note was placed from the viewport's edge, so past a 116rem screen it drifted away from the text (26rem of gap at 2560px).
   It now takes the body's margin-note column (4rem from the text, 27rem wide) and keeps the 1rem edge gap only where
