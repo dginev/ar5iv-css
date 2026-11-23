@@ -20,6 +20,10 @@ the project follows [semantic versioning](https://semver.org/).
   display's min-content width and its centring pads give way, so a display too wide for its cell widens the cell
   instead of scrolling inside it or overprinting the next one; a table that grows past the page scrolls as a whole. A
   footnote is not widened: the note scrolls a too-wide display, as it scrolls any wide content.
+- **A text-mode `\vphantom` is zero-width, as in TeX**: it kept its argument's width as a hidden gap. A
+  `.ltx_phantom.ltx_vphantom` box is now a strut, an inline-block of zero width with its argument's height and depth
+  (`overflow: clip`, so the baseline stays and nothing scrolls). Needs latexml-oxide's `ltx_vphantom` class on the
+  phantom; `\phantom` and `\hphantom` are unchanged.
 - **The title page's margin notes stay beside the text on very wide screens** (2301.01331): an author's or the title's
   note was placed from the viewport's edge, so past a 116rem screen it drifted away from the text (26rem of gap at 2560px).
   It now takes the body's margin-note column (4rem from the text, 27rem wide) and keeps the 1rem edge gap only where

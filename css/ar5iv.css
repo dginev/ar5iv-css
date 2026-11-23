@@ -3255,6 +3255,18 @@ span.ltx_transformed_inner {
 .ltx_phantom {
   visibility: hidden;
 }
+/* A text-mode \vphantom is a strut: its argument's height and depth and no
+   width (latex.ltx \finph@nt), one line as TeX's \hbox. overflow:clip keeps
+   the inline-block's baseline (hidden would move it to the bottom edge) and
+   keeps the clipped text out of the scrollable overflow. Keyed on the
+   ltx_vphantom class latexml-oxide writes beside ltx_phantom; \phantom and
+   \hphantom keep their width. */
+.ltx_phantom.ltx_vphantom {
+  display: inline-block;
+  width: 0;
+  white-space: nowrap;
+  overflow: clip;
+}
 
 /*======================================================================
  Inline Basics
