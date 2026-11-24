@@ -578,15 +578,11 @@ div.ltx_keywords:empty::before {
   font-weight: bold;
   font-style: normal;
 }
-/* PR brucemiller/LaTeXML#2767 dropped the literal ": " the XSLT used to
-   emit after the keywords/classification label, so the bold label would
-   otherwise butt straight into its content ("Keywordsquantum…").
-   Restore it here; the ::after inherits the label's bold weight, giving
-   the conventional "Keywords: …" / "MSC: …" reading. */
-.ltx_title.ltx_title_keywords::after,
-.ltx_title.ltx_title_classification::after {
-  content: ": ";
-}
+/* No separator is added here: the label carries its own. Since
+   brucemiller/LaTeXML#2767 the ": " the XSLT used to emit lives in the
+   label macro (`\lx@keywords@name` = "Keywords:~", amsart's
+   "Key words and phrases:~"), and a class binding sets its own separator,
+   so a CSS ": " printed "Keywords: :". */
 /* Two-column papers may want to choose their break-points in titles,
   yet the browser can manage on its own in single-column ar5iv.
   Example: section headings of 1701.00123 */

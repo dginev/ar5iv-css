@@ -7,6 +7,11 @@ the project follows [semantic versioning](https://semver.org/).
 ## Unreleased
 
 ### Fixed
+- **A keywords or classification label prints one colon, not "Keywords: :"**: the `::after` rule that added ": " after
+  `.ltx_title_keywords` and `.ltx_title_classification` is gone. It assumed brucemiller/LaTeXML#2767 had dropped the
+  separator, but #2767 moved it from the XSLT into the label macro (`\lx@keywords@name` is `Keywords:~`; amsart's is
+  `Key words and phrases:~`), and a class binding sets its own (IEEEtran's "Index Terms"), so every page with keywords
+  showed the colon twice (ar5iv 2003.04755).
 - **A display in a `p{}` cell, `\parbox` or minipage lays out its rows as outside** (latexml-oxide #972): there the
   equation table is written as spans, and each row became an anonymous table of its own, so an `aligned` display's
   rows sat apart (or side by side), not aligned at `&`. Its row groups are row groups again, the `align` column gap is
