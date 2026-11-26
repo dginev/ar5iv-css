@@ -4,7 +4,11 @@ All notable changes to `ar5iv-css` are documented here. The format is
 loosely based on [Keep a Changelog](https://keepachangelog.com/), and
 the project follows [semantic versioning](https://semver.org/).
 
-## Unreleased
+## 0.9.6 — 2026-11-26
+
+A patch release for latexml-oxide 0.8.0. A display in a table cell, `\parbox`, minipage or note draws no scrollbar:
+its box grows to fit it, and an aligned display's rows line up there as they do outside. The title page's margin notes
+stay beside the text on very wide screens, and a text-mode `\vphantom` has zero width, as in TeX.
 
 ### Fixed
 - **A display in a `p{}` cell, `\parbox` or minipage lays out its rows as outside** (latexml-oxide #972): there the
