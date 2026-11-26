@@ -3864,11 +3864,25 @@ dl.ltx_description dl.ltx_description dd {
 .ltx_border_L {
   border-left: var(--border-hairline) solid var(--border-light-color);
 }
-/* arydshln.sty */
+/* arydshln.sty: a dashed side carries its side's border class too, so only the style changes and the rule's width
+   and colour stay */
+.ltx_border_t_dashed {
+  border-top-style: dashed;
+}
 .ltx_border_r_dashed {
-  border-right: var(--border-hairline) dashed var(--border-color);
+  border-right-style: dashed;
 }
 .ltx_border_b_dashed {
+  border-bottom-style: dashed;
+}
+.ltx_border_l_dashed {
+  border-left-style: dashed;
+}
+/* older conversions put the dashed class on a cell without its side's border class */
+.ltx_border_r_dashed:not(.ltx_border_r):not(.ltx_border_rr):not(.ltx_border_R) {
+  border-right: var(--border-hairline) dashed var(--border-color);
+}
+.ltx_border_b_dashed:not(.ltx_border_b):not(.ltx_border_bb):not(.ltx_border_B) {
   border-bottom: var(--border-hairline) dashed var(--border-color);
 }
 /* Framing */
